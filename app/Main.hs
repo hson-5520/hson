@@ -1,6 +1,6 @@
-module Main where
+-- module Main where
 
-import Lib
+-- import Lib
 
-main :: IO ()
-main = putStrLn someFunc
+-- main :: IO ()
+-- main = putStrLn someFunc

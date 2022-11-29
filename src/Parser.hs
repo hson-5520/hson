@@ -30,6 +30,8 @@ module Parser
   )
 where
 
+-- >>> putStrLn "abc"
+
 import Control.Applicative (Alternative (..))
 import Control.Monad (guard)
 import Data.Char
