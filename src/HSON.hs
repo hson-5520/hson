@@ -1,21 +1,24 @@
-module HSON where
+module HSON (Key, Value (Boolean, Number, String), HSON) where
 
 import Control.Monad.Except
 import Data.Map
+import Parser qualified as P
 
 data Value
-  = Number Double
-  | Object HSON
+  = String String
+  | Number Double
   | Boolean Bool
+  | Object HSON
   | Array [Value]
   | Null
-  | String String
+  deriving (Eq, Show)
 
 type Key = String
 
 data HSON
   = Map Key Value
   | Empty
+  deriving (Eq, Show)
 
 instance Semigroup HSON where
   a <> b = case (a, b) of
