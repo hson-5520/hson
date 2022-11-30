@@ -1,8 +1,7 @@
-module HSONParser where
+module HSON where
 
 import Control.Monad.Except
 import Data.Map
-import Parser
 
 data Value
   = Number Double
