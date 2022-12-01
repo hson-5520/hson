@@ -7,7 +7,6 @@ import Data.Map
 import HSON (HSON, Key, Value (Boolean, Number, String))
 import Parser
 import Parser qualified as P
-import Test.HUnit
 
 --------------------- Parsing Primatives -----------------------------
 
@@ -79,7 +78,7 @@ objectValP = undefined
 nullValP :: Parser Value
 nullValP = undefined
 
---------------------------------------------------------------------------------
+---------------------------- Parse JSON ----------------------------------------------
 
 -- | parses a single item (key, value) in a JSON file
 itemP :: Parser (Key, Value)
