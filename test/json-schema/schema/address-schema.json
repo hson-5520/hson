@@ -16,19 +16,13 @@
         "locality": {
             "type": "string"
         },
-        "region": {
-            "type": "string"
-        },
-        "postal-code": {
-            "type": "string"
-        },
-        "country-name": {
-            "type": "string"
+        "zip-code": {
+            "type": "integer"
         }
     },
     "required": [
         "locality",
-        "region",
+        "zip-code",
         "country-name"
     ],
     "dependentRequired": {

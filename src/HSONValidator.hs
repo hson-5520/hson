@@ -1,7 +1,7 @@
 module HSONValidator where
 
 import HSON
-import HSONSchema
+import HSONSchema (ArrProperties, HSONSchema, IntProperties, ObjProperties, StrProperties)
 
 ------------------------- Validating HSON Values  ------------------------------
 
@@ -29,5 +29,3 @@ validateObj = undefined
 
 validateHSON :: HSON -> HSONSchema -> Bool
 validateHSON = undefined
-
-

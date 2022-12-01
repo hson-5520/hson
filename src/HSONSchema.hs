@@ -1,4 +1,4 @@
-module HSONSchema where
+module HSONSchema (HSONSchema, address, card, coordinate, hsonToHSONSchema, IntProperties, StrProperties, ArrProperties, ObjProperties) where
 
 import Data.Map
 import Data.Map qualified as Map
@@ -52,6 +52,76 @@ data ObjProperties
       (Map Attribute HSONSchema)
   deriving (Show, Eq)
 
+address :: HSONSchema
+address =
+  Obj
+    ( OP
+        Nothing
+        Nothing
+        ["locality", "zip-code", "country-name"]
+        ( Map.fromList
+            [ ("post-office-box", Str $ SP Nothing Nothing Nothing),
+              ("extended-address", Str $ SP Nothing Nothing Nothing),
+              ("street-address", Str $ SP Nothing Nothing Nothing),
+              ("locality", Str $ SP Nothing Nothing Nothing),
+              ("zip-code", Int $ IP Nothing Nothing Nothing Nothing)
+            ]
+        )
+    )
+
+card :: HSONSchema
+card =
+  Obj
+    ( OP
+        Nothing
+        Nothing
+        ["familyName", "givenName"]
+        ( Map.fromList
+            [ ("fn", Str $ SP Nothing Nothing Nothing),
+              ("family-name", Str $ SP Nothing Nothing Nothing),
+              ("given-name", Str $ SP Nothing Nothing Nothing),
+              ("additional-name", Arr $ AP Nothing Nothing True (Just (Str $ SP Nothing Nothing Nothing))),
+              ("nickname", Str $ SP Nothing Nothing Nothing),
+              ( "email",
+                Obj $
+                  OP
+                    Nothing
+                    Nothing
+                    []
+                    ( Map.fromList
+                        [ ("type", Str $ SP Nothing Nothing Nothing),
+                          ("value", Str $ SP Nothing Nothing Nothing)
+                        ]
+                    )
+              ),
+              ( "org",
+                Obj $
+                  OP
+                    Nothing
+                    Nothing
+                    []
+                    ( Map.fromList
+                        [ ("organizationName", Str $ SP Nothing Nothing Nothing),
+                          ("organizationUnit", Str $ SP Nothing Nothing Nothing)
+                        ]
+                    )
+              )
+            ]
+        )
+    )
+
+coordinate :: HSONSchema
+coordinate =
+  Obj $
+    OP
+      Nothing
+      Nothing
+      ["latitude", "longitude"]
+      ( Map.fromList
+          [ ("latitude", Num $ IP (Just (-90)) Nothing (Just 90) Nothing),
+            ("longitude", Num $ IP (Just (-180)) Nothing (Just 80) Nothing)
+          ]
+      )
 
 type Attribute = String
 
