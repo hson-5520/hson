@@ -34,15 +34,6 @@ data StrProperties
       (Maybe String)
   deriving (Show, Eq)
 
--- MinProperties, Max Properties, Required,
-data ObjProperties
-  = OP
-      (Maybe Int)
-      (Maybe Int)
-      [String]
-      (Map Attribute HSONSchema)
-  deriving (Show, Eq)
-
 -- MaxItems, MinItems, isUnique, Items
 data ArrProperties
   = AP
@@ -52,34 +43,50 @@ data ArrProperties
       (Maybe HSONSchema)
   deriving (Show, Eq)
 
+-- MinProperties, MaxProperties, Required
+data ObjProperties
+  = OP
+      (Maybe Int)
+      (Maybe Int)
+      [String]
+      (Map Attribute HSONSchema)
+  deriving (Show, Eq)
+
+
 type Attribute = String
 
-------------------------- HSON to HSON Schema  ---------------------)-----------
+------------------------- HSON to HSON Schema  ---------------------------------
 
--- | converts a HSON object property to an int property
+-- | converts a HSON object representing a number property to an HSON Schema num property
+-- | Num (IP Minimum ExclusiveMinimum Maximum ExclusiveMaximum)
 numberHelper :: HSON -> HSONSchema
 numberHelper x = undefined
 
--- Int (IP - - - -)
+-- | converts a HSON object representing an int property to an HSON Schema int property
+-- | Int (IP Minimum ExclusiveMinimum Maximum ExclusiveMaximum)
 intHelper :: HSON -> HSONSchema
 intHelper x = undefined
 
--- Str (SP - - -)
+-- | converts a HSON object representing a string property to an HSON Schema str property
+-- | Str (SP MinLength MaxLength Pattern)
 stringHelper :: HSON -> HSONSchema
 stringHelper x = undefined
 
--- Bool
+-- | converts a HSON object representing a booleaan property to an HSON Schema bool property
+-- | Bool (BP)
 boolHelper :: HSON -> HSONSchema
 boolHelper x = undefined
 
--- Arr (AP - - - -)
+-- | converts a HSON object representing an array property to an HSON Schema arr property
+-- | Arr (AP MaxItems MinItems isUnique Items)
 arrHelper :: HSON -> HSONSchema
 arrHelper x = undefined
 
--- Obj (OP - - - -)
+-- | converts a HSON object representing an object property to an HSON Schema obj property
+-- | Obj (OP MinProperties MaxProperties Required)
 objHelper :: HSON -> HSONSchema
 objHelper x = undefined
 
---
+-- | converts an entire HSON object to it's corresponding HSONSchema object
 hsonToHSONSchema :: HSON -> HSONSchema
-hsonToHSONSchema = undefined
+hsonToHSONSchema hson = objHelper hson
