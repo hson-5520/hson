@@ -5,12 +5,24 @@ import Data.Map qualified as Map
 import FromJSON
 import HSON (HSON (Empty, Map), Key, Value (Array, Boolean, Null, Number, Object, String), hsonArray, hsonDog, hsonEmpty, hsonSchool, hsonSingle)
 import Lib
+import Parser
 import Parser qualified as P
 import Test.HUnit (Test (TestList), assert, runTestTT, (~:), (~?=))
 import Test.QuickCheck
+import ToJSON
 
--------------------------- HSON Objects ------------------------------------
+---------------------------- QuickCheck: toJSON fromJSON  ---------------------------------------
 
--- >>> hsonSingle
+-- >>> quickCheck prop_toAndFrom
 
---------------------------------------------------------------------------------
+prop_toAndFrom :: HSON -> Property
+prop_toAndFrom x =
+  let y = helper x
+   in property (x == x)
+  where
+    helper x = do
+      toJSON "HSONTestFile.txt" x
+      x <- parseJSON "HSONTestFile.txt"
+      case x of
+        Right x -> return x
+        Left y -> return Empty

@@ -22,7 +22,7 @@ valueToString x = case x of
 
 -- | Converts a HSON string value to a string for writing to the JSON file
 stringToString :: String -> String
-stringToString s = s ++ ","
+stringToString s = "\"" ++ s ++ "\""
 
 -- | Converts a HSON number value to a string for writing to the JSON file
 numberToString :: Double -> String

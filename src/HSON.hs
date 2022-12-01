@@ -3,6 +3,9 @@ module HSON (Key, Value (Boolean, Number, String, Array, Object, Null), HSON (Ma
 import Data.Map
 import Data.Map qualified as Map
 import Parser qualified as P
+import Test.QuickCheck
+
+------------------------- Defining HSON  ----------------------------------
 
 data Value
   = String String
@@ -29,6 +32,20 @@ instance Semigroup HSON where
 
 instance Monoid HSON where
   mempty = Empty
+
+------------------------- HSON Generator  ----------------------------------
+
+genHSON :: Gen HSON
+genHSON =
+  frequency
+    [ (1, return Empty)
+    ]
+
+instance Arbitrary HSON where
+  arbitrary = genHSON
+
+  shrink (Map x) = undefined
+  shrink Empty = [Empty]
 
 ---------------------------- Sample HSON ---------------------------------------
 hsonEmpty :: HSON

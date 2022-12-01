@@ -66,7 +66,7 @@ test_arrayToString =
 
 test_objectToString :: Test
 test_objectToString =
-  "writing array value test"
+  "writing object value test"
     ~: TestList
       [ objectToString Empty ~?= "{}",
         objectToString (Map $ Map.fromList [("bill", Number 1)]) ~?= "{ \"bill\": 1 }"
