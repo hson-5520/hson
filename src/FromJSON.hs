@@ -3,8 +3,10 @@ module FromJSON where
 import Control.Applicative
 import Control.Monad qualified
 import Control.Monad.Except
+import Data.Char qualified as P
 import Data.Map
-import HSON (HSON, Key, Value (Boolean, Number, String))
+import Data.Map qualified as Map
+import HSON (HSON, Key, Value (Array, Boolean, Integer, Null, Number, Object, String))
 import Parser
 import Parser qualified as P
 
@@ -34,6 +36,9 @@ braces x = P.between (stringP "{") x (stringP "}")
 brackets :: Parser a -> Parser a
 brackets x = P.between (stringP "[") x (stringP "]")
 
+combineAsTuple :: a -> b -> (a, b)
+combineAsTuple x y = (x, y)
+
 -------------------------- Key Parsing -----------------------------------------
 
 -- | parses a JSON key and the trailing colon
@@ -48,6 +53,7 @@ valueP =
   P.choice
     [ stringValP,
       numberValP,
+      intValP,
       booleanValP,
       arrayValP,
       objectValP,
@@ -58,9 +64,21 @@ valueP =
 stringValP :: Parser Value
 stringValP = String <$> (P.char '\"' *> many (P.satisfy (/= '\"')) <* wsP (P.char '\"'))
 
+-- | parses any integer
+intValP :: Parser Value
+intValP = Integer <$> P.int
+
+-- | parses a negative double
+negativeDecimalParser :: Parser Value
+negativeDecimalParser = Number . read <$> ((++) <$> ((++) <$> ((++) <$> string "-" <*> some digit) <*> string ".") <*> some digit)
+
+-- | parses a positive double
+positiveDecimalParser :: Parser Value
+positiveDecimalParser = Number . read <$> ((++) <$> ((++) <$> some digit <*> string ".") <*> some digit)
+
 -- | parses any number
 numberValP :: Parser Value
-numberValP = Number <$> undefined
+numberValP = P.choice [negativeDecimalParser, positiveDecimalParser]
 
 -- | parses any boolean value
 booleanValP :: Parser Value
@@ -68,26 +86,26 @@ booleanValP = P.choice [constP "true" (Boolean True), constP "false" (Boolean Fa
 
 -- | parses any list which appears as a value
 arrayValP :: Parser Value
-arrayValP = undefined
+arrayValP = Array <$> brackets (P.sepBy valueP (wsP (char ',')))
 
 -- | parses an entire JSON object into HSON
 objectValP :: Parser Value
-objectValP = undefined
+objectValP = Object <$> hsonP
 
 -- | parses a null value
 nullValP :: Parser Value
-nullValP = undefined
+nullValP = constP "null" Null
 
 ---------------------------- Parse JSON ----------------------------------------------
 
 -- | parses a single item (key, value) in a JSON file
 itemP :: Parser (Key, Value)
-itemP = undefined
+itemP = combineAsTuple <$> wsP keyP <*> wsP valueP
 
 -- | parses an entire JSON file into an HSON object
 hsonP :: Parser HSON
-hsonP = undefined
+hsonP = Map.fromList <$> braces (sepBy itemP (wsP (char ',')))
 
 -- | takes a JSON file and returns an HSON object
 parseJSON :: String -> IO (Either P.ParseError HSON)
-parseJSON = undefined
+parseJSON = P.parseFromFile (const <$> hsonP <*> P.eof)

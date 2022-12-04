@@ -15,14 +15,14 @@ import ToJSON
 
 -- >>> quickCheck prop_toAndFrom
 
-prop_toAndFrom :: HSON -> Property
-prop_toAndFrom x =
-  let y = helper x
-   in property (x == x)
-  where
-    helper x = do
-      toJSON "HSONTestFile.txt" x
-      x <- parseJSON "HSONTestFile.txt"
-      case x of
-        Right x -> return x
-        Left y -> return Empty
+-- prop_toAndFrom :: HSON -> Property
+-- prop_toAndFrom x =
+--   let y = helper x
+--    in property (y == x)
+--   where
+--     helper x = do
+--       toJSON "HSONTestFile.txt" x
+--       z <- parseJSON "HSONTestFile.txt"
+--       case z of
+--         Right x -> return x
+--         Left y -> return Empty

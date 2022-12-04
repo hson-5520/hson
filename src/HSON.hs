@@ -1,4 +1,4 @@
-module HSON (Key, Value (Boolean, Number, String, Array, Object, Null), HSON (Map, Empty), hsonEmpty, hsonSchool, hsonDog, hsonArray, hsonSingle) where
+module HSON (HSON, Key, Value (Boolean, Number, String, Array, Object, Null, Integer), hsonEmpty, hsonSchool, hsonDog, hsonArray, hsonSingle) where
 
 import Data.Map
 import Data.Map qualified as Map
@@ -9,6 +9,7 @@ import Test.QuickCheck
 
 data Value
   = String String
+  | Integer Int
   | Number Double
   | Boolean Bool
   | Array [Value]
@@ -18,87 +19,64 @@ data Value
 
 type Key = String
 
-data HSON
-  = Map (Map Key Value)
-  | Empty
-  deriving (Eq, Show)
-
-instance Semigroup HSON where
-  a <> b = case (a, b) of
-    (Empty, Empty) -> Empty
-    (Empty, x) -> x
-    (x, Empty) -> x
-    (x, y) -> x
-
-instance Monoid HSON where
-  mempty = Empty
+type HSON = (Map Key Value)
 
 ------------------------- HSON Generator  ----------------------------------
 
 genHSON :: Gen HSON
-genHSON =
-  frequency
-    [ (1, return Empty)
-    ]
+genHSON = undefined
 
 instance Arbitrary HSON where
   arbitrary = genHSON
 
-  shrink (Map x) = undefined
-  shrink Empty = [Empty]
+  shrink x = undefined
 
 ---------------------------- Sample HSON ---------------------------------------
 hsonEmpty :: HSON
-hsonEmpty = Empty
+hsonEmpty = empty
 
 hsonSingle :: HSON
-hsonSingle = Map (Map.fromList [("name", String "bob")])
+hsonSingle = Map.fromList [("name", String "bob")]
 
 hsonArray :: HSON
 hsonArray =
-  Map
-    ( Map.fromList
-        [ ("bob", Array [Number 1, String "hi", Object $ Map (Map.fromList [("name", String "Jose")]), Null])
-        ]
-    )
+  Map.fromList
+    [ ("bob", Array [Integer 1, String "hi", Object (Map.fromList [("name", String "Jose")]), Null])
+    ]
 
 hsonDog :: HSON
 hsonDog =
-  Map
-    ( Map.fromList
-        [ ( "dog",
-            Object $
-              Map
-                ( Map.fromList
-                    [ ("name", String "Bill"),
-                      ("age", Number 4.2),
-                      ("siblings", Boolean False)
-                    ]
-                )
+  Map.fromList
+    [ ( "dog",
+        Object
+          ( Map.fromList
+              [ ("age", Number 4.2),
+                ("name", String "Bill"),
+                ("siblings", Boolean False)
+              ]
           )
-        ]
-    )
+      )
+    ]
 
 hsonSchool :: HSON
 hsonSchool =
-  Map
-    ( Map.fromList
-        [ ("name", String "school"),
-          ("foundedYear", Number 1975),
-          ("isPublic", Boolean True),
-          ("cost", Null),
-          ("students", Array [String "a", String "b", String "c"]),
-          ( "address",
-            Object $
-              Map
-                ( Map.fromList
-                    [ ("city", String "Philadelphia"),
-                      ("state", String "Pennsylvania"),
-                      ("buildingNumber", Number 123)
-                    ]
-                )
+  Map.fromList
+    [ ( "address",
+        Object
+          ( Map.fromList
+              [ ("buildingNumber", Integer 123),
+                ("city", String "Philadelphia"),
+                ("state", String "Pennsylvania")
+              ]
           )
-        ]
-    )
+      ),
+      ("cost", Null),
+      ("foundedYear", Integer 1975),
+      ("isPublic", Boolean True),
+      ("name", String "school"),
+      ("students", Array [String "a", String "b", String "c"])
+    ]
+
+-- Right (fromList [("address",Object (fromList [("buildingNumber",Integer 123),("city",String "Philadelphia"),("state",String "Pennsylvania")])),("cost",Null),("foundedYear",Integer 1975),("isPublic",Boolean True),("name",String "School"),("students",Array [String "a",String "b",String "c"])])
 
 ---------------------------------------------------------------------------------
