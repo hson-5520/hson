@@ -2,7 +2,7 @@ import Control.Applicative
 import Data.Map qualified as Map
 import FromJSON
 import GHC.Generics (Generic1 (from1))
-import HSON (HSON (Empty, Map), Key, Value (Array, Boolean, Null, Number, Object, String), hsonArray, hsonDog, hsonEmpty, hsonSchool, hsonSingle)
+import HSON (HSON, Key, Value (Array, Boolean, Null, Number, Object, String), hsonArray, hsonDog, hsonEmpty, hsonSchool, hsonSingle)
 import HSONSchema (address, card, coordinate, hsonToHSONSchema)
 import HSONValidator
 import Lib

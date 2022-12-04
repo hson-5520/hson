@@ -1,6 +1,6 @@
 import Control.Applicative
 import Data.Map qualified as Map
-import HSON (HSON (Empty, Map), Key, Value (Array, Boolean, Null, Number, Object, String), hsonArray, hsonDog, hsonEmpty, hsonSchool, hsonSingle)
+import HSON (HSON, Key, Value (Array, Boolean, Integer, Null, Number, Object, String), hsonArray, hsonDog, hsonEmpty, hsonSchool, hsonSingle)
 import Lib
 import Parser qualified as P
 import Test.HUnit (Test (TestList), assert, runTestTT, (~:), (~?=))
@@ -13,9 +13,9 @@ test_keyToString :: Test
 test_keyToString =
   "writing string key test"
     ~: TestList
-      [ keyToString "a" ~?= "\"a\":",
-        keyToString "" ~?= "\"\":",
-        keyToString "bil32" ~?= "\"bil32\":"
+      [ keyToString "a" ~?= "\"a\": ",
+        keyToString "" ~?= "\"\": ",
+        keyToString "bil32" ~?= "\"bil32\": "
       ]
 
 --- >>> runTestTT test_keyToString
@@ -32,14 +32,23 @@ test_stringToString =
 
 --- >>> runTestTT test_stringToString
 
+test_integerToString :: Test
+test_integerToString =
+  "writing number value test"
+    ~: TestList
+      [ integerToString 1 ~?= "1",
+        integerToString (-1) ~?= "-1"
+      ]
+
+--- >>> runTestTT test_integerToString
+-- Counts {cases = 2, tried = 2, errors = 0, failures = 0}
+
 test_numberToString :: Test
 test_numberToString =
   "writing number value test"
     ~: TestList
-      [ numberToString 1 ~?= "1",
-        numberToString (-1) ~?= "-1",
-        numberToString 2953.40 ~?= "2953.40",
-        numberToString (-2953.40) ~?= "-2953.40"
+      [ numberToString 2953.48 ~?= "2953.48",
+        numberToString (-2953.47) ~?= "-2953.47"
       ]
 
 --- >>> runTestTT test_numberToString
@@ -53,12 +62,14 @@ test_booleanToString =
       ]
 
 --- >>> runTestTT test_booleanToString
+-- Counts {cases = 2, tried = 2, errors = 0, failures = 0}
 
 test_arrayToString :: Test
 test_arrayToString =
   "writing array value test"
     ~: TestList
-      [ arrayToString [Number 1, Number 2, Number 3] ~?= "[1, 2, 3]",
+      [ arrayToString [Number 1.2, Number 2.5, Integer 3] ~?= "[1.2, 2.5, 3]",
+        arrayToString [Null] ~?= "[null]",
         arrayToString [] ~?= "[]"
       ]
 
@@ -68,11 +79,12 @@ test_objectToString :: Test
 test_objectToString =
   "writing object value test"
     ~: TestList
-      [ objectToString Empty ~?= "{}",
-        objectToString (Map $ Map.fromList [("bill", Number 1)]) ~?= "{ \"bill\": 1 }"
+      [ objectToString [] ~?= "{}",
+        objectToString [("bill", Number 1)] ~?= "{ \"bill\": 1 }"
       ]
 
 --- >>> runTestTT test_objectToString
+-- Counts {cases = 2, tried = 2, errors = 0, failures = 1}
 
 test_nullToString :: Test
 test_nullToString =
@@ -109,3 +121,8 @@ tParseValidJson =
       toJSON fp hson
       x <- compareFiles fn fp
       assert x
+
+--- >>> hsonToString hsonSchool
+-- "{\"address\": {\"buildingNumber\": 123,\n\"city\": \"Philadelphia\",\n\"state\": \"Pennsylvania\"},\n\"cost\": null,\n\"foundedYear\": 1975,\n\"isPublic\": true,\n\"name\": \"School\",\n\"students\": [\"a\", \"b\", \"c\"]}"
+
+-- >>> toJSON "test/json/valid/dog2.json" hsonDog

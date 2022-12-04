@@ -1,4 +1,5 @@
 {-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
+
 {-# HLINT ignore "Eta reduce" #-}
 module HSONSchema (HSONSchema, address, card, coordinate, hsonToHSONSchema, IntProperties, StrProperties, ArrProperties, ObjProperties) where
 
@@ -19,8 +20,7 @@ data HSONSchema
   | Nul
   deriving (Show, Eq)
 
--- newtype Schema = { validate :: HSON -> Bool } 
-
+-- newtype Schema = { validate :: HSON -> Bool }
 
 -- Minimum, Exclusive Minimum, Maximum, Exclusive Maximum
 data IntProperties

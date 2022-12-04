@@ -106,7 +106,7 @@ test_arrayValP =
     ~: TestList
       [ P.parse arrayValP "\"a\"" ~?= Left "No parses",
         P.parse arrayValP "[1, 2, 3.1]" ~?= Right (Array [Integer 1, Integer 2, Number 3.1]),
-        P.parse arrayValP "[32, \"america\", null, {\"bob\": -2.1}]" ~?= Right (Array [Integer 32, String "america", Null, Object (Map.fromList [("bob", Number (-2.1))])])
+        P.parse arrayValP "[32, \"america\", null, {\"bob\": -2.1}]" ~?= Right (Array [Integer 32, String "america", Null, Object [("bob", Number (-2.1))]])
       ]
 
 -- >>> runTestTT test_arrayValP
@@ -119,15 +119,15 @@ test_objectValP =
       [ P.parse objectValP "\"a\"" ~?= Left "No parses",
         P.parse objectValP "{}"
           ~?= Right
-            (Object Map.empty),
+            (Object []),
         P.parse
           objectValP
           "{ \"this\": 12 }"
-          ~?= Right (Object (Map.fromList [("this", Integer 12)])),
+          ~?= Right (Object [("this", Integer 12)]),
         P.parse
           objectValP
           "{ \"this\": 12 , \"that\": true }"
-          ~?= Right (Object (Map.fromList [("this", Integer 12), ("that", Boolean True)]))
+          ~?= Right (Object [("this", Integer 12), ("that", Boolean True)])
       ]
 
 -- >>> runTestTT test_objectValP
@@ -155,8 +155,7 @@ tParseValidJson =
         "single" ~: p "test/json/valid/single.json" hsonSingle,
         "array" ~: p "test/json/valid/array.json" hsonArray,
         "dog" ~: p "test/json/valid/dog.json" hsonDog,
-        "school" ~: p "test/json/valid/school.json" hsonSchool
-      ]
+        "school" ~: p "test/json/valid/school.json" hsonSchool,      ]
   where
     p fn ast = do
       result <- parseJSON fn
@@ -165,7 +164,7 @@ tParseValidJson =
         (Right ast') -> assert (ast == ast')
 
 -- >>> runTestTT tParseValidJson
--- Counts {cases = 5, tried = 5, errors = 0, failures = 0}
+-- Counts {cases = 5, tried = 5, errors = 0, failures = 2}
 
 tParseInvalidJson :: Test
 tParseInvalidJson =
@@ -187,3 +186,4 @@ test_all :: IO Counts
 test_all = runTestTT $ TestList [test_wsP, test_stringP, test_constP, test_keyP, test_stringValP, test_intValP, test_numberValP, test_booleanValP, test_arrayValP, test_objectValP, test_nullValP, tParseValidJson, tParseInvalidJson]
 
 -- >>>  test_all
+-- Counts {cases = 44, tried = 44, errors = 0, failures = 0}

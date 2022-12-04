@@ -10,7 +10,7 @@ import HSON (HSON, Key, Value (Array, Boolean, Integer, Null, Number, Object, St
 import Parser
 import Parser qualified as P
 
---------------------- Parsing Primatives -----------------------------
+---------------------------- Parsing Primatives --------------------------------
 
 -- | consume fst char & all whitespace until next char
 wsP :: Parser a -> Parser a
@@ -104,7 +104,7 @@ itemP = combineAsTuple <$> wsP keyP <*> wsP valueP
 
 -- | parses an entire JSON file into an HSON object
 hsonP :: Parser HSON
-hsonP = Map.fromList <$> braces (sepBy itemP (wsP (char ',')))
+hsonP = braces (sepBy itemP (wsP (char ',')))
 
 -- | takes a JSON file and returns an HSON object
 parseJSON :: String -> IO (Either P.ParseError HSON)
