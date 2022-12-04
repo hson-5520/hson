@@ -1,11 +1,23 @@
 import Control.Applicative
-import Data.Map qualified as Map
 import FromJSON
+  ( arrayValP,
+    booleanValP,
+    constP,
+    intValP,
+    keyP,
+    nullValP,
+    numberValP,
+    objectValP,
+    parseJSON,
+    stringP,
+    stringValP,
+    wsP,
+  )
 import HSON (HSON, Key, Value (Array, Boolean, Integer, Null, Number, Object, String), hsonArray, hsonDog, hsonEmpty, hsonSchool, hsonSingle)
-import Lib
+import Lib ()
 import Parser qualified as P
 import Test.HUnit (Counts, Test (TestList), assert, runTestTT, (~:), (~?=))
-import Test.QuickCheck
+import Test.QuickCheck ()
 
 ------------------------- Parsing Primatives Tests -----------------------------
 
@@ -155,7 +167,8 @@ tParseValidJson =
         "single" ~: p "test/json/valid/single.json" hsonSingle,
         "array" ~: p "test/json/valid/array.json" hsonArray,
         "dog" ~: p "test/json/valid/dog.json" hsonDog,
-        "school" ~: p "test/json/valid/school.json" hsonSchool,      ]
+        "school" ~: p "test/json/valid/school.json" hsonSchool
+      ]
   where
     p fn ast = do
       result <- parseJSON fn

@@ -1,4 +1,4 @@
-module ToJSON (integerToString, hsonToString, toJSON, keyToString, valueToString, stringToString, numberToString, booleanToString, arrayToString, objectToString, nullToString, toJSON) where
+module ToJSON (integerToString, hsonToString, keyToString, valueToString, stringToString, numberToString, booleanToString, arrayToString, objectToString, nullToString, toJSON) where
 
 import Control.Concurrent (yield)
 import Data.Char
