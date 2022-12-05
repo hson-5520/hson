@@ -10,7 +10,7 @@ import HSON (HSON, Key, Value (Array, Boolean, Integer, Null, Number, Object, St
 import Parser
 import Parser qualified as P
 
----------------------------- Parsing Primatives --------------------------------
+---------------------------- Parsing Primitives --------------------------------
 
 -- | consume fst char & all whitespace until next char
 wsP :: Parser a -> Parser a

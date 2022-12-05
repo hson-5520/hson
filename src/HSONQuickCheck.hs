@@ -25,3 +25,17 @@ prop_roundtrip hson =
        in case parse hsonP y of
             Left _ -> Nothing
             Right x -> Just x
+
+-- >>> hsonToString [("",Number 2.6979142905544144e-2)]
+-- "{\"\": 2.6979142905544144e-2}"
+
+-- >>> parse hsonP "{ \"bob\" : \"\" }"
+
+-- >>> hsonToString [("",String "\USf\36038\"")]
+-- "{\"\": \"\USf\36038\"\"}"
+
+-- >>> hsonToString [("\"",Boolean False)]
+-- "{\"\"\": false}"
+
+-- >>> hsonToString [("",Number (-3.300495127670037e-2))]
+-- "{\"\": -3.300495127670037e-2}"
