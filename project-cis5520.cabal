@@ -86,7 +86,7 @@ library
   import:
       common-stanza
   exposed-modules:
-      Lib, Parser, ToJSON, FromJSON, HSON, HSONSchema, HSONValidator, FromJSONTest, HSONSchemaTest, HSONTest, HSONValidatorTest, ToJSONTest
+      Lib, Parser, ToJSON, FromJSON, HSON, HSONQuickCheck, HSONSchema, HSONValidator, FromJSONTest, HSONSchemaTest, HSONTest, HSONValidatorTest, ToJSONTest
   hs-source-dirs:
       src
   default-language: Haskell2010
