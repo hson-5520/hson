@@ -11,10 +11,10 @@ import ToJSON
 
 ---------------------------- QuickCheck: toJSON fromJSON  ---------------------------------------
 
--- >>> quickCheck prop_roundtrip
+-- >>> quickCheck prop_roundtriptest
 
-prop_roundtrip :: HSON -> Bool
-prop_roundtrip hson =
+prop_roundtriptest :: HSON -> Bool
+prop_roundtriptest hson =
   case helper hson of
     Nothing -> False
     Just y -> y == hson

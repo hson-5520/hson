@@ -1,3 +1,5 @@
+module FromJSONTest (test_all) where
+
 import Control.Applicative
 import FromJSON
   ( arrayValP,
@@ -199,4 +201,4 @@ test_all :: IO Counts
 test_all = runTestTT $ TestList [test_wsP, test_stringP, test_constP, test_keyP, test_stringValP, test_intValP, test_numberValP, test_booleanValP, test_arrayValP, test_objectValP, test_nullValP, tParseValidJson, tParseInvalidJson]
 
 -- >>>  test_all
--- Counts {cases = 44, tried = 44, errors = 0, failures = 0}
+-- Counts {cases = 43, tried = 43, errors = 0, failures = 0}
