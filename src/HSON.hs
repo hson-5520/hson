@@ -31,6 +31,8 @@ type Key = String
 
 type HSON = [(Key, Value)]
 
+-- newtype HSON = HSON [(Key, Value)] deriving (Eq, Show)
+
 ------------------------- HSON Generator  ----------------------------------
 
 genList :: forall a. (Arbitrary a) => Gen [a]
