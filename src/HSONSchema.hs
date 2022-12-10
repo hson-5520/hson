@@ -1,6 +1,6 @@
 {-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
 
-module HSONSchema (HSONSchema (Str, Int, Num, Bool, Arr, Obj, Nul), IntProperties (IP), StrProperties (SP), minLength, maxLength, pattern, stringEnum, iMaximum, iMinimum, exclusiveMinimum, exclusiveMaximum, multipleOf, intEnum, address, card, coordinate, ArrProperties, ObjProperties) where
+module HSONSchema (HSONSchema (Str, Int, Num, Bool, Arr, Obj, Nul), IntProperties (IP), NumProperties (NP), nMinimum, nMaximum, nExclusiveMinimum, nExclusiveMaximum, nMultipleOf, numberEnum, StrProperties (SP), ArrProperties (AP), minItems, maxItems, isUnique, minProperties, maxProperties, required, properties, ObjProperties (OP), items, boolEnum, BoolProperties (BP), minLength, maxLength, pattern, stringEnum, iMaximum, iMinimum, exclusiveMinimum, exclusiveMaximum, multipleOf, intEnum, address, card, coordinate, ArrProperties, ObjProperties) where
 
 import Data.Map
 import Data.Map qualified as Map
@@ -12,7 +12,7 @@ import Parser qualified as P
 data HSONSchema
   = Str StrProperties
   | Int IntProperties
-  | Num IntProperties
+  | Num NumProperties
   | Bool BoolProperties
   | Arr ArrProperties
   | Obj ObjProperties
@@ -26,6 +26,16 @@ data IntProperties = IP
     exclusiveMaximum :: Maybe Int,
     multipleOf :: Maybe Int,
     intEnum :: Maybe [Int]
+  }
+  deriving (Show, Eq)
+
+data NumProperties = NP
+  { nMinimum :: Maybe Int,
+    nMaximum :: Maybe Int,
+    nExclusiveMinimum :: Maybe Int,
+    nExclusiveMaximum :: Maybe Int,
+    nMultipleOf :: Maybe Double,
+    numberEnum :: Maybe [Double]
   }
   deriving (Show, Eq)
 
@@ -120,7 +130,7 @@ coordinate =
         maxProperties = Nothing,
         required = ["latitude", "longitude"],
         properties =
-          [ ("latitude", Num $ IP {iMinimum = (Just (-90)), iMaximum = (Just 90), exclusiveMinimum = Nothing, exclusiveMaximum = Nothing, multipleOf = Nothing, intEnum = Nothing}),
-            ("longitude", Num $ IP {iMinimum = (Just (-180)), iMaximum = (Just 180), exclusiveMinimum = Nothing, exclusiveMaximum = Nothing, multipleOf = Nothing, intEnum = Nothing})
+          [ ("latitude", Num $ NP {nMinimum = Just (-90), nMaximum = Just 90, nExclusiveMinimum = Nothing, nExclusiveMaximum = Nothing, nMultipleOf = Nothing, numberEnum = Nothing}),
+            ("longitude", Num $ NP {nMinimum = Just (-180), nMaximum = Just 180, nExclusiveMinimum = Nothing, nExclusiveMaximum = Nothing, nMultipleOf = Nothing, numberEnum = Nothing})
           ]
       }
