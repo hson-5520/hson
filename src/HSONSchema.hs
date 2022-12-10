@@ -1,7 +1,6 @@
 {-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
 
-{-# HLINT ignore "Eta reduce" #-}
-module HSONSchema (HSONSchema, address, card, coordinate, hsonToHSONSchema, IntProperties, StrProperties, ArrProperties, ObjProperties) where
+module HSONSchema (HSONSchema (Str, Int, Num, Bool, Arr, Obj, Nul), IntProperties (IP), StrProperties (SP), minLength, maxLength, pattern, stringEnum, iMaximum, iMinimum, exclusiveMinimum, exclusiveMaximum, multipleOf, intEnum, address, card, coordinate, ArrProperties, ObjProperties) where
 
 import Data.Map
 import Data.Map qualified as Map
@@ -25,6 +24,7 @@ data IntProperties = IP
     iMaximum :: Maybe Int,
     exclusiveMinimum :: Maybe Int,
     exclusiveMaximum :: Maybe Int,
+    multipleOf :: Maybe Int,
     intEnum :: Maybe [Int]
   }
   deriving (Show, Eq)
@@ -68,7 +68,7 @@ address =
             ("extended-address", Str $ SP {minLength = Nothing, maxLength = Nothing, pattern = Nothing, stringEnum = Nothing}),
             ("street-address", Str $ SP {minLength = Nothing, maxLength = Nothing, pattern = Nothing, stringEnum = Nothing}),
             ("locality", Str $ SP {minLength = Nothing, maxLength = Nothing, pattern = Nothing, stringEnum = Nothing}),
-            ("zip-code", Int $ IP {iMinimum = Nothing, iMaximum = Nothing, exclusiveMaximum = Nothing, exclusiveMinimum = Nothing, intEnum = Nothing})
+            ("zip-code", Int $ IP {iMinimum = Nothing, iMaximum = Nothing, exclusiveMaximum = Nothing, exclusiveMinimum = Nothing, multipleOf = Nothing, intEnum = Nothing})
           ]
       }
 
@@ -120,43 +120,7 @@ coordinate =
         maxProperties = Nothing,
         required = ["latitude", "longitude"],
         properties =
-          [ ("latitude", Num $ IP {iMinimum = (Just (-90)), iMaximum = (Just 90), exclusiveMinimum = Nothing, exclusiveMaximum = Nothing, intEnum = Nothing}),
-            ("longitude", Num $ IP {iMinimum = (Just (-180)), iMaximum = (Just 180), exclusiveMinimum = Nothing, exclusiveMaximum = Nothing, intEnum = Nothing})
+          [ ("latitude", Num $ IP {iMinimum = (Just (-90)), iMaximum = (Just 90), exclusiveMinimum = Nothing, exclusiveMaximum = Nothing, multipleOf = Nothing, intEnum = Nothing}),
+            ("longitude", Num $ IP {iMinimum = (Just (-180)), iMaximum = (Just 180), exclusiveMinimum = Nothing, exclusiveMaximum = Nothing, multipleOf = Nothing, intEnum = Nothing})
           ]
       }
-
-------------------------- HSON to HSON Schema  ---------------------------------
-
--- | converts a HSON object representing a number property to an HSON Schema num property
--- | Num (IP Minimum ExclusiveMinimum Maximum ExclusiveMaximum)
-numberHelper :: HSON -> HSONSchema
-numberHelper x = undefined
-
--- | converts a HSON object representing an int property to an HSON Schema int property
--- | Int (IP Minimum ExclusiveMinimum Maximum ExclusiveMaximum)
-intHelper :: HSON -> HSONSchema
-intHelper x = undefined
-
--- | converts a HSON object representing a string property to an HSON Schema str property
--- | Str (SP MinLength MaxLength Pattern)
-stringHelper :: HSON -> HSONSchema
-stringHelper x = undefined
-
--- | converts a HSON object representing a booleaan property to an HSON Schema bool property
--- | Bool (BP)
-boolHelper :: HSON -> HSONSchema
-boolHelper x = undefined
-
--- | converts a HSON object representing an array property to an HSON Schema arr property
--- | Arr (AP MaxItems MinItems isUnique Items)
-arrHelper :: HSON -> HSONSchema
-arrHelper x = undefined
-
--- | converts a HSON object representing an object property to an HSON Schema obj property
--- | Obj (OP MinProperties MaxProperties Required)
-objHelper :: HSON -> HSONSchema
-objHelper x = undefined
-
--- | converts an entire HSON object to it's corresponding HSONSchema object
-hsonToHSONSchema :: HSON -> HSONSchema
-hsonToHSONSchema hson = objHelper hson
