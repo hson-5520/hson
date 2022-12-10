@@ -14,7 +14,7 @@ import ToJSON
 -- >>> quickCheck prop_roundtrip
 
 prop_roundtrip :: HSON -> Bool
-prop_roundtrip hson = 
+prop_roundtrip hson =
   case helper hson of
     Nothing -> False
     Just y -> y == hson

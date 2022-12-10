@@ -50,13 +50,13 @@ genChar = oneof [return 'a', return 'b', return 'c', return 'd']
 genValue :: Gen Value
 genValue =
   frequency
-    [ (8, fmap String (listOf genChar)),
-      (4, fmap Integer (arbitrary :: Gen Int)),
-      (4, fmap Number (arbitrary :: Gen Double)),
-      (3, fmap Boolean (arbitrary :: Gen Bool)),
-      (5, fmap Array genList),
+    [ (12, fmap String (listOf genChar)),
+      (12, fmap Integer (arbitrary :: Gen Int)),
+      (12, fmap Number (arbitrary :: Gen Double)),
+      (12, fmap Boolean (arbitrary :: Gen Bool)),
+      (2, fmap Array genList),
       (1, fmap Object genHSON),
-      (1, return Null)
+      (12, return Null)
     ]
 
 -- >>> sample' genValue
