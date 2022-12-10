@@ -2,11 +2,12 @@ module FromJSON where
 
 import Control.Applicative
 import Control.Monad qualified
+import Control.Monad qualified as Monad
 import Control.Monad.Except
 import Data.Char qualified as P
 import Data.Map
 import Data.Map qualified as Map
-import HSON (HSON, Key, Value (Array, Boolean, Integer, Null, Number, Object, String))
+import HSON (HSON (H), Key, Value (Array, Boolean, Integer, Null, Number, Object, String))
 import Parser
 import Parser qualified as P
 
@@ -24,10 +25,6 @@ stringP s = let sP = P.string s in Control.Monad.void (wsP sP)
 constP :: String -> a -> Parser a
 constP s val = let sP = P.string s in (val <$ wsP sP)
 
--- | parses a string appearing between two parentheses
-parens :: Parser a -> Parser a
-parens x = P.between (stringP "(") x (stringP ")")
-
 -- | parses a string appearing between two curly braces
 braces :: Parser a -> Parser a
 braces x = P.between (stringP "{") x (stringP "}")
@@ -36,8 +33,21 @@ braces x = P.between (stringP "{") x (stringP "}")
 brackets :: Parser a -> Parser a
 brackets x = P.between (stringP "[") x (stringP "]")
 
-combineAsTuple :: a -> b -> (a, b)
-combineAsTuple x y = (x, y)
+-- | parses either a negative character or no character
+signParser :: Parser String
+signParser = P.choice [P.string "-", P.string ""]
+
+-- | parses the scientific notation symbols
+scientificNotationParser :: Parser String
+scientificNotationParser =
+  P.choice
+    [ P.string "e-",
+      P.string "E-",
+      P.string "e+",
+      P.string "E+",
+      P.string "e",
+      P.string "E"
+    ]
 
 -------------------------- Key Parsing -----------------------------------------
 
@@ -64,21 +74,41 @@ valueP =
 stringValP :: Parser Value
 stringValP = String <$> (P.char '\"' *> many (P.satisfy (/= '\"')) <* wsP (P.char '\"'))
 
--- | parses any integer
+-- | parses an integer
 intValP :: Parser Value
-intValP = Integer <$> P.int
+intValP = Integer <$> wsP P.int
 
--- | parses a negative double
-negativeDecimalParser :: Parser Value
-negativeDecimalParser = Number . read <$> ((++) <$> ((++) <$> ((++) <$> string "-" <*> some digit) <*> string ".") <*> some digit)
+-- | parses an integer in scientific notation
+scientificIntParser :: Parser Value
+scientificIntParser =
+  Number
+    . read
+    <$> ( (++)
+            <$> ( (++)
+                    <$> ((++) <$> signParser <*> wsP (some digit))
+                    <*> wsP scientificNotationParser
+                )
+              <*> wsP (some digit)
+        )
 
--- | parses a positive double
-positiveDecimalParser :: Parser Value
-positiveDecimalParser = Number . read <$> ((++) <$> ((++) <$> some digit <*> string ".") <*> some digit)
+-- >>> doParse numberValP "1 "
+-- Just (Integer 1,"")
+
+-- | parses a double that is positive or negative and can be in scientific notation
+decimalParser :: Parser Value
+decimalParser =
+  Number . read
+    <$> ( (++)
+            <$> ( (++)
+                    <$> ((++) <$> ((++) <$> signParser <*> some digit) <*> string ".")
+                    <*> some digit
+                )
+            <*> ((++) <$> scientificNotationParser <*> wsP (some digit) <|> wsP (P.string ""))
+        )
 
 -- | parses any number
 numberValP :: Parser Value
-numberValP = P.choice [negativeDecimalParser, positiveDecimalParser]
+numberValP = P.choice [decimalParser, scientificIntParser]
 
 -- | parses any boolean value
 booleanValP :: Parser Value
@@ -100,11 +130,11 @@ nullValP = constP "null" Null
 
 -- | parses a single item (key, value) in a JSON file
 itemP :: Parser (Key, Value)
-itemP = combineAsTuple <$> wsP keyP <*> wsP valueP
+itemP = (,) <$> wsP keyP <*> wsP valueP
 
 -- | parses an entire JSON file into an HSON object
 hsonP :: Parser HSON
-hsonP = braces (sepBy itemP (wsP (char ',')))
+hsonP = H <$> braces (sepBy itemP (wsP (char ',')))
 
 -- | takes a JSON file and returns an HSON object
 parseJSON :: String -> IO (Either P.ParseError HSON)

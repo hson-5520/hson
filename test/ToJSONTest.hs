@@ -1,9 +1,11 @@
+module ToJSONTest (test_toJSON) where
+
 import Control.Applicative
 import Data.Map qualified as Map
-import HSON (HSON, Key, Value (Array, Boolean, Integer, Null, Number, Object, String), hsonArray, hsonDog, hsonEmpty, hsonSchool, hsonSingle)
+import HSON (HSON (H), Key, Value (Array, Boolean, Integer, Null, Number, Object, String), hsonArray, hsonDog, hsonEmpty, hsonSchool, hsonSingle)
 import Lib
 import Parser qualified as P
-import Test.HUnit (Test (TestList), assert, runTestTT, (~:), (~?=))
+import Test.HUnit (Counts, Test (TestList), assert, runTestTT, (~:), (~?=))
 import Test.QuickCheck
 import ToJSON
 
@@ -79,12 +81,12 @@ test_objectToString :: Test
 test_objectToString =
   "writing object value test"
     ~: TestList
-      [ objectToString [] ~?= "{}",
-        objectToString [("bill", Number 1)] ~?= "{ \"bill\": 1 }"
+      [ objectToString (H []) ~?= "{}",
+        objectToString (H [("bill", Integer 1)]) ~?= "{\"bill\": 1}"
       ]
 
 --- >>> runTestTT test_objectToString
--- Counts {cases = 2, tried = 2, errors = 0, failures = 1}
+-- Counts {cases = 2, tried = 2, errors = 0, failures = 0}
 
 test_nullToString :: Test
 test_nullToString =
@@ -122,7 +124,19 @@ tParseValidJson =
       x <- compareFiles fn fp
       assert x
 
---- >>> hsonToString hsonSchool
--- "{\"address\": {\"buildingNumber\": 123,\n\"city\": \"Philadelphia\",\n\"state\": \"Pennsylvania\"},\n\"cost\": null,\n\"foundedYear\": 1975,\n\"isPublic\": true,\n\"name\": \"School\",\n\"students\": [\"a\", \"b\", \"c\"]}"
+test_toJSON :: IO Counts
+test_toJSON =
+  runTestTT $
+    TestList
+      [ test_keyToString,
+        test_stringToString,
+        test_integerToString,
+        test_numberToString,
+        test_booleanToString,
+        test_arrayToString,
+        test_objectToString,
+        test_nullToString
+      ]
 
--- >>> toJSON "test/json/valid/dog2.json" hsonDog
+-- >>> test_toJSON
+-- Counts {cases = 17, tried = 17, errors = 0, failures = 0}

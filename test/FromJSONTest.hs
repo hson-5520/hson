@@ -1,4 +1,4 @@
-module FromJSONTest (test_all) where
+module FromJSONTest (test_fromJSON) where
 
 import Control.Applicative
 import FromJSON
@@ -15,7 +15,7 @@ import FromJSON
     stringValP,
     wsP,
   )
-import HSON (HSON, Key, Value (Array, Boolean, Integer, Null, Number, Object, String), hsonArray, hsonDog, hsonEmpty, hsonSchool, hsonSingle)
+import HSON (HSON (H), Key, Value (Array, Boolean, Integer, Null, Number, Object, String), hsonArray, hsonDog, hsonEmpty, hsonSchool, hsonSingle)
 import Lib ()
 import Parser qualified as P
 import Test.HUnit (Counts, Test (TestList), assert, runTestTT, (~:), (~?=))
@@ -94,11 +94,19 @@ test_numberValP =
     ~: TestList
       [ P.parse numberValP "\"a\"" ~?= Left "No parses",
         P.parse numberValP "12.55" ~?= Right (Number 12.55),
-        P.parse numberValP "-12.55" ~?= Right (Number (-12.55))
+        P.parse numberValP "-12.55" ~?= Right (Number (-12.55)),
+        P.parse numberValP "204.45e5" ~?= Right (Number 2.0445e7),
+        P.parse numberValP "-204.45E5" ~?= Right (Number (-2.0445e7)),
+        P.parse numberValP "204.45e-5" ~?= Right (Number 2.0445e-3),
+        P.parse numberValP "-204.45e-5" ~?= Right (Number (-2.0445e-3)),
+        P.parse numberValP "2e-2" ~?= Right (Number 0.02),
+        P.parse numberValP "2e+2" ~?= Right (Number 200.0),
+        P.parse numberValP "2e2" ~?= Right (Number 200.0),
+        P.parse numberValP "2E+2" ~?= Right (Number 200.0)
       ]
 
 -- >>> runTestTT test_numberValP
--- Counts {cases = 3, tried = 3, errors = 0, failures = 0}
+-- Counts {cases = 11, tried = 11, errors = 0, failures = 0}
 
 test_booleanValP :: Test
 test_booleanValP =
@@ -120,7 +128,7 @@ test_arrayValP =
     ~: TestList
       [ P.parse arrayValP "\"a\"" ~?= Left "No parses",
         P.parse arrayValP "[1, 2, 3.1]" ~?= Right (Array [Integer 1, Integer 2, Number 3.1]),
-        P.parse arrayValP "[32, \"america\", null, {\"bob\": -2.1}]" ~?= Right (Array [Integer 32, String "america", Null, Object [("bob", Number (-2.1))]])
+        P.parse arrayValP "[32, \"america\", null, {\"bob\": -2.1}]" ~?= Right (Array [Integer 32, String "america", Null, Object $ H [("bob", Number (-2.1))]])
       ]
 
 -- >>> runTestTT test_arrayValP
@@ -133,15 +141,15 @@ test_objectValP =
       [ P.parse objectValP "\"a\"" ~?= Left "No parses",
         P.parse objectValP "{}"
           ~?= Right
-            (Object []),
+            (Object $ H []),
         P.parse
           objectValP
           "{ \"this\": 12 }"
-          ~?= Right (Object [("this", Integer 12)]),
+          ~?= Right (Object $ H [("this", Integer 12)]),
         P.parse
           objectValP
           "{ \"this\": 12 , \"that\": true }"
-          ~?= Right (Object [("this", Integer 12), ("that", Boolean True)])
+          ~?= Right (Object $ H [("this", Integer 12), ("that", Boolean True)])
       ]
 
 -- >>> runTestTT test_objectValP
@@ -197,8 +205,24 @@ tParseInvalidJson =
         (Left _) -> assert True
         _ -> assert False
 
-test_all :: IO Counts
-test_all = runTestTT $ TestList [test_wsP, test_stringP, test_constP, test_keyP, test_stringValP, test_intValP, test_numberValP, test_booleanValP, test_arrayValP, test_objectValP, test_nullValP, tParseValidJson, tParseInvalidJson]
+test_fromJSON :: IO Counts
+test_fromJSON =
+  runTestTT $
+    TestList
+      [ test_wsP,
+        test_stringP,
+        test_constP,
+        test_keyP,
+        test_stringValP,
+        test_intValP,
+        test_numberValP,
+        test_booleanValP,
+        test_arrayValP,
+        test_objectValP,
+        test_nullValP,
+        tParseValidJson,
+        tParseInvalidJson
+      ]
 
--- >>>  test_all
--- Counts {cases = 43, tried = 43, errors = 0, failures = 0}
+-- >>> test_fromJSON
+-- Counts {cases = 51, tried = 51, errors = 0, failures = 0}

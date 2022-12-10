@@ -3,7 +3,7 @@ module ToJSON (integerToString, hsonToString, keyToString, valueToString, string
 import Control.Concurrent (yield)
 import Data.Char
 import Data.Map qualified as Map
-import HSON (HSON, Key, Value (Array, Boolean, Integer, Null, Number, Object, String))
+import HSON (HSON (H), Key, Value (Array, Boolean, Integer, Null, Number, Object, String))
 import Test.QuickCheck.Text (number)
 
 ------------------------- Writing Keys ---------------------------------------
@@ -55,7 +55,7 @@ arrayToString a = "[" ++ arrayToStringHelper a ++ "]"
 
 -- | Converts a HSON object value to a string for writing to the JSON file
 objectToString :: HSON -> String
-objectToString lst = "{" ++ objectToStringHelper lst ++ "}"
+objectToString (H lst) = "{" ++ objectToStringHelper lst ++ "}"
   where
     objectToStringHelper :: [(Key, Value)] -> String
     objectToStringHelper [] = ""

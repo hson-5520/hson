@@ -11,7 +11,7 @@ import ToJSON
 
 ---------------------------- QuickCheck: toJSON fromJSON  ---------------------------------------
 
--- >>> quickCheck prop_roundtriptest
+--- >>> quickCheck prop_roundtriptest
 
 prop_roundtriptest :: HSON -> Bool
 prop_roundtriptest hson =
