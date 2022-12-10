@@ -1,19 +1,13 @@
 module ToJSON (integerToString, hsonToString, keyToString, valueToString, stringToString, numberToString, booleanToString, arrayToString, objectToString, nullToString, toJSON) where
 
 import Control.Concurrent (yield)
-import Data.Char
-import Data.Map qualified as Map
 import HSON (HSON (H), Key, Value (Array, Boolean, Integer, Null, Number, Object, String))
-import Test.QuickCheck.Text (number)
 
 ------------------------- Writing Keys ---------------------------------------
 
 -- | Converts a HSON key to a string for writing to the JSON file
 keyToString :: String -> String
 keyToString s = "\"" ++ s ++ "\"" ++ ": "
-
--- >>> keyToString "abc"
--- "\"abc\": "
 
 ------------------------- Writing Values ---------------------------------------
 

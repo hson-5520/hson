@@ -4,11 +4,8 @@ import Control.Applicative
 import Control.Monad qualified
 import Control.Monad qualified as Monad
 import Control.Monad.Except
-import Data.Char qualified as P
-import Data.Map
-import Data.Map qualified as Map
 import HSON (HSON (H), Key, Value (Array, Boolean, Integer, Null, Number, Object, String))
-import Parser
+import Parser (Parser)
 import Parser qualified as P
 
 ---------------------------- Parsing Primitives --------------------------------
@@ -85,10 +82,10 @@ scientificIntParser =
     . read
     <$> ( (++)
             <$> ( (++)
-                    <$> ((++) <$> signParser <*> wsP (some digit))
+                    <$> ((++) <$> signParser <*> wsP (some P.digit))
                     <*> wsP scientificNotationParser
                 )
-              <*> wsP (some digit)
+            <*> wsP (some P.digit)
         )
 
 -- >>> doParse numberValP "1 "
@@ -100,10 +97,10 @@ decimalParser =
   Number . read
     <$> ( (++)
             <$> ( (++)
-                    <$> ((++) <$> ((++) <$> signParser <*> some digit) <*> string ".")
-                    <*> some digit
+                    <$> ((++) <$> ((++) <$> signParser <*> some P.digit) <*> P.string ".")
+                    <*> some P.digit
                 )
-            <*> ((++) <$> scientificNotationParser <*> wsP (some digit) <|> wsP (P.string ""))
+            <*> ((++) <$> scientificNotationParser <*> wsP (some P.digit) <|> wsP (P.string ""))
         )
 
 -- | parses any number
@@ -116,7 +113,7 @@ booleanValP = P.choice [constP "true" (Boolean True), constP "false" (Boolean Fa
 
 -- | parses any list which appears as a value
 arrayValP :: Parser Value
-arrayValP = Array <$> brackets (P.sepBy valueP (wsP (char ',')))
+arrayValP = Array <$> brackets (P.sepBy valueP (wsP (P.char ',')))
 
 -- | parses an entire JSON object into HSON
 objectValP :: Parser Value
@@ -134,7 +131,7 @@ itemP = (,) <$> wsP keyP <*> wsP valueP
 
 -- | parses an entire JSON file into an HSON object
 hsonP :: Parser HSON
-hsonP = H <$> braces (sepBy itemP (wsP (char ',')))
+hsonP = H <$> braces (P.sepBy itemP (wsP (P.char ',')))
 
 -- | takes a JSON file and returns an HSON object
 parseJSON :: String -> IO (Either P.ParseError HSON)

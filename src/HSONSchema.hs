@@ -14,121 +14,116 @@ data HSONSchema
   = Str StrProperties
   | Int IntProperties
   | Num IntProperties
-  | Bool
+  | Bool BoolProperties
   | Arr ArrProperties
   | Obj ObjProperties
   | Nul
   deriving (Show, Eq)
 
--- newtype Schema = { validate :: HSON -> Bool }
-
--- Minimum, Exclusive Minimum, Maximum, Exclusive Maximum
-data IntProperties
-  = IP
-      (Maybe Int)
-      (Maybe Int)
-      (Maybe Int)
-      (Maybe Int)
+data IntProperties = IP
+  { iMinimum :: Maybe Int,
+    iMaximum :: Maybe Int,
+    exclusiveMinimum :: Maybe Int,
+    exclusiveMaximum :: Maybe Int,
+    intEnum :: Maybe [Int]
+  }
   deriving (Show, Eq)
 
--- MinLength, MaxLength, Pattern
-data StrProperties
-  = SP
-      (Maybe Int)
-      (Maybe Int)
-      (Maybe String)
+data StrProperties = SP
+  { minLength :: Maybe Int,
+    maxLength :: Maybe Int,
+    pattern :: Maybe String,
+    stringEnum :: Maybe [String]
+  }
   deriving (Show, Eq)
 
--- MaxItems, MinItems, isUnique, Items
-data ArrProperties
-  = AP
-      (Maybe Int)
-      (Maybe Int)
-      Bool
-      (Maybe HSONSchema)
+data BoolProperties = BP {boolEnum :: Maybe Bool}
   deriving (Show, Eq)
 
--- MinProperties, MaxProperties, Required
-data ObjProperties
-  = OP
-      (Maybe Int)
-      (Maybe Int)
-      [String]
-      (Map Attribute HSONSchema)
+data ArrProperties = AP
+  { minItems :: Maybe Int,
+    maxItems :: Maybe Int,
+    isUnique :: Bool,
+    items :: Maybe HSONSchema
+  }
+  deriving (Show, Eq)
+
+data ObjProperties = OP
+  { minProperties :: Maybe Int,
+    maxProperties :: Maybe Int,
+    required :: [String],
+    properties :: [(Key, HSONSchema)]
+  }
   deriving (Show, Eq)
 
 address :: HSONSchema
 address =
-  Obj
-    ( OP
-        Nothing
-        Nothing
-        ["locality", "zip-code", "country-name"]
-        ( Map.fromList
-            [ ("post-office-box", Str $ SP Nothing Nothing Nothing),
-              ("extended-address", Str $ SP Nothing Nothing Nothing),
-              ("street-address", Str $ SP Nothing Nothing Nothing),
-              ("locality", Str $ SP Nothing Nothing Nothing),
-              ("zip-code", Int $ IP Nothing Nothing Nothing Nothing)
-            ]
-        )
-    )
+  Obj $
+    OP
+      { minProperties = Nothing,
+        maxProperties = Nothing,
+        required = ["locality", "zip-code", "country-name"],
+        properties =
+          [ ("post-office-box", Str $ SP {minLength = Nothing, maxLength = Nothing, pattern = Nothing, stringEnum = Nothing}),
+            ("extended-address", Str $ SP {minLength = Nothing, maxLength = Nothing, pattern = Nothing, stringEnum = Nothing}),
+            ("street-address", Str $ SP {minLength = Nothing, maxLength = Nothing, pattern = Nothing, stringEnum = Nothing}),
+            ("locality", Str $ SP {minLength = Nothing, maxLength = Nothing, pattern = Nothing, stringEnum = Nothing}),
+            ("zip-code", Int $ IP {iMinimum = Nothing, iMaximum = Nothing, exclusiveMaximum = Nothing, exclusiveMinimum = Nothing, intEnum = Nothing})
+          ]
+      }
 
 card :: HSONSchema
 card =
-  Obj
-    ( OP
-        Nothing
-        Nothing
-        ["familyName", "givenName"]
-        ( Map.fromList
-            [ ("fn", Str $ SP Nothing Nothing Nothing),
-              ("family-name", Str $ SP Nothing Nothing Nothing),
-              ("given-name", Str $ SP Nothing Nothing Nothing),
-              ("additional-name", Arr $ AP Nothing Nothing True (Just (Str $ SP Nothing Nothing Nothing))),
-              ("nickname", Str $ SP Nothing Nothing Nothing),
-              ( "email",
-                Obj $
-                  OP
-                    Nothing
-                    Nothing
-                    []
-                    ( Map.fromList
-                        [ ("type", Str $ SP Nothing Nothing Nothing),
-                          ("value", Str $ SP Nothing Nothing Nothing)
-                        ]
-                    )
-              ),
-              ( "org",
-                Obj $
-                  OP
-                    Nothing
-                    Nothing
-                    []
-                    ( Map.fromList
-                        [ ("organizationName", Str $ SP Nothing Nothing Nothing),
-                          ("organizationUnit", Str $ SP Nothing Nothing Nothing)
-                        ]
-                    )
-              )
-            ]
-        )
-    )
+  Obj $
+    OP
+      { minProperties = Nothing,
+        maxProperties = Nothing,
+        required = ["familyName", "givenName"],
+        properties =
+          [ ("fn", Str $ SP {minLength = Nothing, maxLength = Nothing, pattern = Nothing, stringEnum = Nothing}),
+            ("family-name", Str $ SP {minLength = Nothing, maxLength = Nothing, pattern = Nothing, stringEnum = Nothing}),
+            ("given-name", Str $ SP {minLength = Nothing, maxLength = Nothing, pattern = Nothing, stringEnum = Nothing}),
+            ("additional-name", Arr $ AP {minItems = Nothing, maxItems = Nothing, isUnique = False, items = Nothing}),
+            ("nickname", Str $ SP {minLength = Nothing, maxLength = Nothing, pattern = Nothing, stringEnum = Nothing}),
+            ( "email",
+              Obj $
+                OP
+                  { minProperties = Nothing,
+                    maxProperties = Nothing,
+                    required = [],
+                    properties =
+                      [ ("type", Str $ SP {minLength = Nothing, maxLength = Nothing, pattern = Nothing, stringEnum = Nothing}),
+                        ("value", Str $ SP {minLength = Nothing, maxLength = Nothing, pattern = Nothing, stringEnum = Nothing})
+                      ]
+                  }
+            ),
+            ( "org",
+              Obj $
+                OP
+                  { minProperties = Nothing,
+                    maxProperties = Nothing,
+                    required = [],
+                    properties =
+                      [ ("organizationName", Str $ SP {minLength = Nothing, maxLength = Nothing, pattern = Nothing, stringEnum = Nothing}),
+                        ("organizationUnit", Str $ SP {minLength = Nothing, maxLength = Nothing, pattern = Nothing, stringEnum = Nothing})
+                      ]
+                  }
+            )
+          ]
+      }
 
 coordinate :: HSONSchema
 coordinate =
   Obj $
     OP
-      Nothing
-      Nothing
-      ["latitude", "longitude"]
-      ( Map.fromList
-          [ ("latitude", Num $ IP (Just (-90)) Nothing (Just 90) Nothing),
-            ("longitude", Num $ IP (Just (-180)) Nothing (Just 80) Nothing)
+      { minProperties = Nothing,
+        maxProperties = Nothing,
+        required = ["latitude", "longitude"],
+        properties =
+          [ ("latitude", Num $ IP {iMinimum = (Just (-90)), iMaximum = (Just 90), exclusiveMinimum = Nothing, exclusiveMaximum = Nothing, intEnum = Nothing}),
+            ("longitude", Num $ IP {iMinimum = (Just (-180)), iMaximum = (Just 180), exclusiveMinimum = Nothing, exclusiveMaximum = Nothing, intEnum = Nothing})
           ]
-      )
-
-type Attribute = String
+      }
 
 ------------------------- HSON to HSON Schema  ---------------------------------
 
