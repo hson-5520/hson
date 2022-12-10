@@ -6,14 +6,21 @@ import Data.Map qualified as Map
 import GHC.Arr (Array)
 import Parser qualified as P
 import Test.QuickCheck
-  ( Arbitrary (..),
+  ( ASCIIString (getASCIIString),
+    Arbitrary (..),
     Gen,
+    PrintableString (getPrintableString),
+    UnicodeString (UnicodeString),
+    elements,
     frequency,
     listOf,
     oneof,
+    resize,
     sample',
+    scale,
     sized,
     suchThatMap,
+    vectorOf,
   )
 
 ------------------------- Defining HSON  ----------------------------------
@@ -45,12 +52,12 @@ genList = sized gen
         ]
 
 genChar :: Gen Char
-genChar = oneof [return 'a', return 'b', return 'c', return 'd']
+genChar = elements (['a' .. 'z'] ++ ['A' .. 'Z'] ++ ['0' .. '9'])
 
 genValue :: Gen Value
 genValue =
   frequency
-    [ (12, fmap String (listOf genChar)),
+    [ (12, fmap String (vectorOf 5 genChar)),
       (12, fmap Integer (arbitrary :: Gen Int)),
       (12, fmap Number (arbitrary :: Gen Double)),
       (12, fmap Boolean (arbitrary :: Gen Bool)),
@@ -60,6 +67,7 @@ genValue =
     ]
 
 -- >>> sample' genValue
+-- [Boolean True,Number (-1.5022829171397718),Integer 0,Null,Boolean True,Boolean False,Null,Integer (-7),Integer 16,Object (H [("ccbcdcdbba",Integer (-6)),("b",Null),("cacb",Boolean True),("bcaccca",Number (-4.135474729261158)),("adcaabbacdac",Integer (-18)),("cacccdabaaabdaa",String "\\[T=3CH\176067(e"),("",Integer (-10)),("bccacdda",Boolean False),("bbdcdabadaddabca",Boolean False),("cbacadccbbcaccbbbd",Number (-15.302382184328971)),("d",Null),("",Boolean True),("bcadbbb",Boolean True),("dbabdccaccd",Number 1.8869898049196792),("abcabb",Number 7.4422110660045835),("dcabdcbabab",String "~7z\78883\&4}p|^beO"),("cadadcaabcacbbbdbd",String ".lK[\22108\134276u$ PdP\40178<"),("dadcadacdbbbdcaa",Null)]),Integer 13]
 
 genHSON :: Gen HSON
 genHSON = suchThatMap (listOf $ (,) <$> listOf genChar <*> genValue) (Just . H)
