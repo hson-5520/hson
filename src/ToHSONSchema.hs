@@ -5,6 +5,7 @@ import Data.Map
 import Data.Map qualified as Map
 import Data.Maybe
 import Data.Maybe qualified as Maybe
+import FromJSON
 import GHC.Generics qualified as Maybe
 import HSON (HSON (H), Key, Value (Array, Boolean, Integer, Null, Number, Object, String))
 import HSONSchema (ArrProperties (AP), BoolProperties (BP), HSONSchema (Arr, Bool, Int, Nul, Num, Obj, Str), IntProperties (IP), NumProperties (NP), ObjProperties (OP), StrProperties (SP), boolEnum, exclusiveMaximum, exclusiveMinimum, iMaximum, iMinimum, intEnum, isUnique, items, maxItems, maxLength, maxProperties, minItems, minLength, minProperties, multipleOf, nExclusiveMaximum, nExclusiveMinimum, nMaximum, nMinimum, nMultipleOf, numberEnum, pattern, properties, required, stringEnum)
@@ -98,9 +99,9 @@ numberHelper (H x) =
       exclusiveMax = matchInt "exclusiveMaximum" map
       multipleOf = matchNumber "multipleOf" map
       enum = case Map.lookup "enum" map of
-        Just (Array y) -> if checkArrayLength y then (True, filterNumberArray y) else (False, [])
-        Just _ -> (False, [])
-        Nothing -> (True, [])
+        Just (Array y) -> if checkArrayLength y then (True, Just $ filterNumberArray y) else (False, Nothing)
+        Just _ -> (False, Nothing)
+        Nothing -> (True, Nothing)
    in if any not [fst minVal, fst maxVal, fst exclusiveMax, fst exclusiveMin, fst multipleOf, fst enum]
         then Nothing
         else
@@ -112,7 +113,7 @@ numberHelper (H x) =
                   nExclusiveMinimum = snd exclusiveMin,
                   nExclusiveMaximum = snd exclusiveMax,
                   nMultipleOf = snd multipleOf,
-                  numberEnum = Just $ snd enum
+                  numberEnum = snd enum
                 }
 
 -- | converts a HSON object representing an int property to an HSON Schema int property
@@ -125,9 +126,9 @@ intHelper (H x) =
       exclusiveMax = matchInt "exclusiveMaximum" map
       multipleOf = matchInt "multipleOf" map
       enum = case Map.lookup "enum" map of
-        Just (Array y) -> if checkArrayLength y then (True, filterIntArray y) else (False, [])
-        Just _ -> (False, [])
-        Nothing -> (True, [])
+        Just (Array y) -> if checkArrayLength y then (True, Just $ filterIntArray y) else (False, Nothing)
+        Just _ -> (False, Nothing)
+        Nothing -> (True, Nothing)
    in if any not [fst minVal, fst maxVal, fst exclusiveMax, fst exclusiveMin, fst multipleOf, fst enum]
         then Nothing
         else
@@ -139,7 +140,7 @@ intHelper (H x) =
                   exclusiveMinimum = snd exclusiveMin,
                   exclusiveMaximum = snd exclusiveMax,
                   multipleOf = snd multipleOf,
-                  intEnum = Just $ snd enum
+                  intEnum = snd enum
                 }
 
 -- | converts a HSON object representing a string property to an HSON Schema str property
@@ -208,8 +209,8 @@ objHelper (H x) =
   let map = Map.fromList x
       minProperties = matchInt "minProperties" map
       maxProperties = matchInt "maxProperties" map
-      r = case Map.lookup "required" map of
-        Just (Array y) -> (True, ["hello"])
+      required = case Map.lookup "required" map of
+        Just (Array y) -> (True, filterStringArray y)
         Just _ -> (False, [])
         _ -> (True, [])
       properties = case Map.lookup "properties" map of
@@ -220,7 +221,7 @@ objHelper (H x) =
                 else (True, fmap Maybe.fromJust parsedProperties)
         Just _ -> (False, [])
         Nothing -> (True, [])
-   in if any not [True]
+   in if any not [fst minProperties, fst maxProperties, fst required, fst properties]
         then Nothing
         else
           Just $
@@ -228,7 +229,7 @@ objHelper (H x) =
               OP
                 { minProperties = snd minProperties,
                   maxProperties = snd maxProperties,
-                  required = snd r,
+                  required = snd required,
                   properties = snd properties
                 }
 
@@ -260,3 +261,13 @@ schemaParser (H lst) =
 -- | converts an entire HSON object to it's corresponding HSONSchema object
 hsonToHSONSchema :: HSON -> Maybe HSONSchema
 hsonToHSONSchema = objHelper
+
+address2 :: IO (Maybe HSONSchema)
+address2 = do
+  z <- parseJSON "test/json-schema/schema/coordinate-schema.json"
+  case z of
+    Right (H x) -> return $ hsonToHSONSchema (H x)
+    Left z -> return Nothing
+
+-- >>> address2
+-- Just (Obj (OP {minProperties = Nothing, maxProperties = Nothing, required = ["latitude","longitude"], properties = [("latitude",Num (NP {nMinimum = Just (-90), nMaximum = Just 90, nExclusiveMinimum = Nothing, nExclusiveMaximum = Nothing, nMultipleOf = Nothing, numberEnum = Just []})),("longitude",Num (NP {nMinimum = Just (-180), nMaximum = Just 180, nExclusiveMinimum = Nothing, nExclusiveMaximum = Nothing, nMultipleOf = Nothing, numberEnum = Just []}))]}))

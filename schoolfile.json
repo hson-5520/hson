@@ -1,0 +1,8 @@
+{"name": "School",
+"foundedYear": 1975,
+"isPublic": true,
+"cost": null,
+"students": ["a", "b", "c"],
+"address": {"city": "Philadelphia",
+"state": "Pennsylvania",
+"buildingNumber": 123}}

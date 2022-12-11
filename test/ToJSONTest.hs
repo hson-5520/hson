@@ -112,11 +112,11 @@ tParseValidJson :: Test
 tParseValidJson =
   "parse valid json"
     ~: TestList
-      [ "empty" ~: p "../test/json/valid/empty.json" "emptyfile.json" hsonEmpty,
-        "single" ~: p "../test/json/valid/single.json" "singlefile.json" hsonSingle,
-        "array" ~: p "../test/json/valid/array.json" "arrayfile.json" hsonArray,
-        "dog" ~: p "../test/json/valid/dog.json" "dogfile.json" hsonDog,
-        "school" ~: p "../test/json/valid/school.json" "schoolfile.json" hsonSchool
+      [ "empty" ~: p "test/json/valid/empty.json" "emptyfile.json" hsonEmpty,
+        "single" ~: p "test/json/valid/single.json" "singlefile.json" hsonSingle,
+        "array" ~: p "test/json/valid/array.json" "arrayfile.json" hsonArray,
+        "dog" ~: p "test/json/valid/dog.json" "dogfile.json" hsonDog,
+        "school" ~: p "test/json/valid/school.json" "schoolfile.json" hsonSchool
       ]
   where
     p fn fp hson = do
@@ -135,7 +135,8 @@ test_toJSON =
         test_booleanToString,
         test_arrayToString,
         test_objectToString,
-        test_nullToString
+        test_nullToString,
+        tParseValidJson
       ]
 
 -- >>> test_toJSON

@@ -122,15 +122,16 @@ card =
           ]
       }
 
-coordinate :: HSONSchema
+coordinate :: Maybe HSONSchema
 coordinate =
-  Obj $
-    OP
-      { minProperties = Nothing,
-        maxProperties = Nothing,
-        required = ["latitude", "longitude"],
-        properties =
-          [ ("latitude", Num $ NP {nMinimum = Just (-90), nMaximum = Just 90, nExclusiveMinimum = Nothing, nExclusiveMaximum = Nothing, nMultipleOf = Nothing, numberEnum = Nothing}),
-            ("longitude", Num $ NP {nMinimum = Just (-180), nMaximum = Just 180, nExclusiveMinimum = Nothing, nExclusiveMaximum = Nothing, nMultipleOf = Nothing, numberEnum = Nothing})
-          ]
-      }
+  Just $
+    Obj $
+      OP
+        { minProperties = Nothing,
+          maxProperties = Nothing,
+          required = ["latitude", "longitude"],
+          properties =
+            [ ("latitude", Num $ NP {nMinimum = Just (-90), nMaximum = Just 90, nExclusiveMinimum = Nothing, nExclusiveMaximum = Nothing, nMultipleOf = Nothing, numberEnum = Nothing}),
+              ("longitude", Num $ NP {nMinimum = Just (-180), nMaximum = Just 180, nExclusiveMinimum = Nothing, nExclusiveMaximum = Nothing, nMultipleOf = Nothing, numberEnum = Nothing})
+            ]
+        }
