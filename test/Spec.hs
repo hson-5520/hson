@@ -7,10 +7,10 @@ import ToJSONTest (test_toJSON)
 
 main :: IO ()
 main = do
-  putStrLn "Validation Tests"
-  test_validation
   putStrLn "FromJSON Tests"
   test_fromJSON
   putStrLn "ToJSON Tests"
   test_toJSON
+  putStrLn "Validation Tests"
   putStrLn someFunc
+  test_validation

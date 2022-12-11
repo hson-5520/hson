@@ -1,6 +1,6 @@
 {-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
 
-module HSONSchema (HSONSchema (Str, Int, Num, Bool, Arr, Obj, Nul), IntProperties (IP), NumProperties (NP), nMinimum, nMaximum, nExclusiveMinimum, nExclusiveMaximum, nMultipleOf, numberEnum, StrProperties (SP), ArrProperties (AP), minItems, maxItems, isUnique, minProperties, maxProperties, required, properties, ObjProperties (OP), items, boolEnum, BoolProperties (BP), minLength, maxLength, pattern, stringEnum, iMaximum, iMinimum, exclusiveMinimum, exclusiveMaximum, multipleOf, intEnum, address, card, coordinate, ArrProperties, ObjProperties) where
+module HSONSchema (HSONSchema (Str, Int, Num, Bool, Arr, Obj, Nul), IntProperties (IP), NumProperties (NP), nMinimum, nMaximum, nExclusiveMinimum, nExclusiveMaximum, nMultipleOf, numberEnum, StrProperties (SP), ArrProperties (AP), minItems, maxItems, isUnique, minProperties, maxProperties, required, properties, ObjProperties (OP), items, boolEnum, BoolProperties (BP), minLength, maxLength, pattern, stringEnum, iMaximum, iMinimum, iExclusiveMinimum, iExclusiveMaximum, iMultipleOf, intEnum, address, card, coordinate) where
 
 import Data.Map
 import Data.Map qualified as Map
@@ -22,18 +22,18 @@ data HSONSchema
 data IntProperties = IP
   { iMinimum :: Maybe Int,
     iMaximum :: Maybe Int,
-    exclusiveMinimum :: Maybe Int,
-    exclusiveMaximum :: Maybe Int,
-    multipleOf :: Maybe Int,
+    iExclusiveMinimum :: Maybe Int,
+    iExclusiveMaximum :: Maybe Int,
+    iMultipleOf :: Maybe Int,
     intEnum :: Maybe [Int]
   }
   deriving (Show, Eq)
 
 data NumProperties = NP
-  { nMinimum :: Maybe Int,
-    nMaximum :: Maybe Int,
-    nExclusiveMinimum :: Maybe Int,
-    nExclusiveMaximum :: Maybe Int,
+  { nMinimum :: Maybe Double,
+    nMaximum :: Maybe Double,
+    nExclusiveMinimum :: Maybe Double,
+    nExclusiveMaximum :: Maybe Double,
     nMultipleOf :: Maybe Double,
     numberEnum :: Maybe [Double]
   }
@@ -66,61 +66,72 @@ data ObjProperties = OP
   }
   deriving (Show, Eq)
 
-address :: HSONSchema
+address :: Maybe HSONSchema
 address =
-  Obj $
-    OP
-      { minProperties = Nothing,
-        maxProperties = Nothing,
-        required = ["locality", "zip-code", "country-name"],
-        properties =
-          [ ("post-office-box", Str $ SP {minLength = Nothing, maxLength = Nothing, pattern = Nothing, stringEnum = Nothing}),
-            ("extended-address", Str $ SP {minLength = Nothing, maxLength = Nothing, pattern = Nothing, stringEnum = Nothing}),
-            ("street-address", Str $ SP {minLength = Nothing, maxLength = Nothing, pattern = Nothing, stringEnum = Nothing}),
-            ("locality", Str $ SP {minLength = Nothing, maxLength = Nothing, pattern = Nothing, stringEnum = Nothing}),
-            ("zip-code", Int $ IP {iMinimum = Nothing, iMaximum = Nothing, exclusiveMaximum = Nothing, exclusiveMinimum = Nothing, multipleOf = Nothing, intEnum = Nothing})
-          ]
-      }
+  Just $
+    Obj $
+      OP
+        { minProperties = Nothing,
+          maxProperties = Nothing,
+          required = ["locality", "zip-code", "country-name"],
+          properties =
+            [ ("post-office-box", Str $ SP {minLength = Nothing, maxLength = Nothing, pattern = Nothing, stringEnum = Nothing}),
+              ("extended-address", Str $ SP {minLength = Nothing, maxLength = Nothing, pattern = Nothing, stringEnum = Nothing}),
+              ("street-address", Str $ SP {minLength = Nothing, maxLength = Nothing, pattern = Nothing, stringEnum = Nothing}),
+              ("locality", Str $ SP {minLength = Nothing, maxLength = Nothing, pattern = Nothing, stringEnum = Nothing}),
+              ("zip-code", Int $ IP {iMinimum = Nothing, iMaximum = Nothing, iExclusiveMaximum = Nothing, iExclusiveMinimum = Nothing, iMultipleOf = Nothing, intEnum = Nothing})
+            ]
+        }
 
-card :: HSONSchema
+card :: Maybe HSONSchema
 card =
-  Obj $
-    OP
-      { minProperties = Nothing,
-        maxProperties = Nothing,
-        required = ["familyName", "givenName"],
-        properties =
-          [ ("fn", Str $ SP {minLength = Nothing, maxLength = Nothing, pattern = Nothing, stringEnum = Nothing}),
-            ("family-name", Str $ SP {minLength = Nothing, maxLength = Nothing, pattern = Nothing, stringEnum = Nothing}),
-            ("given-name", Str $ SP {minLength = Nothing, maxLength = Nothing, pattern = Nothing, stringEnum = Nothing}),
-            ("additional-name", Arr $ AP {minItems = Nothing, maxItems = Nothing, isUnique = False, items = Nothing}),
-            ("nickname", Str $ SP {minLength = Nothing, maxLength = Nothing, pattern = Nothing, stringEnum = Nothing}),
-            ( "email",
-              Obj $
-                OP
-                  { minProperties = Nothing,
-                    maxProperties = Nothing,
-                    required = [],
-                    properties =
-                      [ ("type", Str $ SP {minLength = Nothing, maxLength = Nothing, pattern = Nothing, stringEnum = Nothing}),
-                        ("value", Str $ SP {minLength = Nothing, maxLength = Nothing, pattern = Nothing, stringEnum = Nothing})
-                      ]
-                  }
-            ),
-            ( "org",
-              Obj $
-                OP
-                  { minProperties = Nothing,
-                    maxProperties = Nothing,
-                    required = [],
-                    properties =
-                      [ ("organizationName", Str $ SP {minLength = Nothing, maxLength = Nothing, pattern = Nothing, stringEnum = Nothing}),
-                        ("organizationUnit", Str $ SP {minLength = Nothing, maxLength = Nothing, pattern = Nothing, stringEnum = Nothing})
-                      ]
-                  }
-            )
-          ]
-      }
+  Just $
+    Obj $
+      OP
+        { minProperties = Nothing,
+          maxProperties = Nothing,
+          required = ["familyName", "givenName"],
+          properties =
+            [ ("fn", Str $ SP {minLength = Nothing, maxLength = Nothing, pattern = Nothing, stringEnum = Nothing}),
+              ("familyName", Str $ SP {minLength = Nothing, maxLength = Nothing, pattern = Nothing, stringEnum = Nothing}),
+              ("givenName", Nul),
+              ( "additionalName",
+                Arr $
+                  AP
+                    { minItems = Nothing,
+                      maxItems = Nothing,
+                      isUnique = False,
+                      items =
+                        Just $ Str $ SP {minLength = Nothing, maxLength = Nothing, pattern = Nothing, stringEnum = Nothing}
+                    }
+              ),
+              ("nickname", Str $ SP {minLength = Nothing, maxLength = Nothing, pattern = Nothing, stringEnum = Nothing}),
+              ( "email",
+                Obj $
+                  OP
+                    { minProperties = Nothing,
+                      maxProperties = Nothing,
+                      required = [],
+                      properties =
+                        [ ("type", Str $ SP {minLength = Nothing, maxLength = Nothing, pattern = Nothing, stringEnum = Nothing}),
+                          ("value", Str $ SP {minLength = Nothing, maxLength = Nothing, pattern = Nothing, stringEnum = Nothing})
+                        ]
+                    }
+              ),
+              ( "org",
+                Obj $
+                  OP
+                    { minProperties = Nothing,
+                      maxProperties = Nothing,
+                      required = [],
+                      properties =
+                        [ ("organizationName", Str $ SP {minLength = Nothing, maxLength = Nothing, pattern = Nothing, stringEnum = Nothing}),
+                          ("organizationUnit", Str $ SP {minLength = Nothing, maxLength = Nothing, pattern = Nothing, stringEnum = Nothing})
+                        ]
+                    }
+              )
+            ]
+        }
 
 coordinate :: Maybe HSONSchema
 coordinate =

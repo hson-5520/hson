@@ -16,7 +16,7 @@
             "type": "string"
         },
         "givenName": {
-            "type": "string"
+            "type": "null"
         },
         "additionalName": {
             "type": "array",

@@ -187,7 +187,7 @@ tParseValidJson =
         (Right ast') -> assert (ast == ast')
 
 -- >>> runTestTT tParseValidJson
--- Counts {cases = 5, tried = 5, errors = 0, failures = 2}
+-- Counts {cases = 5, tried = 5, errors = 0, failures = 0}
 
 tParseInvalidJson :: Test
 tParseInvalidJson =
