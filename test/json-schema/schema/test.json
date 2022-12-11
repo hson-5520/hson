@@ -1,0 +1,5 @@
+-- Just (Obj (OP {minProperties = Just 1, maxProperties = Nothing, required = [], properties = [("latitude",Num (NP {nMinimum = Just (-90), nMaximum = Just 90, nExclusiveMinimum = Nothing, nExclusiveMaximum = Nothing, nMultipleOf = Nothing, numberEnum = Just []
+        })),("longitude",Num (NP {nMinimum = Just (-180), nMaximum = Just 180, nExclusiveMinimum = Nothing, nExclusiveMaximum = Nothing, nMultipleOf = Nothing, numberEnum = Just []
+        }))
+    ]
+}))

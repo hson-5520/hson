@@ -3,12 +3,13 @@ import Data.Map qualified as Map
 import FromJSON
 import GHC.Generics (Generic1 (from1))
 import HSON (HSON, Key, Value (Array, Boolean, Null, Number, Object, String), hsonArray, hsonDog, hsonEmpty, hsonSchool, hsonSingle)
-import HSONSchema (address, card, coordinate, hsonToHSONSchema)
+import HSONSchema (address, card, coordinate)
 import HSONValidator
 import Lib
 import Parser qualified as P
 import Test.HUnit (Test (TestList), assert, runTestTT, (~:), (~?=))
 import Test.QuickCheck
+import ToHSONSchema (hsonToHSONSchema)
 import ToJSON
 
 ------------------------- HSON Schema Property Validating Tests -----------------------------

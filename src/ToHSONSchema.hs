@@ -1,12 +1,15 @@
-module ToHSONSchema where
+module ToHSONSchema (hsonToHSONSchema, objHelper) where
 
+import Data.Bits (Bits (xor))
 import Data.Map
 import Data.Map qualified as Map
 import Data.Maybe
 import Data.Maybe qualified as Maybe
+import GHC.Generics qualified as Maybe
 import HSON (HSON (H), Key, Value (Array, Boolean, Integer, Null, Number, Object, String))
 import HSONSchema (ArrProperties (AP), BoolProperties (BP), HSONSchema (Arr, Bool, Int, Nul, Num, Obj, Str), IntProperties (IP), NumProperties (NP), ObjProperties (OP), StrProperties (SP), boolEnum, exclusiveMaximum, exclusiveMinimum, iMaximum, iMinimum, intEnum, isUnique, items, maxItems, maxLength, maxProperties, minItems, minLength, minProperties, multipleOf, nExclusiveMaximum, nExclusiveMinimum, nMaximum, nMinimum, nMultipleOf, numberEnum, pattern, properties, required, stringEnum)
 import Network.Socket (accept)
+import Parser (parse)
 import Parser qualified as P
 
 ------------------------- Helpers  --------------------------------
@@ -66,6 +69,8 @@ filterStringArray = Prelude.foldr combHelper []
     combHelper x acc = case x of
       String y -> y : acc
       _ -> acc
+
+--- >>> filterStringArray [String "latitude", String "longitude"]
 
 checkArrayLength :: [Value] -> Bool
 checkArrayLength x =
@@ -173,7 +178,6 @@ boolHelper (H x) =
         else Nothing
 
 -- | converts a HSON object representing an array property to an HSON Schema arr property
--- | Arr (AP MaxItems MinItems isUnique Items)
 arrHelper :: HSON -> Maybe HSONSchema
 arrHelper (H x) =
   let map = Map.fromList x
@@ -204,14 +208,19 @@ objHelper (H x) =
   let map = Map.fromList x
       minProperties = matchInt "minProperties" map
       maxProperties = matchInt "maxProperties" map
-      required = case Map.lookup "items" map of
-        Just (Array y) -> if checkArrayLength y then (True, filterStringArray y) else (False, [])
+      r = case Map.lookup "required" map of
+        Just (Array y) -> (True, ["hello"])
+        Just _ -> (False, [])
+        _ -> (True, [])
+      properties = case Map.lookup "properties" map of
+        Just (Object y) ->
+          let parsedProperties = getProperties y
+           in if any isNothing parsedProperties
+                then (False, [])
+                else (True, fmap Maybe.fromJust parsedProperties)
         Just _ -> (False, [])
         Nothing -> (True, [])
-      properties = case Map.lookup "items" map of
-        Just (Object (H x)) -> objHelper (H x)
-        _ -> Nothing
-   in if any not [fst minProperties, fst maxProperties, fst required]
+   in if any not [True]
         then Nothing
         else
           Just $
@@ -219,9 +228,34 @@ objHelper (H x) =
               OP
                 { minProperties = snd minProperties,
                   maxProperties = snd maxProperties,
-                  required = snd required,
-                  properties = []
+                  required = snd r,
+                  properties = snd properties
                 }
+
+getProperties :: HSON -> [Maybe (Key, HSONSchema)]
+getProperties (H lst) = Prelude.foldr combHelper [] lst
+  where
+    combHelper (key, val) acc = case val of
+      Object x ->
+        case schemaParser x of
+          Just y -> Just (key, y) : acc
+          Nothing -> Nothing : acc
+      _ -> Nothing : acc
+
+schemaParser :: HSON -> Maybe HSONSchema
+schemaParser (H lst) =
+  let map = Map.fromList lst
+      (isValid, valType) = matchString "type" map
+   in if isValid
+        then case valType of
+          Just "number" -> numberHelper (H lst)
+          Just "integer" -> intHelper (H lst)
+          Just "boolean" -> boolHelper (H lst)
+          Just "array" -> arrHelper (H lst)
+          Just "object" -> objHelper (H lst)
+          Just "null" -> Just Nul
+          _ -> Nothing
+        else Nothing
 
 -- | converts an entire HSON object to it's corresponding HSONSchema object
 hsonToHSONSchema :: HSON -> Maybe HSONSchema
