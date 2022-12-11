@@ -1,4 +1,5 @@
 import FromJSONTest (test_fromJSON)
+import HSONTest (prop_hsonroundtrip)
 import Lib
 import Test.HUnit
 import Test.QuickCheck
@@ -11,6 +12,8 @@ main = do
   test_fromJSON
   putStrLn "ToJSON Tests"
   test_toJSON
+  putStrLn "QuickCheck Round Trip HSON Tests"
+  quickCheck prop_hsonroundtrip
   putStrLn "Validation Tests"
-  putStrLn someFunc
   test_validation
+  putStrLn someFunc

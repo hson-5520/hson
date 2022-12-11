@@ -494,7 +494,6 @@ tCreateHSONSchema =
       case z of
         (Left _) -> assert False
         (Right ast') -> do
-          putStrLn (hsonToString ast')
           assert (hschema == hsonToHSONSchema ast')
 
 -- >>> runTestTT tCreateHSONSchema

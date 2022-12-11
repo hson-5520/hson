@@ -62,7 +62,7 @@ data ObjProperties = OP
   { minProperties :: Maybe Int,
     maxProperties :: Maybe Int,
     required :: [String],
-    properties :: [(Key, HSONSchema)]
+    properties :: [(Key, HSONSchema)] -- fromList hson lookup key and then perform relvant on that key
   }
   deriving (Show, Eq)
 

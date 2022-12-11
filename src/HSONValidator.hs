@@ -1,49 +1,72 @@
 module HSONValidator where
 
-import HSON
-import HSONSchema (ArrProperties, HSONSchema, IntProperties, ObjProperties, StrProperties)
+import Data.Fixed qualified
+import Data.Maybe (isNothing)
+import Data.Maybe qualified as Maybe
+import HSON (HSON, Value (Integer, Number, String))
+import HSONSchema (ArrProperties (AP), BoolProperties (BP), HSONSchema (Arr, Bool, Int, Nul, Num, Obj, Str), IntProperties (IP), NumProperties (NP), ObjProperties (OP), StrProperties (SP), boolEnum, iExclusiveMaximum, iExclusiveMinimum, iMaximum, iMinimum, iMultipleOf, intEnum, isUnique, items, maxItems, maxLength, maxProperties, minItems, minLength, minProperties, nExclusiveMaximum, nExclusiveMinimum, nMaximum, nMinimum, nMultipleOf, numberEnum, pattern, properties, required, stringEnum)
+
+------------------------- Helpers  ------------------------------
+
+maybeValidate :: Maybe a -> b -> (b -> a -> Bool) -> Bool
+maybeValidate property num f = isNothing property || f num (Maybe.fromJust property)
 
 ------------------------- Validating HSON Values  ------------------------------
 
--- newtype Schema = { validate :: HSON -> Bool }
-
--- -- definition of the parser type
--- newtype Schema a = S {validate :: a -> HProperty -> Bool}
-
--- instance Functor Schema where
---   fmap :: (a -> b) -> Parser a -> Parser b
---   fmap f p = P $ \s -> do
---     (c, cs) <- doParse p s
---     return (f c, cs)
-
--- instance Applicative Parser where
---   pure :: a -> Parser a
---   pure x = P $ \s -> Just (x, s)
-
---   (<*>) :: Parser (a -> b) -> Parser a -> Parser b
---   p1 <*> p2 = P $ \s -> do
---     (f, s') <- doParse p1 s
---     (x, s'') <- doParse p2 s'
---     return (f x, s'')
-
--- instance Alternative Parser where
---   empty :: Parser a
---   empty = P $ const Nothing
-
---   (<|>) :: Parser a -> Parser a -> Parser a
---   p1 <|> p2 = P $ \s -> doParse p1 s `firstJust` doParse p2 s
+-- -- definition of the schema type
+newtype Schema a = S {validate :: a -> Value -> Bool}
 
 -- | Check if a non-integer number meets its required properties
-validateNum :: Double -> IntProperties -> Bool
-validateNum = undefined
+validateNum :: Schema NumProperties
+validateNum = S $ \property value -> case value of
+  Number x ->
+    let min = nMinimum property
+        max = nMaximum property
+        exclusiveMin = nExclusiveMinimum property
+        exclusiveMax = nExclusiveMaximum property
+        multipleOf = nMultipleOf property
+        enum = numberEnum property
+     in maybeValidate min x (>=)
+          && maybeValidate max x (<=)
+          && maybeValidate exclusiveMin x (>)
+          && maybeValidate exclusiveMax x (<)
+          && maybeValidate exclusiveMin x (\num property -> Data.Fixed.mod' num property == 0)
+          && maybeValidate enum x elem
+  _ -> False
+
+-- | Check if a non-integer number meets its required properties
 
 -- | Check if an integer meets its required properties
-validateInt :: Int -> IntProperties -> Bool
-validateInt = undefined
+validateInt :: Schema IntProperties
+validateInt = S $ \property value -> case value of
+  Integer x ->
+    let min = iMinimum property
+        max = iMaximum property
+        exclusiveMin = iExclusiveMinimum property
+        exclusiveMax = iExclusiveMaximum property
+        multipleOf = iMultipleOf property
+        enum = intEnum property
+     in maybeValidate min x (>=)
+          && maybeValidate max x (<=)
+          && maybeValidate exclusiveMin x (>)
+          && maybeValidate exclusiveMax x (<)
+          && maybeValidate exclusiveMin x (\num property -> mod num property == 0)
+          && maybeValidate enum x elem
+  _ -> False
 
 -- | Check if a string meets its required properties
-validateString :: String -> StrProperties -> Bool
-validateString = undefined
+validateString :: Schema StrProperties
+validateString = S $ \property value -> case value of
+  String x ->
+    let min = minLength property
+        max = maxLength property
+        pat = pattern property
+        enum = stringEnum property
+     in maybeValidate min (length x) (>=)
+          && maybeValidate max (length x) (<=)
+          -- && maybeValidate exclusiveMin x (\num property -> mod num property == 0)
+          && maybeValidate enum x elem
+  _ -> False
 
 -- | Check if an array meets its required properties
 validateArr :: [Value] -> ArrProperties -> Bool

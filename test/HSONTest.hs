@@ -1,4 +1,4 @@
-module HSONTest where
+module HSONTest (prop_hsonroundtrip) where
 
 import Control.Applicative
 import FromJSON
@@ -13,8 +13,8 @@ import ToJSON
 
 --- >>> quickCheck prop_roundtriptest
 
-prop_roundtriptest :: HSON -> Bool
-prop_roundtriptest hson =
+prop_hsonroundtrip :: HSON -> Bool
+prop_hsonroundtrip hson =
   case helper hson of
     Nothing -> False
     Just y -> y == hson
