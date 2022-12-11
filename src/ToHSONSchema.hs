@@ -1,4 +1,4 @@
-module ToHSONSchema (hsonToHSONSchema, objHelper) where
+module ToHSONSchema (arrHelper, boolArrayHelper, boolHelper, checkArrayLength, filterBoolArray, filterIntArray, filterNumberArray, filterStringArray, getProperties, hsonToHSONSchema, intHelper, matchBool, matchInt, matchNumber, matchString, numberHelper, objHelper, schemaParser) where
 
 import Data.Bits (Bits (xor))
 import Data.Map
@@ -270,4 +270,4 @@ address2 = do
     Left z -> return Nothing
 
 -- >>> address2
--- Just (Obj (OP {minProperties = Nothing, maxProperties = Nothing, required = ["latitude","longitude"], properties = [("latitude",Num (NP {nMinimum = Just (-90), nMaximum = Just 90, nExclusiveMinimum = Nothing, nExclusiveMaximum = Nothing, nMultipleOf = Nothing, numberEnum = Just []})),("longitude",Num (NP {nMinimum = Just (-180), nMaximum = Just 180, nExclusiveMinimum = Nothing, nExclusiveMaximum = Nothing, nMultipleOf = Nothing, numberEnum = Just []}))]}))
+-- Just (Obj (OP {minProperties = Nothing, maxProperties = Nothing, required = ["latitude","longitude"], properties = [("latitude",Num (NP {nMinimum = Just (-90), nMaximum = Just 90, nExclusiveMinimum = Nothing, nExclusiveMaximum = Nothing, nMultipleOf = Nothing, numberEnum = Nothing})),("longitude",Num (NP {nMinimum = Just (-180), nMaximum = Just 180, nExclusiveMinimum = Nothing, nExclusiveMaximum = Nothing, nMultipleOf = Nothing, numberEnum = Nothing}))]}))

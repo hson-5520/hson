@@ -1,21 +1,39 @@
-module HSONSchemaTest (test_validation) where
+module ToHSONSchemaTest (test_validation) where
 
 import Control.Applicative
 import Data.Map qualified as Map
 import FromJSON
-import HSON (HSON (H), Key, Value (Array, Boolean, Null, Number, Object, String), hsonArray, hsonDog, hsonEmpty, hsonSchool, hsonSingle)
+import HSON (HSON (H), Key, Value (Array, Boolean, Integer, Null, Number, Object, String), hsonArray, hsonDog, hsonEmpty, hsonSchool, hsonSingle)
 import HSONSchema (HSONSchema, address, card, coordinate)
 import Lib
 import Parser qualified as P
 import Test.HUnit (Counts, Test (TestList), assert, runTestTT, (~:), (~?=))
 import Test.QuickCheck
-import ToHSONSchema (hsonToHSONSchema, objHelper)
+import ToHSONSchema (arrHelper, boolArrayHelper, boolHelper, checkArrayLength, filterBoolArray, filterIntArray, filterNumberArray, filterStringArray, getProperties, hsonToHSONSchema, intHelper, matchBool, matchInt, matchNumber, matchString, numberHelper, objHelper, schemaParser)
 import ToJSON
+
+------------------------- ToHSONSchema Helpers' Tests  --------------------------------
+
+test_matchInt :: Test
+test_matchInt =
+  "match int "
+    ~: TestList
+      [ matchInt "test" (Map.fromList [("test", Integer 2)]) ~?= (True, Maybe 2),
+        matchInt "test" Map.empty ~?= (True, Nothing),
+        matchInt "test" (Map.fromList [("randomKey", Boolean True), ("test", Integer 2)]) ~?= (True, Nothing),
+        matchInt "test" (Map.fromList [("randomKey", Boolean True), ("test", String "abcVal")]) ~?= (False, Nothing)
+      ]
+
+--- >> runTestTT test_matchInt
 
 ------------------------- HSON Schema PropertyTests -----------------------------
 
 test_numberHelper :: Test
-test_numberHelper = undefined
+test_numberHelper =
+  TestList
+    [ P.parse (wsP P.alpha) "a" ~?= Right 'a',
+      P.parse (many (wsP P.alpha)) "a b \n   \t c" ~?= Right "abc"
+    ]
 
 --- >>> runTestTT test_numberHelper
 
@@ -81,8 +99,6 @@ address5 = do
   case z of
     Right x -> return $ objHelper x
     Left z -> return Nothing
-
--- >>> address5
 
 test_validation :: IO Counts
 test_validation =

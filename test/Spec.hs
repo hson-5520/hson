@@ -1,8 +1,8 @@
 import FromJSONTest (test_fromJSON)
-import HSONSchemaTest (test_validation)
 import Lib
 import Test.HUnit
 import Test.QuickCheck
+import ToHSONSchemaTest (test_validation)
 import ToJSONTest (test_toJSON)
 
 main :: IO ()
