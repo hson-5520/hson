@@ -12,12 +12,7 @@
         "latitude": {
             "type": "number",
             "minimum": -90,
-            "maximum": 90,
-            "enum": [
-                1,
-                2,
-                3
-            ]
+            "maximum": 90
         },
         "longitude": {
             "type": "number",
