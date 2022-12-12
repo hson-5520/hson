@@ -42,6 +42,20 @@ validateNum = S $ \property value -> case value of
           && maybeValidate exclusiveMax x (<)
           && maybeValidate exclusiveMin x (\num property -> Data.Fixed.mod' num property == 0)
           && maybeValidate enum x elem
+  Integer y ->
+    let x = fromIntegral y
+        min = nMinimum property
+        max = nMaximum property
+        exclusiveMin = nExclusiveMinimum property
+        exclusiveMax = nExclusiveMaximum property
+        multipleOf = nMultipleOf property
+        enum = numberEnum property
+     in maybeValidate min x (>=)
+          && maybeValidate max x (<=)
+          && maybeValidate exclusiveMin x (>)
+          && maybeValidate exclusiveMax x (<)
+          && maybeValidate exclusiveMin x (\num property -> Data.Fixed.mod' num property == 0)
+          && maybeValidate enum x elem
   _ -> False
 
 -- | Check if a non-integer number meets its required properties
@@ -171,10 +185,9 @@ tParseValidJson =
       o <- parseJSON obj
       case (s, o) of
         (Right x, Right y) -> do
-          putStrLn "\n"
-          putStrLn ("Schema:" ++ hsonToString x)
-          putStrLn "\n"
-          putStrLn ("Object:" ++ hsonToString y)
           putStrLn (if validateHSON (Object y) (Maybe.fromJust $ hsonToHSONSchema x) then "TRUE" else "FALSE")
           assert (validateHSON (Object y) (Maybe.fromJust $ hsonToHSONSchema x))
         (_, _) -> assert False
+
+-- >>> runTestTT tParseValidJson
+-- Counts {cases = 3, tried = 3, errors = 0, failures = 0}
