@@ -1,5 +1,3 @@
-{-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
-
 module HSONSchema (HSONSchema (Str, Int, Num, Bool, Arr, Obj, Nul), IntProperties (IP), NumProperties (NP), nMinimum, nMaximum, nExclusiveMinimum, nExclusiveMaximum, nMultipleOf, numberEnum, StrProperties (SP), ArrProperties (AP), minItems, maxItems, isUnique, minProperties, maxProperties, required, properties, ObjProperties (OP), items, boolEnum, BoolProperties (BP), minLength, maxLength, pattern, stringEnum, iMaximum, iMinimum, iExclusiveMinimum, iExclusiveMaximum, iMultipleOf, intEnum, address, card, coordinate) where
 
 import Data.Map

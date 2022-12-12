@@ -1,4 +1,4 @@
-module HSONTest (prop_hsonroundtrip) where
+module HSONTest where
 
 import Control.Applicative
 import FromJSON

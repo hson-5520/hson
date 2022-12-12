@@ -1,4 +1,4 @@
-module ToJSONTest (test_toJSON) where
+module ToJSONTest where
 
 import Control.Applicative
 import Data.Map qualified as Map

@@ -268,28 +268,3 @@ schemaParser (H lst) =
 -- | converts an entire HSON object to it's corresponding HSONSchema object
 hsonToHSONSchema :: HSON -> Maybe HSONSchema
 hsonToHSONSchema = objHelper
-
-address2 :: IO (Maybe HSONSchema)
-address2 = do
-  z <- parseJSON "test/json-schema/schema/coordinate-schema.json"
-  case z of
-    Right (H x) -> return $ hsonToHSONSchema (H x)
-    Left z -> return Nothing
-
-address4 :: IO (Either P.ParseError HSON)
-address4 = do parseJSON "test/json-schema/schema/coordinate-schema.json"
-
-address5 :: IO (Maybe HSONSchema)
-address5 = do
-  z <- parseJSON "test/json-schema/schema/card-schema.json"
-  case z of
-    Right (H x) -> return $ hsonToHSONSchema (H x)
-    Left z -> return Nothing
-
--- >>> address2
--- Nothing
-
--- >>> hsonToHSONSchema
--- No instance for (Show (HSON -> Maybe HSONSchema))
---   arising from a use of ‘evalPrint’
---   (maybe you haven't applied a function to enough arguments?)

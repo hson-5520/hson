@@ -499,8 +499,8 @@ tCreateHSONSchema =
 -- >>> runTestTT tCreateHSONSchema
 -- Counts {cases = 3, tried = 3, errors = 0, failures = 0}
 
-test_validation :: IO Counts
-test_validation =
+test_toHSONSchema :: IO Counts
+test_toHSONSchema =
   runTestTT $
     TestList
       [ test_matchInt,
@@ -522,4 +522,4 @@ test_validation =
         tCreateHSONSchema
       ]
 
--- >>> test_validation
+-- >>> test_toHSONSchema

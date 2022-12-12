@@ -1,4 +1,4 @@
-module FromJSONTest (test_fromJSON) where
+module FromJSONTest where
 
 import Control.Applicative
 import FromJSON
