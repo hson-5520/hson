@@ -13,12 +13,22 @@ HSON (pronounced H-sawn) is a library enabling interaction with [JSON](https://w
 
 ## Module Organization
 
+#### [app](/app/)
+- [Main.hs](app/Main.hs):
+ - The entry point of the hson executable
+
+#### [src](/src/)
+- [Main.hs](app/Main.hs):
+ - The entry point of the hson executable
+
+#### [test](/test/)
+- [Main.hs](app/Main.hs):
+ - The entry point of the hson executable
+
 Haskell packages typically divide their source code into three separate places:
   - The bulk of your code should be developed as a reusable library in 
     modules in the `src` directory. We've created [Lib.hs](src/Lib.hs) 
     for you to get started. You can add additional modules here.
-  
-  - The entry point for your executable is in [Main.hs](app/Main.hs). 
   
   - All of your test cases should be in [the test directory](test/Spec.hs).
 
