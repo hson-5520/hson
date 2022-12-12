@@ -9,7 +9,7 @@ import ValidateHSON
 
 main :: IO ()
 main = do
-  putStrLn "Welcome to HSON: Haskell's JSON!"
+  putStrLn "\nWelcome to HSON: Haskell's JSON!"
   putStrLn "This shell will allow you to validate a JSON object. \n"
   putStrLn "Enter the file path for the JSON Schema"
   x <- getLine
@@ -25,12 +25,8 @@ main = do
       o <- parseJSON obj
       case (s, o) of
         (Right x, Right y) -> do
-          putStrLn ("Schema:" ++ hsonToString x)
-          putStrLn ("Object" ++ hsonToString y)
           return $ validateHSON y (Maybe.fromJust $ hsonToHSONSchema x)
-        (_, _) -> do
-          putStrLn "Here"
-          return False
+        (_, _) -> return False
 
 -- ../test/json-schema/schema/address-schema.json
 -- ../test/json-schema/object/address-object.json
