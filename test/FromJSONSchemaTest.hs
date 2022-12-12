@@ -1,4 +1,4 @@
-module ToHSONSchemaTest where
+module FromJSONSchemaTest where
 
 import Control.Applicative
 import Data.Bits (Bits (xor))
@@ -6,13 +6,13 @@ import Data.Bool (bool)
 import Data.Map qualified as Map
 import Data.Maybe
 import FromJSON
+import FromJSONSchema (arrHelper, boolArrayHelper, boolHelper, checkArrayLength, filterBoolArray, filterIntArray, filterNumberArray, filterStringArray, getProperties, hsonToHSONSchema, intHelper, matchBool, matchInt, matchNumber, matchString, numberHelper, objHelper, schemaParser, stringHelper)
 import HSON (HSON (H), Key, Value (Array, Boolean, Integer, Null, Number, Object, String), hsonArray, hsonDog, hsonEmpty, hsonSchool, hsonSingle)
 import HSONSchema (ArrProperties (AP, isUnique, items, maxItems, minItems), BoolProperties (BP, boolEnum), HSONSchema (Arr, Bool, Int, Num, Obj, Str), IntProperties (IP, iExclusiveMaximum, iExclusiveMinimum, iMaximum, iMinimum, iMultipleOf, intEnum), NumProperties (NP, nExclusiveMaximum, nExclusiveMinimum, nMaximum, nMinimum, nMultipleOf, numberEnum), ObjProperties (OP, maxProperties, minProperties, properties, required), StrProperties (SP, maxLength, minLength, pattern, stringEnum), address, card, coordinate)
 import Lib
 import Parser qualified as P
 import Test.HUnit (Counts, Test (TestList), assert, runTestTT, (~:), (~?=))
 import Test.QuickCheck
-import ToHSONSchema (arrHelper, boolArrayHelper, boolHelper, checkArrayLength, filterBoolArray, filterIntArray, filterNumberArray, filterStringArray, getProperties, hsonToHSONSchema, intHelper, matchBool, matchInt, matchNumber, matchString, numberHelper, objHelper, schemaParser, stringHelper)
 import ToJSON
 
 ------------------------- ToHSONSchema Helpers' Tests  --------------------------------

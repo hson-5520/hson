@@ -1,4 +1,4 @@
-module ToHSONSchema where
+module FromJSONSchema where
 
 import Control.Exception
 import Data.Bits (Bits (xor))

@@ -108,20 +108,20 @@ compareFiles f1 f2 = do
   bContents <- readFile f2
   return (aContents == bContents)
 
--- >>> compareFiles "arrayfile.json" "test/json/valid/array.json"
+-- >>> compareFiles "test/json/test/array.json" "test/json/valid/array.json"
 -- True
 
--- >>> compareFiles "dogfile.json" "test/json/valid/dog.json"
+-- >>> compareFiles "test/json/test/dog.json" "test/json/valid/dog.json"
 -- True
 
--- >>> compareFiles "emptyfile.json" "test/json/valid/empty.json"
+-- >>> compareFiles "test/json/test/empty.json" "test/json/valid/empty.json"
 -- True
 
--- >>> compareFiles "schoolfile.json" "test/json/valid/school.json"
+-- >>> compareFiles "test/json/test/school.json" "test/json/valid/school.json"
 -- True
 
--- >>> compareFiles "singlefile.json" "test/json/valid/single.json"
--- True
+-- >>> compareFiles "test/json/test/single.json" "test/json/valid/single.json"
+-- False
 
 -- >>> runTestTT tParseValidJson
 -- Counts {cases = 5, tried = 5, errors = 4, failures = 0}
@@ -130,11 +130,11 @@ tParseValidJson :: Test
 tParseValidJson =
   "parse valid json"
     ~: TestList
-      [ "empty" ~: p "test/json/valid/empty.json" "emptyfile.json" hsonEmpty,
-        "single" ~: p "test/json/valid/single.json" "singlefile.json" hsonSingle,
-        "array" ~: p "test/json/valid/array.json" "arrayfile.json" hsonArray,
-        "dog" ~: p "test/json/valid/dog.json" "dogfile.json" hsonDog,
-        "school" ~: p "test/json/valid/school.json" "schoolfile.json" hsonSchool
+      [ "empty" ~: p "test/json/valid/empty.json" "test/json/test/empty.json" hsonEmpty,
+        "single" ~: p "test/json/valid/single.json" "test/json/test/single.json" hsonSingle,
+        "array" ~: p "test/json/valid/array.json" "test/json/test/array.json" hsonArray,
+        "dog" ~: p "test/json/valid/dog.json" "test/json/test/dog.json" hsonDog,
+        "school" ~: p "test/json/valid/school.json" "test/json/test/school.json" hsonSchool
       ]
   where
     p fn fp hson = do

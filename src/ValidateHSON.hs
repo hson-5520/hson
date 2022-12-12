@@ -1,4 +1,4 @@
-module HSONValidator where
+module ValidateHSON where
 
 import Data.Fixed qualified
 import Data.List
@@ -7,10 +7,10 @@ import Data.Map qualified as Map
 import Data.Maybe (isNothing)
 import Data.Maybe qualified as Maybe
 import FromJSON (itemP, parseJSON)
+import FromJSONSchema
 import HSON (HSON (H), Key, Value (Array, Boolean, Integer, Null, Number, Object, String))
 import HSONSchema (ArrProperties (AP), BoolProperties (BP), HSONSchema (Arr, Bool, Int, Nul, Num, Obj, Str), IntProperties (IP), NumProperties (NP), ObjProperties (OP), StrProperties (SP), boolEnum, iExclusiveMaximum, iExclusiveMinimum, iMaximum, iMinimum, iMultipleOf, intEnum, isUnique, items, maxItems, maxLength, maxProperties, minItems, minLength, minProperties, nExclusiveMaximum, nExclusiveMinimum, nMaximum, nMinimum, nMultipleOf, numberEnum, pattern, properties, required, stringEnum)
 import Test.HUnit
-import ToHSONSchema
 import ToJSON
 
 --------------------------------- Helpers  -------------------------------------

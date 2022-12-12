@@ -1,4 +1,14 @@
-# project-cis5520
+# HSON: Haskell's JSON
+### Aakash Jajoo (aakashj1@seas)
+### Yathushan Nadanapathan (yathu@seas)
+
+HSON is a library developed to enable interacting with JSON files in Haskell. HSON is a data type that was created to mimic JSON objects. In order to validate JSON objects,
+[JSON Schema](https://json-schema.org/) is commonly used in industry. HSONSchema is an internal represntation of JSON Schema in HSON. 
+
+**Usages**
+ * Users can parse their JSON files into an HSON instance using FromJSON. 
+ * Users can translate their HSON instances to JSON using ToJSON.
+ * Users can parse their JSON Schema to HSONSchema using ToHSONSchema
 
 This is an "Empty project" for Haskell. It is configured in the same way as
 the lecture demo and homework assignments for CIS 5520, but contains no
