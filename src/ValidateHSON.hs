@@ -11,6 +11,7 @@ import FromJSONSchema
 import HSON (HSON (H), Key, Value (Array, Boolean, Integer, Null, Number, Object, String))
 import HSONSchema (ArrProperties (AP), BoolProperties (BP), HSONSchema (Arr, Bool, Int, Nul, Num, Obj, Str), IntProperties (IP), NumProperties (NP), ObjProperties (OP), StrProperties (SP), boolEnum, iExclusiveMaximum, iExclusiveMinimum, iMaximum, iMinimum, iMultipleOf, intEnum, isUnique, items, maxItems, maxLength, maxProperties, minItems, minLength, minProperties, nExclusiveMaximum, nExclusiveMinimum, nMaximum, nMinimum, nMultipleOf, numberEnum, pattern, properties, required, stringEnum)
 import Test.HUnit
+import Text.Regex (matchRegex, matchRegexAll, mkRegex, splitRegex)
 import ToJSON
 
 --------------------------------- Helpers  -------------------------------------
@@ -89,6 +90,10 @@ validateString = S $ \property value -> case value of
      in maybeValidate min (length x) (>=)
           && maybeValidate max (length x) (<=)
           && maybeValidate enum x elem
+          && ( isNothing pat || case matchRegexAll (mkRegex (Maybe.fromJust pat)) x of
+                 Nothing -> False
+                 Just (_, matched, _, _) -> matched == x
+             )
   _ -> False
 
 -- | create a schema to check if a bool meets its required properties

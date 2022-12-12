@@ -82,6 +82,17 @@ testIP =
       intEnum = Just [-1, 1, 2, 4, 5, 6]
     }
 
+testIP2 :: IntProperties
+testIP2 =
+  IP
+    { iMinimum = Nothing,
+      iMaximum = Nothing,
+      iExclusiveMaximum = Nothing,
+      iExclusiveMinimum = Nothing,
+      iMultipleOf = Nothing,
+      intEnum = Just [1, 2]
+    }
+
 test_validateInt :: Test
 test_validateInt =
   "test validate integer"
@@ -102,24 +113,24 @@ testSP =
   SP
     { minLength = Just 5,
       maxLength = Just 10,
-      pattern = Nothing,
-      stringEnum = Just ["a", "aaaaaa", "aaaaaaa"]
+      pattern = Just "a*b",
+      stringEnum = Just ["a", "aaaaaab", "aaaaaaa"]
     }
 
 test_validateString :: Test
 test_validateString =
   "test validate string"
     ~: TestList
-      [ validate validateString testSP (String "aaaaaa") ~?= True,
-        validate validateString testSP (String "aaaaaaa") ~?= True,
+      [ validate validateString testSP (String "aaaaaab") ~?= True,
+        validate validateString testSP (String "aaaaaaa") ~?= False,
         validate validateString testSP (String "hello") ~?= False,
-        validate validateString testSP (String "a") ~?= False,
+        validate validateString testSP (String "aaab") ~?= False,
         validate validateString testSP (String "this is too long") ~?= False,
         validate validateString testSP Null ~?= False
       ]
 
---- >>> runTestTT test_validateString
--- Counts {cases = 6, tried = 6, errors = 0, failures = 0}
+-- >>> runTestTT test_validateString
+-- Counts {cases = 5, tried = 5, errors = 0, failures = 0}
 
 testBP :: BoolProperties
 testBP = BP {boolEnum = Just True}
@@ -189,7 +200,7 @@ test_validateObj =
         validate validateObj testOP (Object $ H [("bool", Boolean True), ("null", Null)]) ~?= True,
         validate validateObj testOP (Object $ H [("int", Integer 2), ("null", Null)]) ~?= False,
         validate validateObj testOP (Object $ H [("int", Integer 2), ("null", Number 4.0)]) ~?= False,
-        validate validateObj testOP (Object $ H [("bool", Boolean True), ("int", Integer 2), ("null", Null), ("num", Number 4.0), ("str", String "aaaaaa")]) ~?= True,
+        validate validateObj testOP (Object $ H [("bool", Boolean True), ("int", Integer 2), ("null", Null), ("num", Number 4.0), ("str", String "aaaaaab")]) ~?= True,
         validate validateObj testOP (Object $ H [("bool", Boolean True), ("arr", Array [Integer 2, Integer 4])]) ~?= True,
         validate validateObj testOP (Object $ H [("bool", Boolean True), ("obj", Object $ H [("bool", Boolean True), ("num", Number 4.0)])]) ~?= True,
         validate validateObj testOP (Object $ H [("bool", Boolean True), ("obj", Object $ H [("bool", Boolean False), ("num", Number 4.0)])]) ~?= False,
