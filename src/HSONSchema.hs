@@ -64,6 +64,8 @@ data ObjProperties = OP
   }
   deriving (Show, Eq)
 
+---------------------------- HSON Schema ---------------------------------------
+
 address :: Maybe HSONSchema
 address =
   Just $

@@ -216,7 +216,7 @@ tValidateHSON =
       o <- parseJSON obj
       case (s, o) of
         (Right x, Right y) -> do
-          assert (validateHSON (Object y) (Maybe.fromJust $ hsonToHSONSchema x))
+          assert (validateHSON y (Maybe.fromJust $ hsonToHSONSchema x))
         (_, _) -> assert False
 
 -- >>> runTestTT tValidateHSON
@@ -238,4 +238,4 @@ test_validateSchemas =
       ]
 
 -- >>> test_validateSchemas
--- Counts {cases = 54, tried = 54, errors = 0, failures = 1}
+-- Counts {cases = 54, tried = 54, errors = 0, failures = 0}

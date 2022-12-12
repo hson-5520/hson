@@ -13,20 +13,22 @@ import Test.HUnit
 import ToHSONSchema
 import ToJSON
 
-------------------------- Helpers  ------------------------------
+--------------------------------- Helpers  -------------------------------------
 
+-- | takes a Maybe value and returns True if it's nothing or if it is satisfies
+-- | the given constraint
 maybeValidate :: Maybe a -> b -> (b -> a -> Bool) -> Bool
 maybeValidate property num f = isNothing property || f num (Maybe.fromJust property)
 
+-- | returns a new list containing all the unique elements of the given list
 uniqueElems :: Eq b => [b] -> [b]
 uniqueElems = Data.List.map head . group
 
 ------------------------- Validating HSON Values  ------------------------------
 
--- -- definition of the schema type
 newtype Schema a = S {validate :: a -> Value -> Bool}
 
--- | Check if a non-integer number meets its required properties
+-- | create a schema to check if a number meets its required properties
 validateNum :: Schema NumProperties
 validateNum = S $ \property value -> case value of
   Number x ->
@@ -58,9 +60,7 @@ validateNum = S $ \property value -> case value of
           && maybeValidate enum x elem
   _ -> False
 
--- | Check if a non-integer number meets its required properties
-
--- | Check if an integer meets its required properties
+-- | create a schema to check if an integer meets its required properties
 validateInt :: Schema IntProperties
 validateInt = S $ \property value -> case value of
   Integer x ->
@@ -78,7 +78,7 @@ validateInt = S $ \property value -> case value of
           && maybeValidate enum x elem
   _ -> False
 
--- | Check if a string meets its required properties
+-- | create a schema to check if a string meets its required properties
 validateString :: Schema StrProperties
 validateString = S $ \property value -> case value of
   String x ->
@@ -91,7 +91,7 @@ validateString = S $ \property value -> case value of
           && maybeValidate enum x elem
   _ -> False
 
--- | Check if a string meets its required properties
+-- | create a schema to check if a bool meets its required properties
 validateBool :: Schema BoolProperties
 validateBool = S $ \property value -> case value of
   Boolean x ->
@@ -99,6 +99,7 @@ validateBool = S $ \property value -> case value of
      in maybeValidate enum x (==)
   _ -> False
 
+-- | validating that all items in an array satisfy the input HSONSchema
 validateItems :: [Value] -> HSONSchema -> Bool
 validateItems val schem = case schem of
   Str x -> all (validate validateString x) val
@@ -109,7 +110,7 @@ validateItems val schem = case schem of
   Obj o -> all (validate validateObj o) val
   Nul -> all (== Null) val
 
--- | Check if an array meets its required properties
+-- | create a schema to check if an array meets its required properties
 validateArr :: Schema ArrProperties
 validateArr = S $ \property value -> case value of
   Array x ->
@@ -123,6 +124,7 @@ validateArr = S $ \property value -> case value of
           && maybeValidate itemProps x validateItems
   _ -> False
 
+-- | validating that all the required keys are present in the HSON object
 requiredKeysPresent :: [String] -> Map Key Value -> Bool
 requiredKeysPresent req map = Data.List.foldr combine True req
   where
@@ -133,6 +135,7 @@ requiredKeysPresent req map = Data.List.foldr combine True req
                Nothing -> False
            )
 
+-- | validating all the keys in the HSON object against their properties
 matchProperties :: [(Key, Value)] -> Map Key HSONSchema -> Bool
 matchProperties dat schema = Data.List.foldr combine True dat
   where
@@ -150,7 +153,7 @@ matchProperties dat schema = Data.List.foldr combine True dat
                Nothing -> True
            )
 
--- | Check if an object meets its required properties
+-- | create a schema to check if an object meets its required properties
 validateObj :: Schema ObjProperties
 validateObj = S $ \property value -> case value of
   Object (H x) ->
@@ -166,28 +169,8 @@ validateObj = S $ \property value -> case value of
 
 ------------------------- Validating HSON  -------------------------------------
 
-validateHSON :: Value -> HSONSchema -> Bool
+-- | validates that the given HSON obeys the given HSON Schema
+validateHSON :: HSON -> HSONSchema -> Bool
 validateHSON hson schema = case schema of
-  Obj x -> validate validateObj x hson
+  Obj x -> validate validateObj x (Object hson)
   _ -> False
-
-tParseValidJson :: Test
-tParseValidJson =
-  "parse valid json"
-    ~: TestList
-      [ "address" ~: p "test/json-schema/schema/address-schema.json" "test/json-schema/object/address-object.json",
-        "coordinate" ~: p "test/json-schema/schema/coordinate-schema.json" "test/json-schema/object/coordinate-object.json",
-        "card" ~: p "test/json-schema/schema/card-schema.json" "test/json-schema/object/card-object.json"
-      ]
-  where
-    p schema obj = do
-      s <- parseJSON schema
-      o <- parseJSON obj
-      case (s, o) of
-        (Right x, Right y) -> do
-          putStrLn (if validateHSON (Object y) (Maybe.fromJust $ hsonToHSONSchema x) then "TRUE" else "FALSE")
-          assert (validateHSON (Object y) (Maybe.fromJust $ hsonToHSONSchema x))
-        (_, _) -> assert False
-
--- >>> runTestTT tParseValidJson
--- Counts {cases = 3, tried = 3, errors = 0, failures = 0}
