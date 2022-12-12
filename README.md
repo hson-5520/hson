@@ -14,7 +14,7 @@ HSON (pronounced H-sawn) is a library enabling interaction with [JSON](https://w
 ## Module Organization
 
 #### [`app`](/app/)
-* [`Main.hs`](app/Main.hs): the entry point of the hson executable
+* [`Main.hs`](app/Main.hs): an executable that allows the user to validate a JSON object with JSON schema
 
 #### [`src`](/src/)
 * [`Lib.hs`](src/Lib.hs)

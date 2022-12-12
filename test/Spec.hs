@@ -19,4 +19,4 @@ main = do
   test_toHSONSchema
   putStrLn "ValidateHSON Tests"
   test_validateSchemas
-  putStrLn someFunc
+  putStrLn "End of tests"
