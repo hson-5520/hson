@@ -18,14 +18,14 @@ HSON (pronounced H-sawn) is a library enabling interaction with [JSON](https://w
   * The entry point of the hson executable
 
 #### [src](/src/)
-- [ ] [Lib.hs](src/Lib.hs)
-- [ ] [HSON.hs](src/HSON.hs)
-- [ ] [ToJSON.hs](src/ToJSON.hs)
-- [ ] [Parser.hs](src/Parser.hs)
-- [ ] [FromJSON.hs](src/FromJSON.hs)
-- [ ] [HSONSchema.hs](src/HSONSchema.hs)
-- [ ] [FromJSONSchema.hs](src/FromJSONSchema.hs)
-- [ ] [ValidateHSON.hs](src/ValidateHSON.hs)
+* [Lib.hs](src/Lib.hs)
+* [HSON.hs](src/HSON.hs)
+* [ToJSON.hs](src/ToJSON.hs)
+* [Parser.hs](src/Parser.hs)
+* [FromJSON.hs](src/FromJSON.hs)
+* [HSONSchema.hs](src/HSONSchema.hs)
+* [FromJSONSchema.hs](src/FromJSONSchema.hs)
+* [ValidateHSON.hs](src/ValidateHSON.hs)
 
 #### [test](/test/)
 - [Main.hs](app/Main.hs):
