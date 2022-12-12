@@ -25,7 +25,6 @@ test_maybeValidate =
       ]
 
 --- >>> runTestTT test_maybeValidate
--- Counts {cases = 3, tried = 3, errors = 0, failures = 0}
 
 test_uniqueElems :: Test
 test_uniqueElems =
@@ -67,7 +66,23 @@ test_validateNum =
         validate validateNum testNP Null ~?= False
       ]
 
+test_validateNum2 :: Test
+test_validateNum2 =
+  "test validate number"
+    ~: TestList
+      [ validate2 validateNum2 testNP (Number 4.0) ~?= Right True,
+        validate2 validateNum2 testNP (Number 5.0) ~?= Right True,
+        validate2 validateNum2 testNP (Number 6.0) ~?= Left "| provided number is not <= max",
+        validate2 validateNum2 testNP (Number 2.5) ~?= Left "| provided number is not a multiple of the multipleOf argument",
+        validate2 validateNum2 testNP (Number 3.0) ~?= Left "| provided number is not in provided enum",
+        validate2 validateNum2 testNP (Number (-1.0)) ~?= Left "| provided number is not > minimum",
+        validate2 validateNum2 testNP Null ~?= Left "| provided value is not a number or int"
+      ]
+
 --- >>> runTestTT test_validateNum
+-- Counts {cases = 7, tried = 7, errors = 0, failures = 0}
+
+--- >>> runTestTT test_validateNum2
 -- Counts {cases = 7, tried = 7, errors = 0, failures = 0}
 
 testIP :: IntProperties
@@ -79,17 +94,6 @@ testIP =
       iExclusiveMinimum = Just (-1),
       iMultipleOf = Just 1,
       intEnum = Just [-1, 1, 2, 4, 5, 6]
-    }
-
-testIP2 :: IntProperties
-testIP2 =
-  IP
-    { iMinimum = Nothing,
-      iMaximum = Nothing,
-      iExclusiveMaximum = Nothing,
-      iExclusiveMinimum = Nothing,
-      iMultipleOf = Nothing,
-      intEnum = Just [1, 2]
     }
 
 test_validateInt :: Test
@@ -105,7 +109,24 @@ test_validateInt =
         validate validateInt testIP Null ~?= False
       ]
 
+test_validateInt2 :: Test
+test_validateInt2 =
+  "test validate integer"
+    ~: TestList
+      [ validate2 validateInt2 testIP (Integer 4) ~?= Right True,
+        validate2 validateInt2 testIP (Integer 5) ~?= Right True,
+        validate2 validateInt2 testIP (Integer 6) ~?= Left "| provided number is not <= max",
+        validate2 validateInt2 testIP (Integer 2) ~?= Right True,
+        validate2 validateInt2 testIP (Integer 3) ~?= Left "| provided number is not in provided enum",
+        validate2 validateInt2 testIP (Integer (-1)) ~?= Left "| provided number is not > minimum",
+        validate2 validateInt2 testIP Null ~?= Left "| provided value is not an int"
+      ]
+
 --- >>> runTestTT test_validateInt
+-- Counts {cases = 7, tried = 7, errors = 0, failures = 0}
+
+--- >>> runTestTT test_validateInt2
+-- Counts {cases = 7, tried = 7, errors = 0, failures = 0}
 
 testSP :: StrProperties
 testSP =
@@ -129,7 +150,21 @@ test_validateString =
       ]
 
 -- >>> runTestTT test_validateString
--- Counts {cases = 5, tried = 5, errors = 0, failures = 0}
+
+test_validateString2 :: Test
+test_validateString2 =
+  "test validate string"
+    ~: TestList
+      [ validate2 validateString2 testSP (String "aaaaaab") ~?= Right True,
+        validate2 validateString2 testSP (String "aaaaaaa") ~?= Left "| regex for string is not satisfied",
+        validate2 validateString2 testSP (String "hello") ~?= Left "| string is not in provided enum",
+        validate2 validateString2 testSP (String "aaab") ~?= Left "| length of string is too small",
+        validate2 validateString2 testSP (String "this is too long") ~?= Left "| length of string is too large",
+        validate2 validateString2 testSP Null ~?= Left "| provided value is not a string"
+      ]
+
+-- >>> runTestTT test_validateString2
+-- Counts {cases = 6, tried = 6, errors = 0, failures = 0}
 
 testBP :: BoolProperties
 testBP = BP {boolEnum = Just True}
@@ -143,7 +178,19 @@ test_validateBool =
         validate validateBool testBP Null ~?= False
       ]
 
+test_validateBool2 :: Test
+test_validateBool2 =
+  "test validate bool"
+    ~: TestList
+      [ validate2 validateBool2 testBP (Boolean True) ~?= Right True,
+        validate2 validateBool2 testBP (Boolean False) ~?= Left "| boolean is not the provided enum",
+        validate2 validateBool2 testBP Null ~?= Left "| provided value is not a boolean"
+      ]
+
 --- >>> runTestTT test_validateBool
+-- Counts {cases = 3, tried = 3, errors = 0, failures = 0}
+
+--- >>> runTestTT test_validateBool2
 -- Counts {cases = 3, tried = 3, errors = 0, failures = 0}
 
 testAP :: ArrProperties
@@ -168,7 +215,23 @@ test_validateArr =
         validate validateArr testAP Null ~?= False
       ]
 
+test_validateArr2 :: Test
+test_validateArr2 =
+  "test validate array"
+    ~: TestList
+      [ validate2 validateArr2 testAP (Array [Integer 2, Integer 4]) ~?= Right True,
+        validate2 validateArr2 testAP (Array [Integer 2, Integer 4, Integer 5]) ~?= Right True,
+        validate2 validateArr2 testAP (Array [Integer 2]) ~?= Left "| too few items in array",
+        validate2 validateArr2 testAP (Array [Integer 2, Integer 2]) ~?= Left "| array does not contain unique items",
+        validate2 validateArr2 testAP (Array []) ~?= Left "| too few items in array",
+        validate2 validateArr2 testAP (Array [Integer 2, Integer 3]) ~?= Left "| at least one item does not meet provided item schema",
+        validate2 validateArr2 testAP Null ~?= Left "| provided value is not an array"
+      ]
+
 --- >>> runTestTT test_validateArr
+-- Counts {cases = 7, tried = 7, errors = 0, failures = 0}
+
+--- >>> runTestTT test_validateArr2
 
 testOP :: ObjProperties
 testOP =
@@ -206,8 +269,29 @@ test_validateObj =
         validate validateObj testOP Null ~?= False
       ]
 
+test_validateObj2 :: Test
+test_validateObj2 =
+  "test validate object"
+    ~: TestList
+      [ validate2 validateObj2 testOP (Object $ H [("bool", Boolean True)]) ~?= Left "| too few properties in given object",
+        validate2 validateObj2 testOP (Object $ H [("bool", Boolean True), ("num", Number 4.0)]) ~?= Right True,
+        validate2 validateObj2 testOP (Object $ H [("bool", Boolean False), ("num", Number 4.0)]) ~?= Left "bool| boolean is not the provided enum",
+        validate2 validateObj2 testOP (Object $ H [("bool", Boolean True), ("Bill", Null), ("Jim", Null)]) ~?= Right True,
+        validate2 validateObj2 testOP (Object $ H [("bool", Boolean True), ("Bill", Number 4.0), ("Jim", Null), ("Mike", Null), ("George", Null), ("Chris", Null)]) ~?= Left "| too many properties in given object",
+        validate2 validateObj2 testOP (Object $ H [("bool", Boolean True), ("null", Null)]) ~?= Right True,
+        validate2 validateObj2 testOP (Object $ H [("int", Integer 2), ("null", Null)]) ~?= Left "bool| doesn't exist",
+        validate2 validateObj2 testOP (Object $ H [("int", Integer 2), ("null", Number 4.0), ("bool", Boolean True)]) ~?= Left "null| is not null but should be",
+        validate2 validateObj2 testOP (Object $ H [("bool", Boolean True), ("int", Integer 2), ("null", Null), ("num", Number 4.0), ("str", String "aaaaaab")]) ~?= Right True,
+        validate2 validateObj2 testOP (Object $ H [("bool", Boolean True), ("arr", Array [Integer 2, Integer 4])]) ~?= Right True,
+        validate2 validateObj2 testOP (Object $ H [("bool", Boolean True), ("obj", Object $ H [("bool", Boolean True), ("num", Number 4.0)])]) ~?= Right True,
+        validate2 validateObj2 testOP (Object $ H [("bool", Boolean True), ("obj", Object $ H [("bool", Boolean False), ("num", Number 4.0)])]) ~?= Left "obj.bool| boolean is not the provided enum",
+        validate2 validateObj2 testOP Null ~?= Left "| provided value is not an object"
+      ]
+
+-- >>> validate2 validateObj2 testOP Null
+-- Left "provided value is not an array"
+
 --- >>> runTestTT test_validateObj
--- Counts {cases = 13, tried = 13, errors = 0, failures = 0}
 
 -------------------------- HSON Validation Test ------------------------------------
 
@@ -237,12 +321,12 @@ test_validateSchemas =
     TestList
       [ test_maybeValidate,
         test_uniqueElems,
-        test_validateNum,
-        test_validateInt,
-        test_validateString,
-        test_validateBool,
-        test_validateArr,
-        test_validateObj,
+        test_validateNum2,
+        test_validateInt2,
+        test_validateString2,
+        test_validateBool2,
+        test_validateArr2,
+        test_validateObj2,
         tValidateHSON
       ]
 

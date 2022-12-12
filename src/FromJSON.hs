@@ -67,7 +67,6 @@ valueP =
       nullValP
     ]
 
--- | parses any string
 stringValP :: Parser Value
 stringValP = String <$> (P.char '\"' *> many (P.satisfy (/= '\"')) <* wsP (P.char '\"'))
 
