@@ -42,7 +42,7 @@ Haskell packages typically divide their source code into three separate places:
   
   - All of your test cases should be in [the test directory](test/Spec.hs).
 
-#### Building, Running, and Testing
+## Building, Running, and Testing
 
 This project compiles with `stack build`. 
 You can run the main executable with `stack run`.
