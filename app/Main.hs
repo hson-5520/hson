@@ -8,15 +8,15 @@ import ValidateHSON (validateHSON)
 
 main :: IO ()
 main = do
-  putStrLn "\nWelcome to HSON: Haskell's JSON!"
-  putStrLn "This shell will allow you to validate a JSON object. \n"
+  putStrLn "\nWELCOME TO HSON: HASKELL'S JSON!"
+  putStrLn "THIS SHELL WILL ALLOW YOU TO VALIDATE A JSON OBJECT. \n"
   validateJSON
 
 validateJSON :: IO ()
 validateJSON = do
-  putStrLn "Enter the file path for the JSON Schema"
+  putStrLn "ENTER THE FILE PATH FOR THE JSON SCHEMA"
   x <- getLine
-  putStrLn "Enter the file path for the JSON Object"
+  putStrLn "\nENTER THE FILE PATH FOR THE JSON OBJECT"
   y <- getLine
   validationResult <- p x y
   validateJSON
@@ -26,14 +26,19 @@ validateJSON = do
       o <- parseJSON obj
       case (s, o) of
         (Right x, Right y) -> do
-          let validationResult = validateHSON y (Maybe.fromJust $ hsonToHSONSchema x)
-          if validationResult
-            then putStrLn "Validation Passed!"
-            else putStrLn "Validation Failed!"
-        (_, Right y) -> putStrLn "Parsing JSON Schema Failed"
-        (Right x, _) -> putStrLn "Parsing JSON Object Failed"
-        (_, _) -> putStrLn "Parsing JSON Schema and JSON Object Failed"
+          case validateHSON y (Maybe.fromJust $ hsonToHSONSchema x) of
+            Right x -> putStrLn "\nVALIDATION PASSED!\n"
+            Left y -> do
+              putStrLn $ "\nVALIDATION FAILED: " ++ y ++ "\n"
+        (Left err, Right y) -> putStrLn $ "\nPARSING JSON SCHEMA FAILED: " ++ err ++ "\n"
+        (Right x, Left err) -> putStrLn $ "\nPARSING JSON OBJECT FAILED: " ++ err ++ "\n"
+        (Left err1, Left err2) -> do
+          putStrLn "\nPARSING JSON SCHEMA AND OBJECT FAILED!"
+          putStrLn $ "Schema Error: " ++ err1
+          putStrLn $ "Object Error: " ++ err2 ++ "\n"
 
 -- ../test/json-schema/schema/address-schema.json
 -- ../test/json-schema/object/address-object.json
 -- ../test/json-schema/object/card-object.json
+
+-- ../test/json/invalid/boolean.txt
