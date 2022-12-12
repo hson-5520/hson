@@ -5,10 +5,10 @@ HSON is a library enabling interaction with [JSON](https://www.json.org/json-en.
 [JSON Schema](https://json-schema.org/) is commonly used in industry. HSONSchema is an internal represntation of JSON Schema in HSON. 
 
 **Usages**
- * Users can parse their JSON files into an HSON instance using FromJSON. 
- * Users can translate their HSON instances to JSON using ToJSON.
- * Users can parse their JSON Schema to HSONSchema using FromJSONSchema
- * Users can validate their HSON instances with an HSONSchema instance using ValidateHSON
+ * Users can parse their JSON files into an HSON instance using [*FromJSON*](src/FromJSON.hs). 
+ * Users can translate their HSON instances to JSON using [*ToJSON*](src/ToJSON.hs).
+ * Users can parse their JSON Schema to HSONSchema using [*FromJSONSchema*](src/FromJSONSchema.hs)
+ * Users can validate their HSON instances with an HSONSchema instance using [*ValidateHSON*](src/ValidateHSON.hs)
 
 If you want to change the name of this project, look for all occurrences of
 `project-cis5520` in the `project-cis5520.cabal` file and in the `hie.yaml` 
