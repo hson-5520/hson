@@ -4,7 +4,7 @@ import Control.Applicative
 import Data.Map qualified as Map
 import FromJSON
 import HSON (HSON (H), Key, Value (Array, Boolean, Integer, Null, Number, Object, String), hsonArray, hsonDog, hsonEmpty, hsonSchool, hsonSingle)
-import Lib
+
 import Parser qualified as P
 import Test.HUnit (Counts, Test (TestList), assert, runTestTT, (~:), (~?=))
 import Test.QuickCheck

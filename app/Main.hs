@@ -3,7 +3,6 @@ module Main where
 import Data.Maybe qualified as Maybe
 import FromJSON (parseJSON)
 import FromJSONSchema (hsonToHSONSchema)
-import Lib ()
 import ToJSON ()
 import ValidateHSON (validateHSON)
 

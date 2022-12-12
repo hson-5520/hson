@@ -7,7 +7,6 @@ import FromJSON
 import FromJSONSchema (hsonToHSONSchema)
 import HSON (HSON (..), Key, Value (Array, Boolean, Integer, Null, Number, Object, String), hsonArray, hsonDog, hsonEmpty, hsonSchool, hsonSingle)
 import HSONSchema (ArrProperties (..), BoolProperties (..), HSONSchema (..), IntProperties (..), NumProperties (..), ObjProperties (..), StrProperties (..), address, card, coordinate)
-import Lib
 import Parser qualified as P
 import Test.HUnit (Counts, Test (TestList), assert, runTestTT, (~:), (~?=))
 import Test.QuickCheck

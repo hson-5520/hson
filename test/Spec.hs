@@ -1,7 +1,6 @@
 import FromJSONSchemaTest (test_toHSONSchema)
 import FromJSONTest (test_fromJSON)
 import HSONTest (prop_hsonroundtrip)
-import Lib
 import Test.HUnit
 import Test.QuickCheck
 import ToJSONTest (test_toJSON)
