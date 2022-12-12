@@ -4,7 +4,7 @@
 HSON is a library enabling interaction with [JSON](https://www.json.org/json-en.html) in Haskell. HSON is a data type that was created to mimic JSON objects. In order to validate JSON objects,
 [JSON Schema](https://json-schema.org/) is commonly used in industry. HSONSchema is an internal represntation of JSON Schema in HSON. 
 
-**Usages**
+### Primary Usages
  * Users can parse their JSON files into an HSON instance using [*FromJSON*](src/FromJSON.hs). 
  * Users can translate their HSON instances to JSON using [*ToJSON*](src/ToJSON.hs).
  * Users can parse their JSON Schema to HSONSchema using [*FromJSONSchema*](src/FromJSONSchema.hs)
@@ -14,7 +14,7 @@ If you want to change the name of this project, look for all occurrences of
 `project-cis5520` in the `project-cis5520.cabal` file and in the `hie.yaml` 
 file. (And change the name of the cabal file to match your new name!)
 
-## Module organization
+## Module Organization
 
 Haskell packages typically divide their source code into three separate places:
   - The bulk of your code should be developed as a reusable library in 
