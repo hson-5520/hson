@@ -5,10 +5,10 @@ HSON (pronounced H-sawn) is a library enabling interaction with [JSON](https://w
 [JSON Schema](https://json-schema.org/) is commonly used in industry. HSONSchema is an internal represntation of JSON Schema in HSON. 
 
 ### Primary Usages
- - [x] Parse a JSON file into an HSON instance using [*FromJSON*](src/FromJSON.hs). 
-  - [x] Translate an HSON instance to JSON using [*ToJSON*](src/ToJSON.hs).
-  - [x] Parse a JSON Schema into an HSONSchema using [*FromJSONSchema*](src/FromJSONSchema.hs)
-  - [x] Validate an HSON instances with an HSONSchema instance using [*ValidateHSON*](src/ValidateHSON.hs)
+ - [x] Parse a JSON file into an HSON instance using [`FromJSON`](src/FromJSON.hs). 
+  - [x] Translate an HSON instance to JSON using [`ToJSON`](src/ToJSON.hs).
+  - [x] Parse a JSON Schema into an HSONSchema using [`FromJSONSchema`](src/FromJSONSchema.hs)
+  - [x] Validate an HSON instances with an HSONSchema instance using [`ValidateHSON`](src/ValidateHSON.hs)
 
 
 ## Module Organization
