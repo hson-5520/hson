@@ -105,8 +105,26 @@ test_nullToString =
 compareFiles :: FilePath -> FilePath -> IO Bool
 compareFiles f1 f2 = do
   aContents <- readFile f1
-  bContents <- readFile f1
+  bContents <- readFile f2
   return (aContents == bContents)
+
+-- >>> compareFiles "arrayfile.json" "test/json/valid/array.json"
+-- True
+
+-- >>> compareFiles "dogfile.json" "test/json/valid/dog.json"
+-- True
+
+-- >>> compareFiles "emptyfile.json" "test/json/valid/empty.json"
+-- True
+
+-- >>> compareFiles "schoolfile.json" "test/json/valid/school.json"
+-- True
+
+-- >>> compareFiles "singlefile.json" "test/json/valid/single.json"
+-- True
+
+-- >>> runTestTT tParseValidJson
+-- Counts {cases = 5, tried = 5, errors = 4, failures = 0}
 
 tParseValidJson :: Test
 tParseValidJson =
