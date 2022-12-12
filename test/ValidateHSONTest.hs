@@ -1,6 +1,7 @@
 module ValidateHSONTest where
 
 import Control.Applicative
+import Data.Either
 import Data.Map qualified as Map
 import Data.Maybe qualified as Maybe
 import FromJSON
@@ -309,7 +310,7 @@ tValidateHSON =
       o <- parseJSON obj
       case (s, o) of
         (Right x, Right y) -> do
-          assert (validateHSON y (Maybe.fromJust $ hsonToHSONSchema x))
+          assert (isRight $ validateHSON2 y (Maybe.fromJust $ hsonToHSONSchema x))
         (_, _) -> assert False
 
 -- >>> runTestTT tValidateHSON
