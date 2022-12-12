@@ -15,15 +15,15 @@ HSON (pronounced H-sawn) is a library enabling interaction with [JSON](https://w
 
 #### [app](/app/)
 - [Main.hs](app/Main.hs):
- - The entry point of the hson executable
+ -- The entry point of the hson executable
 
 #### [src](/src/)
 - [Main.hs](app/Main.hs):
- - The entry point of the hson executable
+ -- The entry point of the hson executable
 
 #### [test](/test/)
 - [Main.hs](app/Main.hs):
- - The entry point of the hson executable
+ -- The entry point of the hson executable
 
 Haskell packages typically divide their source code into three separate places:
   - The bulk of your code should be developed as a reusable library in 
