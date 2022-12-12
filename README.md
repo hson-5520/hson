@@ -5,25 +5,25 @@ HSON (pronounced H-sawn) is a library enabling interaction with [JSON](https://w
 [JSON Schema](https://json-schema.org/) is commonly used in industry. HSONSchema is an internal represntation of JSON Schema in HSON. 
 
 ### Primary Usages
- * Parse a JSON files into an HSON instance using [*FromJSON*](src/FromJSON.hs). 
- * Translate an HSON instance to JSON using [*ToJSON*](src/ToJSON.hs).
- * Users can parse their JSON Schema to HSONSchema using [*FromJSONSchema*](src/FromJSONSchema.hs)
- * Users can validate their HSON instances with an HSONSchema instance using [*ValidateHSON*](src/ValidateHSON.hs)
+ - [x] Parse a JSON file into an HSON instance using [*FromJSON*](src/FromJSON.hs). 
+  - [x] Translate an HSON instance to JSON using [*ToJSON*](src/ToJSON.hs).
+  - [x] Parse a JSON Schema into an HSONSchema using [*FromJSONSchema*](src/FromJSONSchema.hs)
+  - [x] Validate an HSON instances with an HSONSchema instance using [*ValidateHSON*](src/ValidateHSON.hs)
 
 
 ## Module Organization
 
 #### [app](/app/)
-- [Main.hs](app/Main.hs):
- -- The entry point of the hson executable
+* [Main.hs](app/Main.hs):
+  * The entry point of the hson executable
 
 #### [src](/src/)
 - [Main.hs](app/Main.hs):
- -- The entry point of the hson executable
+  * The entry point of the hson executable
 
 #### [test](/test/)
 - [Main.hs](app/Main.hs):
- -- The entry point of the hson executable
+    -- The entry point of the hson executable
 
 Haskell packages typically divide their source code into three separate places:
   - The bulk of your code should be developed as a reusable library in 
