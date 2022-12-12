@@ -1,9 +1,9 @@
 cradle:
   stack:
     - path: ./test
-      component: "project-cis5520:test:project-cis5520-test"
+      component: "hson:test:hson-test"
     - path: ./src
-      component: "project-cis5520:lib"
+      component: "hson:lib"
     - path: ./app
-      component: "project-cis5520:exe:project-cis5520-exe"
+      component: "hson:exe:hson-exe"
 
