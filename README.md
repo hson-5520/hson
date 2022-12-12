@@ -28,8 +28,12 @@ HSON (pronounced H-sawn) is a library enabling interaction with [JSON](https://w
 * [ValidateHSON.hs](src/ValidateHSON.hs)
 
 #### [test](/test/)
-- [Main.hs](app/Main.hs):
-    -- The entry point of the hson executable
+* [Spec.hs](test/Spec.hs)
+* [HSONTest.hs](test/HSONTest.hs)
+* [ToJSONTest.hs](test/ToJSONTest.hs)
+* [FromJSONTest.hs](test/FromJSONTest.hs)
+* [FromJSONSchemaTest.hs](test/FromJSONSchemaTest.hs)
+* [ValidateHSONTest.hs](test/ValidateHSONTest.hs)
 
 Haskell packages typically divide their source code into three separate places:
   - The bulk of your code should be developed as a reusable library in 
@@ -38,7 +42,7 @@ Haskell packages typically divide their source code into three separate places:
   
   - All of your test cases should be in [the test directory](test/Spec.hs).
 
-## Building, running, and testing
+#### Building, Running, and Testing
 
 This project compiles with `stack build`. 
 You can run the main executable with `stack run`.
@@ -46,7 +50,7 @@ You can run the tests with `stack test`.
 
 Finally, you can start a REPL with `stack ghci`.
 
-## Importing additional libraries
+## Importing Additional Libraries
 
 This project is designed to run with stackage: you can easily use any library
 in https://www.stackage.org/lts-19.19 by adding an entry to the
