@@ -1,6 +1,5 @@
 # HSON: Haskell's JSON
-##### Aakash Jajoo (aakashj1@seas)
-##### Yathushan Nadanapathan (yathu@seas)
+##### By: Aakash Jajoo (aakashj1@seas) & Yathushan Nadanapathan (yathu@seas)
 
 HSON is a library enabling interaction with [JSON](https://www.json.org/json-en.html) in Haskell. HSON is a data type that was created to mimic JSON objects. In order to validate JSON objects,
 [JSON Schema](https://json-schema.org/) is commonly used in industry. HSONSchema is an internal represntation of JSON Schema in HSON. 
