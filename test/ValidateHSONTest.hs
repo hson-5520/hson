@@ -230,7 +230,7 @@ tValidateHSON =
         (_, _) -> assert False
 
 -- >>> runTestTT tValidateHSON
--- Counts {cases = 3, tried = 3, errors = 0, failures = 1}
+-- Counts {cases = 3, tried = 3, errors = 0, failures = 0}
 
 test_validateSchemas :: IO Counts
 test_validateSchemas =

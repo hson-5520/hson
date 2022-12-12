@@ -8,7 +8,7 @@ import Parser qualified as P
 ------------------------- Defining HSON Schema  --------------------------------
 
 data HSONSchema
-  = Str StrProperties
+  = Str StrProperties -- -> (Value -> Bool)
   | Int IntProperties
   | Num NumProperties
   | Bool BoolProperties

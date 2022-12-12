@@ -2,6 +2,7 @@ module ToJSONTest where
 
 import Control.Applicative
 import Data.Map qualified as Map
+import FromJSON
 import HSON (HSON (H), Key, Value (Array, Boolean, Integer, Null, Number, Object, String), hsonArray, hsonDog, hsonEmpty, hsonSchool, hsonSingle)
 import Lib
 import Parser qualified as P
@@ -100,31 +101,16 @@ test_nullToString =
 
 -------------------------- Create JSON Tests ------------------------------------
 
--- Inspired By:
--- https://stackoverflow.com/questions/16952335/is-there-any-way-to-use-io-bool-in-if-statement-without-binding-to-a-name-in-has
 compareFiles :: FilePath -> FilePath -> IO Bool
 compareFiles f1 f2 = do
-  aContents <- readFile f1
-  bContents <- readFile f2
-  return (aContents == bContents)
-
--- >>> compareFiles "test/json/test/array.json" "test/json/valid/array.json"
--- True
-
--- >>> compareFiles "test/json/test/dog.json" "test/json/valid/dog.json"
--- True
-
--- >>> compareFiles "test/json/test/empty.json" "test/json/valid/empty.json"
--- True
-
--- >>> compareFiles "test/json/test/school.json" "test/json/valid/school.json"
--- True
-
--- >>> compareFiles "test/json/test/single.json" "test/json/valid/single.json"
--- False
+  aContents <- parseJSON f1
+  bContents <- parseJSON f2
+  case (aContents, bContents) of
+    (Right x, Right y) -> return (x == y)
+    _ -> return False
 
 -- >>> runTestTT tParseValidJson
--- Counts {cases = 5, tried = 5, errors = 4, failures = 0}
+-- Counts {cases = 5, tried = 5, errors = 0, failures = 0}
 
 tParseValidJson :: Test
 tParseValidJson =
@@ -158,4 +144,3 @@ test_toJSON =
       ]
 
 -- >>> test_toJSON
--- Counts {cases = 17, tried = 17, errors = 0, failures = 0}
