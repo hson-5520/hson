@@ -45,7 +45,9 @@ Haskell packages typically divide their source code into three separate places:
 ## Building, Running, and Testing
 
 This project compiles with `stack build`. 
+
 You can run the main executable with `stack run`.
+
 You can run the tests with `stack test`. 
 
 Finally, you can start a REPL with `stack ghci`.
