@@ -13,11 +13,11 @@ HSON (pronounced H-sawn) is a library enabling interaction with [JSON](https://w
 
 ## Module Organization
 
-#### ['app'](/app/)
+#### [`app`](/app/)
 * [Main.hs](app/Main.hs)
   * The entry point of the hson executable
 
-#### ['src'](/src/)
+#### [`src`](/src/)
 * [Lib.hs](src/Lib.hs)
 * [HSON.hs](src/HSON.hs)
 * [ToJSON.hs](src/ToJSON.hs)
@@ -27,7 +27,7 @@ HSON (pronounced H-sawn) is a library enabling interaction with [JSON](https://w
 * [FromJSONSchema.hs](src/FromJSONSchema.hs)
 * [ValidateHSON.hs](src/ValidateHSON.hs)
 
-#### ['test'](/test/)
+#### [`test`](/test/)
 * [Spec.hs](test/Spec.hs)
 * [HSONTest.hs](test/HSONTest.hs)
 * [ToJSONTest.hs](test/ToJSONTest.hs)
