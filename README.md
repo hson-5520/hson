@@ -39,16 +39,6 @@ HSON (pronounced H-sawn) is a library enabling interaction with [JSON](https://w
 * [`FromJSONSchemaTest.hs`](test/FromJSONSchemaTest.hs): HUnit tests for `FromJSONSchema` (references [`test/json-schema/schema`](test/json-schema/schema/))
 * [`ValidateHSONTest.hs`](test/ValidateHSONTest.hs): HUnit tests for `ValidateHSONTest.hs` (references [`test/json-schema`](test/json-schema/))
 
-## Building, Running, and Testing
-
-This project compiles with `stack build`. 
-
-You can run the main executable with `stack run`.
-
-You can run the tests with `stack test`. 
-
-Finally, you can start a REPL with `stack ghci`.
-
 ## Overview
 
 To understand this library, we suggest you visit the files in the following order:
@@ -67,6 +57,16 @@ To understand this library, we suggest you visit the files in the following orde
 
 ## Documentation
 
+
+## Building, Running, and Testing
+
+This project compiles with `stack build`. 
+
+You can run the main executable with `stack run`.
+
+You can run the tests with `stack test`. 
+
+Finally, you can start a REPL with `stack ghci`.
 
 ## Dependencies
   - [x] regex-compat: regex validator used in [`ValidateHSON.hs`](src/ValidateHSON.hs)
