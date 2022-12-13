@@ -1,4 +1,41 @@
-module HSONSchema (HSONSchema (Str, Int, Num, Bool, Arr, Obj, Nul), IntProperties (IP), NumProperties (NP), nMinimum, nMaximum, nExclusiveMinimum, nExclusiveMaximum, nMultipleOf, numberEnum, StrProperties (SP), ArrProperties (AP), minItems, maxItems, isUnique, minProperties, maxProperties, required, properties, ObjProperties (OP), items, boolEnum, BoolProperties (BP), minLength, maxLength, pattern, stringEnum, iMaximum, iMinimum, iExclusiveMinimum, iExclusiveMaximum, iMultipleOf, intEnum, address, card, coordinate) where
+module HSONSchema
+  ( HSONSchema (Str, Int, Num, Bool, Arr, Obj, Nul),
+    IntProperties (IP),
+    NumProperties (NP),
+    nMinimum,
+    nMaximum,
+    nExclusiveMinimum,
+    nExclusiveMaximum,
+    nMultipleOf,
+    numberEnum,
+    StrProperties (SP),
+    ArrProperties (AP),
+    minItems,
+    maxItems,
+    isUnique,
+    minProperties,
+    maxProperties,
+    required,
+    properties,
+    ObjProperties (OP),
+    items,
+    boolEnum,
+    BoolProperties (BP),
+    minLength,
+    maxLength,
+    pattern,
+    stringEnum,
+    iMaximum,
+    iMinimum,
+    iExclusiveMinimum,
+    iExclusiveMaximum,
+    iMultipleOf,
+    intEnum,
+    address,
+    card,
+    coordinate,
+  )
+where
 
 import Data.Map
 import Data.Map qualified as Map
@@ -60,7 +97,7 @@ data ObjProperties = OP
   { minProperties :: Maybe Int,
     maxProperties :: Maybe Int,
     required :: [String],
-    properties :: [(Key, HSONSchema)] -- fromList hson lookup key and then perform relvant on that key
+    properties :: [(Key, HSONSchema)]
   }
   deriving (Show, Eq)
 
@@ -74,11 +111,53 @@ address =
         maxProperties = Nothing,
         required = ["locality", "zip-code", "country-name"],
         properties =
-          [ ("post-office-box", Str $ SP {minLength = Nothing, maxLength = Nothing, pattern = Nothing, stringEnum = Nothing}),
-            ("extended-address", Str $ SP {minLength = Nothing, maxLength = Nothing, pattern = Nothing, stringEnum = Nothing}),
-            ("street-address", Str $ SP {minLength = Nothing, maxLength = Nothing, pattern = Nothing, stringEnum = Nothing}),
-            ("locality", Str $ SP {minLength = Nothing, maxLength = Nothing, pattern = Nothing, stringEnum = Nothing}),
-            ("zip-code", Int $ IP {iMinimum = Nothing, iMaximum = Nothing, iExclusiveMaximum = Nothing, iExclusiveMinimum = Nothing, iMultipleOf = Nothing, intEnum = Nothing})
+          [ ( "post-office-box",
+              Str $
+                SP
+                  { minLength = Nothing,
+                    maxLength = Nothing,
+                    pattern = Nothing,
+                    stringEnum = Nothing
+                  }
+            ),
+            ( "extended-address",
+              Str $
+                SP
+                  { minLength = Nothing,
+                    maxLength = Nothing,
+                    pattern = Nothing,
+                    stringEnum = Nothing
+                  }
+            ),
+            ( "street-address",
+              Str $
+                SP
+                  { minLength = Nothing,
+                    maxLength = Nothing,
+                    pattern = Nothing,
+                    stringEnum = Nothing
+                  }
+            ),
+            ( "locality",
+              Str $
+                SP
+                  { minLength = Nothing,
+                    maxLength = Nothing,
+                    pattern = Nothing,
+                    stringEnum = Nothing
+                  }
+            ),
+            ( "zip-code",
+              Int $
+                IP
+                  { iMinimum = Nothing,
+                    iMaximum = Nothing,
+                    iExclusiveMaximum = Nothing,
+                    iExclusiveMinimum = Nothing,
+                    iMultipleOf = Nothing,
+                    intEnum = Nothing
+                  }
+            )
           ]
       }
 
@@ -90,8 +169,24 @@ card =
         maxProperties = Nothing,
         required = ["familyName", "givenName"],
         properties =
-          [ ("fn", Str $ SP {minLength = Nothing, maxLength = Nothing, pattern = Nothing, stringEnum = Nothing}),
-            ("familyName", Str $ SP {minLength = Nothing, maxLength = Nothing, pattern = Nothing, stringEnum = Nothing}),
+          [ ( "fn",
+              Str $
+                SP
+                  { minLength = Nothing,
+                    maxLength = Nothing,
+                    pattern = Nothing,
+                    stringEnum = Nothing
+                  }
+            ),
+            ( "familyName",
+              Str $
+                SP
+                  { minLength = Nothing,
+                    maxLength = Nothing,
+                    pattern = Nothing,
+                    stringEnum = Nothing
+                  }
+            ),
             ("givenName", Nul),
             ( "additionalName",
               Arr $
@@ -100,10 +195,25 @@ card =
                     maxItems = Nothing,
                     isUnique = False,
                     items =
-                      Just $ Str $ SP {minLength = Nothing, maxLength = Nothing, pattern = Nothing, stringEnum = Nothing}
+                      Just $
+                        Str $
+                          SP
+                            { minLength = Nothing,
+                              maxLength = Nothing,
+                              pattern = Nothing,
+                              stringEnum = Nothing
+                            }
                   }
             ),
-            ("nickname", Str $ SP {minLength = Nothing, maxLength = Nothing, pattern = Nothing, stringEnum = Nothing}),
+            ( "nickname",
+              Str $
+                SP
+                  { minLength = Nothing,
+                    maxLength = Nothing,
+                    pattern = Nothing,
+                    stringEnum = Nothing
+                  }
+            ),
             ( "email",
               Obj $
                 OP
@@ -111,8 +221,24 @@ card =
                     maxProperties = Nothing,
                     required = [],
                     properties =
-                      [ ("type", Str $ SP {minLength = Nothing, maxLength = Nothing, pattern = Nothing, stringEnum = Nothing}),
-                        ("value", Str $ SP {minLength = Nothing, maxLength = Nothing, pattern = Nothing, stringEnum = Nothing})
+                      [ ( "type",
+                          Str $
+                            SP
+                              { minLength = Nothing,
+                                maxLength = Nothing,
+                                pattern = Nothing,
+                                stringEnum = Nothing
+                              }
+                        ),
+                        ( "value",
+                          Str $
+                            SP
+                              { minLength = Nothing,
+                                maxLength = Nothing,
+                                pattern = Nothing,
+                                stringEnum = Nothing
+                              }
+                        )
                       ]
                   }
             ),
@@ -123,8 +249,24 @@ card =
                     maxProperties = Nothing,
                     required = [],
                     properties =
-                      [ ("organizationName", Str $ SP {minLength = Nothing, maxLength = Nothing, pattern = Nothing, stringEnum = Nothing}),
-                        ("organizationUnit", Str $ SP {minLength = Nothing, maxLength = Nothing, pattern = Nothing, stringEnum = Nothing})
+                      [ ( "organizationName",
+                          Str $
+                            SP
+                              { minLength = Nothing,
+                                maxLength = Nothing,
+                                pattern = Nothing,
+                                stringEnum = Nothing
+                              }
+                        ),
+                        ( "organizationUnit",
+                          Str $
+                            SP
+                              { minLength = Nothing,
+                                maxLength = Nothing,
+                                pattern = Nothing,
+                                stringEnum = Nothing
+                              }
+                        )
                       ]
                   }
             )
@@ -139,7 +281,27 @@ coordinate =
         maxProperties = Nothing,
         required = ["latitude", "longitude"],
         properties =
-          [ ("latitude", Num $ NP {nMinimum = Just (-90), nMaximum = Just 90, nExclusiveMinimum = Nothing, nExclusiveMaximum = Nothing, nMultipleOf = Nothing, numberEnum = Nothing}),
-            ("longitude", Num $ NP {nMinimum = Just (-180), nMaximum = Just 180, nExclusiveMinimum = Nothing, nExclusiveMaximum = Nothing, nMultipleOf = Nothing, numberEnum = Nothing})
+          [ ( "latitude",
+              Num $
+                NP
+                  { nMinimum = Just (-90),
+                    nMaximum = Just 90,
+                    nExclusiveMinimum = Nothing,
+                    nExclusiveMaximum = Nothing,
+                    nMultipleOf = Nothing,
+                    numberEnum = Nothing
+                  }
+            ),
+            ( "longitude",
+              Num $
+                NP
+                  { nMinimum = Just (-180),
+                    nMaximum = Just 180,
+                    nExclusiveMinimum = Nothing,
+                    nExclusiveMaximum = Nothing,
+                    nMultipleOf = Nothing,
+                    numberEnum = Nothing
+                  }
+            )
           ]
       }

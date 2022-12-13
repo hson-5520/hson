@@ -1,4 +1,14 @@
-module HSON (HSON (H), Key, Value (Boolean, Number, String, Array, Object, Null, Integer), hsonEmpty, hsonSchool, hsonDog, hsonArray, hsonSingle) where
+module HSON
+  ( HSON (H),
+    Key,
+    Value (Boolean, Number, String, Array, Object, Null, Integer),
+    hsonEmpty,
+    hsonSchool,
+    hsonDog,
+    hsonArray,
+    hsonSingle,
+  )
+where
 
 import Control.Monad qualified as Monad
 import Parser qualified as P
@@ -88,7 +98,14 @@ hsonSingle = H [("name", String "bob")]
 hsonArray :: HSON
 hsonArray =
   H
-    [ ("bob", Array [Integer 1, String "hi", Object $ H [("name", String "Jose")], Null])
+    [ ( "bob",
+        Array
+          [ Integer 1,
+            String "hi",
+            Object $ H [("name", String "Jose")],
+            Null
+          ]
+      )
     ]
 
 hsonDog :: HSON

@@ -3,8 +3,16 @@ module ToJSONTest where
 import Control.Applicative
 import Data.Map qualified as Map
 import FromJSON
-import HSON (HSON (H), Key, Value (Array, Boolean, Integer, Null, Number, Object, String), hsonArray, hsonDog, hsonEmpty, hsonSchool, hsonSingle)
-
+import HSON
+  ( HSON (H),
+    Key,
+    Value (Array, Boolean, Integer, Null, Number, Object, String),
+    hsonArray,
+    hsonDog,
+    hsonEmpty,
+    hsonSchool,
+    hsonSingle,
+  )
 import Parser qualified as P
 import Test.HUnit (Counts, Test (TestList), assert, runTestTT, (~:), (~?=))
 import Test.QuickCheck
@@ -23,8 +31,7 @@ test_keyToString =
 
 --- >>> runTestTT test_keyToString
 
--------------------------- Writing Values Tests -----------------------------------------
-
+-------------------------- Writing Values Tests --------------------------------
 test_stringToString :: Test
 test_stringToString =
   "writing string value test"
@@ -116,11 +123,31 @@ tParseValidJson :: Test
 tParseValidJson =
   "parse valid json"
     ~: TestList
-      [ "empty" ~: p "test/json/valid/empty.json" "test/json/test/empty.json" hsonEmpty,
-        "single" ~: p "test/json/valid/single.json" "test/json/test/single.json" hsonSingle,
-        "array" ~: p "test/json/valid/array.json" "test/json/test/array.json" hsonArray,
-        "dog" ~: p "test/json/valid/dog.json" "test/json/test/dog.json" hsonDog,
-        "school" ~: p "test/json/valid/school.json" "test/json/test/school.json" hsonSchool
+      [ "empty"
+          ~: p
+            "test/json/valid/empty.json"
+            "test/json/test/empty.json"
+            hsonEmpty,
+        "single"
+          ~: p
+            "test/json/valid/single.json"
+            "test/json/test/single.json"
+            hsonSingle,
+        "array"
+          ~: p
+            "test/json/valid/array.json"
+            "test/json/test/array.json"
+            hsonArray,
+        "dog"
+          ~: p
+            "test/json/valid/dog.json"
+            "test/json/test/dog.json"
+            hsonDog,
+        "school"
+          ~: p
+            "test/json/valid/school.json"
+            "test/json/test/school.json"
+            hsonSchool
       ]
   where
     p fn fp hson = do

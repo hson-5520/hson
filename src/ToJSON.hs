@@ -1,7 +1,24 @@
-module ToJSON (integerToString, hsonToString, keyToString, valueToString, stringToString, numberToString, booleanToString, arrayToString, objectToString, nullToString, toJSON) where
+module ToJSON
+  ( integerToString,
+    hsonToString,
+    keyToString,
+    valueToString,
+    stringToString,
+    numberToString,
+    booleanToString,
+    arrayToString,
+    objectToString,
+    nullToString,
+    toJSON,
+  )
+where
 
 import Control.Concurrent (yield)
-import HSON (HSON (H), Key, Value (Array, Boolean, Integer, Null, Number, Object, String))
+import HSON
+  ( HSON (H),
+    Key,
+    Value (Array, Boolean, Integer, Null, Number, Object, String),
+  )
 
 ------------------------- Writing Keys ---------------------------------------
 
@@ -45,7 +62,8 @@ arrayToString a = "[" ++ arrayToStringHelper a ++ "]"
     arrayToStringHelper :: [Value] -> String
     arrayToStringHelper [] = ""
     arrayToStringHelper [x] = valueToString x
-    arrayToStringHelper (x : xs) = valueToString x ++ ", " ++ arrayToStringHelper xs
+    arrayToStringHelper (x : xs) =
+      valueToString x ++ ", " ++ arrayToStringHelper xs
 
 -- | Converts a HSON object value to a string for writing to the JSON file
 objectToString :: HSON -> String
@@ -54,7 +72,8 @@ objectToString (H lst) = "{" ++ objectToStringHelper lst ++ "}"
     objectToStringHelper :: [(Key, Value)] -> String
     objectToStringHelper [] = ""
     objectToStringHelper [(k, v)] = keyToString k ++ valueToString v
-    objectToStringHelper ((k, v) : xs) = keyToString k ++ valueToString v ++ ",\n" ++ objectToStringHelper xs
+    objectToStringHelper ((k, v) : xs) =
+      keyToString k ++ valueToString v ++ ",\n" ++ objectToStringHelper xs
 
 -- | Converts a HSON null value to a string for writing to the JSON file
 nullToString :: String

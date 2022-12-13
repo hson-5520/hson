@@ -2,7 +2,16 @@ module HSONTest where
 
 import Control.Applicative
 import FromJSON
-import HSON (HSON, Key, Value (Array, Boolean, Null, Number, Object, String), hsonArray, hsonDog, hsonEmpty, hsonSchool, hsonSingle)
+import HSON
+  ( HSON,
+    Key,
+    Value (Array, Boolean, Null, Number, Object, String),
+    hsonArray,
+    hsonDog,
+    hsonEmpty,
+    hsonSchool,
+    hsonSingle,
+  )
 import Parser
 import Test.HUnit (Test (TestList), assert, runTestTT, (~:), (~?=))
 import Test.QuickCheck

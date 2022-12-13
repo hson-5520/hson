@@ -4,7 +4,11 @@ import Control.Applicative
 import Control.Monad qualified
 import Control.Monad qualified as Monad
 import Control.Monad.Except
-import HSON (HSON (H), Key, Value (Array, Boolean, Integer, Null, Number, Object, String))
+import HSON
+  ( HSON (H),
+    Key,
+    Value (Array, Boolean, Integer, Null, Number, Object, String),
+  )
 import Parser (Parser)
 import Parser qualified as P
 
@@ -50,7 +54,10 @@ scientificNotationParser =
 
 -- | parses a JSON key and the trailing colon
 keyP :: Parser Key
-keyP = P.char '\"' *> many (P.satisfy (/= '\"')) <* wsP (P.char '\"') <* wsP (P.char ':')
+keyP =
+  P.char '\"' *> many (P.satisfy (/= '\"'))
+    <* wsP (P.char '\"')
+    <* wsP (P.char ':')
 
 --------------------------------- Value Parsing --------------------------------
 
@@ -68,7 +75,11 @@ valueP =
     ]
 
 stringValP :: Parser Value
-stringValP = String <$> (P.char '\"' *> many (P.satisfy (/= '\"')) <* wsP (P.char '\"'))
+stringValP =
+  String
+    <$> ( P.char '\"' *> many (P.satisfy (/= '\"'))
+            <* wsP (P.char '\"')
+        )
 
 -- | parses an integer
 intValP :: Parser Value
@@ -96,10 +107,14 @@ decimalParser =
   Number . read
     <$> ( (++)
             <$> ( (++)
-                    <$> ((++) <$> ((++) <$> signParser <*> some P.digit) <*> P.string ".")
+                    <$> ( (++) <$> ((++) <$> signParser <*> some P.digit)
+                            <*> P.string "."
+                        )
                     <*> some P.digit
                 )
-            <*> ((++) <$> scientificNotationParser <*> wsP (some P.digit) <|> wsP (P.string ""))
+            <*> ( (++) <$> scientificNotationParser
+                    <*> wsP (some P.digit) <|> wsP (P.string "")
+                )
         )
 
 -- | parses any number
@@ -108,7 +123,11 @@ numberValP = P.choice [decimalParser, scientificIntParser]
 
 -- | parses any boolean value
 booleanValP :: Parser Value
-booleanValP = P.choice [constP "true" (Boolean True), constP "false" (Boolean False)]
+booleanValP =
+  P.choice
+    [ constP "true" (Boolean True),
+      constP "false" (Boolean False)
+    ]
 
 -- | parses any list which appears as a value
 arrayValP :: Parser Value
@@ -122,7 +141,7 @@ objectValP = Object <$> hsonP
 nullValP :: Parser Value
 nullValP = constP "null" Null
 
----------------------------- Parse JSON ----------------------------------------------
+---------------------------- Parse JSON ----------------------------------------
 
 -- | parses a single item (key, value) in a JSON file
 itemP :: Parser (Key, Value)

@@ -15,7 +15,16 @@ import FromJSON
     stringValP,
     wsP,
   )
-import HSON (HSON (H), Key, Value (Array, Boolean, Integer, Null, Number, Object, String), hsonArray, hsonDog, hsonEmpty, hsonSchool, hsonSingle)
+import HSON
+  ( HSON (H),
+    Key,
+    Value (Array, Boolean, Integer, Null, Number, Object, String),
+    hsonArray,
+    hsonDog,
+    hsonEmpty,
+    hsonSchool,
+    hsonSingle,
+  )
 import Parser qualified as P
 import Test.HUnit (Counts, Test (TestList), assert, runTestTT, (~:), (~?=))
 import Test.QuickCheck ()
@@ -69,8 +78,10 @@ test_stringValP =
     ~: TestList
       [ P.parse stringValP "\"a\"" ~?= Right (String "a"),
         P.parse stringValP "\"a\\\"\"" ~?= Right (String "a\\"),
-        P.parse (many stringValP) "\"a\"   \"b\"" ~?= Right [String "a", String "b"],
-        P.parse (many stringValP) "\" a\"   \"b\"" ~?= Right [String " a", String "b"]
+        P.parse (many stringValP) "\"a\"   \"b\""
+          ~?= Right [String "a", String "b"],
+        P.parse (many stringValP) "\" a\"   \"b\""
+          ~?= Right [String " a", String "b"]
       ]
 
 -- >>> runTestTT test_stringValP
@@ -126,8 +137,23 @@ test_arrayValP =
   "parse json array value "
     ~: TestList
       [ P.parse arrayValP "\"a\"" ~?= Left "No parses",
-        P.parse arrayValP "[1, 2, 3.1]" ~?= Right (Array [Integer 1, Integer 2, Number 3.1]),
-        P.parse arrayValP "[32, \"america\", null, {\"bob\": -2.1}]" ~?= Right (Array [Integer 32, String "america", Null, Object $ H [("bob", Number (-2.1))]])
+        P.parse arrayValP "[1, 2, 3.1]"
+          ~?= Right
+            ( Array
+                [ Integer 1,
+                  Integer 2,
+                  Number 3.1
+                ]
+            ),
+        P.parse arrayValP "[32, \"america\", null, {\"bob\": -2.1}]"
+          ~?= Right
+            ( Array
+                [ Integer 32,
+                  String "america",
+                  Null,
+                  Object $ H [("bob", Number (-2.1))]
+                ]
+            )
       ]
 
 -- >>> runTestTT test_arrayValP

@@ -9,8 +9,45 @@ import Data.Maybe (isNothing)
 import Data.Maybe qualified as Maybe
 import FromJSON (itemP, parseJSON)
 import FromJSONSchema
-import HSON (HSON (H), Key, Value (Array, Boolean, Integer, Null, Number, Object, String))
-import HSONSchema (ArrProperties (AP), BoolProperties (BP), HSONSchema (Arr, Bool, Int, Nul, Num, Obj, Str), IntProperties (IP), NumProperties (NP), ObjProperties (OP), StrProperties (SP), boolEnum, iExclusiveMaximum, iExclusiveMinimum, iMaximum, iMinimum, iMultipleOf, intEnum, isUnique, items, maxItems, maxLength, maxProperties, minItems, minLength, minProperties, nExclusiveMaximum, nExclusiveMinimum, nMaximum, nMinimum, nMultipleOf, numberEnum, pattern, properties, required, stringEnum)
+import HSON
+  ( HSON (H),
+    Key,
+    Value (Array, Boolean, Integer, Null, Number, Object, String),
+  )
+import HSONSchema
+  ( ArrProperties (AP),
+    BoolProperties (BP),
+    HSONSchema (Arr, Bool, Int, Nul, Num, Obj, Str),
+    IntProperties (IP),
+    NumProperties (NP),
+    ObjProperties (OP),
+    StrProperties (SP),
+    boolEnum,
+    iExclusiveMaximum,
+    iExclusiveMinimum,
+    iMaximum,
+    iMinimum,
+    iMultipleOf,
+    intEnum,
+    isUnique,
+    items,
+    maxItems,
+    maxLength,
+    maxProperties,
+    minItems,
+    minLength,
+    minProperties,
+    nExclusiveMaximum,
+    nExclusiveMinimum,
+    nMaximum,
+    nMinimum,
+    nMultipleOf,
+    numberEnum,
+    pattern,
+    properties,
+    required,
+    stringEnum,
+  )
 import Test.HUnit
 import Text.Regex (matchRegex, matchRegexAll, mkRegex, splitRegex)
 import ToJSON
@@ -19,7 +56,12 @@ import ToJSON
 
 -- | takes a Maybe value and returns True if it's nothing or if it is satisfies
 -- | the given constraint
-maybeValidate :: String -> Maybe a -> b -> (b -> a -> Bool) -> Either String Bool
+maybeValidate ::
+  String ->
+  Maybe a ->
+  b ->
+  (b -> a -> Bool) ->
+  Either String Bool
 maybeValidate errMessage property num f =
   if isNothing property || f num (Maybe.fromJust property)
     then Right True
@@ -95,7 +137,11 @@ validateNum = S $ \property value -> case value of
           maybeValidate "| provided number is not > minimum" exclusiveMin x (>)
           maybeValidate "| provided number is not < max" exclusiveMax x (<)
           maybeValidate "| provided number is not in provided enum" enum x elem
-          maybeValidate "| provided number is not a multiple of the multipleOf argument" multipleOf x (\num property -> Data.Fixed.mod' num property == 0)
+          maybeValidate
+            "| provided number is not a multiple of the multipleOf argument"
+            multipleOf
+            x
+            (\num property -> Data.Fixed.mod' num property == 0)
   Integer y ->
     let x = fromIntegral y
         min = nMinimum property
@@ -110,7 +156,11 @@ validateNum = S $ \property value -> case value of
           maybeValidate "| provided number is not > minimum" exclusiveMin x (>)
           maybeValidate "| provided number is not < max" exclusiveMax x (<)
           maybeValidate "| provided number is not in provided enum" enum x elem
-          maybeValidate "| provided number is not a multiple of the multipleOf argument" multipleOf x (\num property -> Data.Fixed.mod' num property == 0)
+          maybeValidate
+            "| provided number is not a multiple of the multipleOf argument"
+            multipleOf
+            x
+            (\num property -> Data.Fixed.mod' num property == 0)
   _ -> Left "| provided value is not a number or int"
 
 -- | create a schema to check if an integer meets its required properties
@@ -129,7 +179,11 @@ validateInt = S $ \property value -> case value of
           maybeValidate "| provided number is not > minimum" exclusiveMin x (>)
           maybeValidate "| provided number is not < max" exclusiveMax x (<)
           maybeValidate "| provided number is not in provided enum" enum x elem
-          maybeValidate "| provided number is not a multiple of the multipleOf argument" multipleOf x (\num property -> mod num property == 0)
+          maybeValidate
+            "| provided number is not a multiple of the multipleOf argument"
+            multipleOf
+            x
+            (\num property -> mod num property == 0)
   _ -> Left "| provided value is not an int"
 
 -- | create a schema to check if a string meets its required properties
@@ -149,7 +203,10 @@ validateString = S $ \property value -> case value of
             else
               ( case matchRegexAll (mkRegex (Maybe.fromJust pat)) x of
                   Nothing -> Left "| regex for string is not satisfied"
-                  Just (_, matched, _, _) -> if matched == x then return True else Left "|regex for string is not satisfied"
+                  Just (_, matched, _, _) ->
+                    if matched == x
+                      then return True
+                      else Left "|regex for string is not satisfied"
               )
           return True
   _ -> Left "| provided value is not a string"
@@ -173,7 +230,11 @@ validateArr = S $ \property value -> case value of
      in do
           maybeValidate "| too few items in array" min (length x) (>=)
           maybeValidate "| too many items in array" max (length x) (<=)
-          maybeValidate "| at least one item does not meet provided item schema" itemProps x validateItems
+          maybeValidate
+            "| at least one item does not meet provided item schema"
+            itemProps
+            x
+            validateItems
           if not uniq || (length (uniqueElems x) == length x)
             then return True
             else Left "| array does not contain unique items"
@@ -199,8 +260,16 @@ validateObj = S $ \property value -> case value of
         req = required property
         props = properties property
      in do
-          maybeValidate "| too few properties in given object" min (length x) (>=)
-          maybeValidate "| too many properties in given object" max (length x) (<=)
+          maybeValidate
+            "| too few properties in given object"
+            min
+            (length x)
+            (>=)
+          maybeValidate
+            "| too many properties in given object"
+            max
+            (length x)
+            (<=)
           requiredKeysPresent req (Map.fromList x)
           validateAttributes x (Map.fromList props)
   _ -> Left "| provided value is not an object"

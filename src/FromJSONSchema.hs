@@ -10,8 +10,45 @@ import Data.Maybe
 import Data.Maybe qualified as Maybe
 import FromJSON
 import GHC.Generics qualified as Maybe
-import HSON (HSON (H), Key, Value (Array, Boolean, Integer, Null, Number, Object, String))
-import HSONSchema (ArrProperties (AP), BoolProperties (BP), HSONSchema (Arr, Bool, Int, Nul, Num, Obj, Str), IntProperties (IP), NumProperties (NP), ObjProperties (OP), StrProperties (SP), boolEnum, iExclusiveMaximum, iExclusiveMinimum, iMaximum, iMinimum, iMultipleOf, intEnum, isUnique, items, maxItems, maxLength, maxProperties, minItems, minLength, minProperties, nExclusiveMaximum, nExclusiveMinimum, nMaximum, nMinimum, nMultipleOf, numberEnum, pattern, properties, required, stringEnum)
+import HSON
+  ( HSON (H),
+    Key,
+    Value (Array, Boolean, Integer, Null, Number, Object, String),
+  )
+import HSONSchema
+  ( ArrProperties (AP),
+    BoolProperties (BP),
+    HSONSchema (Arr, Bool, Int, Nul, Num, Obj, Str),
+    IntProperties (IP),
+    NumProperties (NP),
+    ObjProperties (OP),
+    StrProperties (SP),
+    boolEnum,
+    iExclusiveMaximum,
+    iExclusiveMinimum,
+    iMaximum,
+    iMinimum,
+    iMultipleOf,
+    intEnum,
+    isUnique,
+    items,
+    maxItems,
+    maxLength,
+    maxProperties,
+    minItems,
+    minLength,
+    minProperties,
+    nExclusiveMaximum,
+    nExclusiveMinimum,
+    nMaximum,
+    nMinimum,
+    nMultipleOf,
+    numberEnum,
+    pattern,
+    properties,
+    required,
+    stringEnum,
+  )
 import Network.Socket (accept)
 import Parser (parse)
 import Parser qualified as P
@@ -102,11 +139,26 @@ numberHelper (H x) =
    in do
         minVal <- matchNumber "minimum is not a number" "minimum" map
         maxVal <- matchNumber "maximum is not a number" "maximum" map
-        exclusiveMin <- matchNumber "exclusiveMinimum is not a number" "exclusiveMinimum" map
-        exclusiveMax <- matchNumber "exclusiveMaximum is not a number" "exclusiveMaximum" map
-        multipleOf <- matchNumber "multipleOf is not a number" "multipleOf" map
+        exclusiveMin <-
+          matchNumber
+            "exclusiveMinimum is not a number"
+            "exclusiveMinimum"
+            map
+        exclusiveMax <-
+          matchNumber
+            "exclusiveMaximum is not a number"
+            "exclusiveMaximum"
+            map
+        multipleOf <-
+          matchNumber
+            "multipleOf is not a number"
+            "multipleOf"
+            map
         enum <- case Map.lookup "enum" map of
-          Just (Array y) -> if checkArrayLength y then Right $ Just $ filterNumberArray y else Left "enum has elements of different types"
+          Just (Array y) ->
+            if checkArrayLength y
+              then Right $ Just $ filterNumberArray y
+              else Left "enum has elements of different types"
           Just _ -> Left "enum is not an array"
           Nothing -> Right Nothing
         return $
@@ -124,13 +176,36 @@ intHelper :: HSON -> Either String HSONSchema
 intHelper (H x) =
   let map = Map.fromList x
    in do
-        minVal <- matchInt "minimum is not an integer" "minimum" map
-        maxVal <- matchInt "maximum is not an integer" "maximum" map
-        exclusiveMin <- matchInt "exclusiveMinimum is not an integer" "exclusiveMinimum" map
-        exclusiveMax <- matchInt "exclusiveMaximum is not an integer" "exclusiveMaximum" map
-        multipleOf <- matchInt "multipleOf is not an integer" "multipleOf" map
+        minVal <-
+          matchInt
+            "minimum is not an integer"
+            "minimum"
+            map
+        maxVal <-
+          matchInt
+            "maximum is not an integer"
+            "maximum"
+            map
+        exclusiveMin <-
+          matchInt
+            "exclusiveMinimum is not an integer"
+            "exclusiveMinimum"
+            map
+        exclusiveMax <-
+          matchInt
+            "exclusiveMaximum is not an integer"
+            "exclusiveMaximum"
+            map
+        multipleOf <-
+          matchInt
+            "multipleOf is not an integer"
+            "multipleOf"
+            map
         enum <- case Map.lookup "enum" map of
-          Just (Array y) -> if checkArrayLength y then Right $ Just $ filterIntArray y else Left "enum has elements of different types"
+          Just (Array y) ->
+            if checkArrayLength y
+              then Right $ Just $ filterIntArray y
+              else Left "enum has elements of different types"
           Just _ -> Left "enum is not an array"
           Nothing -> Right Nothing
         return $
@@ -149,11 +224,26 @@ stringHelper :: HSON -> Either String HSONSchema
 stringHelper (H x) =
   let map = Map.fromList x
    in do
-        minLength <- matchInt "minLength is not an integer" "minLength" map
-        maxLength <- matchInt "maxLength is not an integer" "maxLength" map
-        strPattern <- matchString "pattern is not a string" "pattern" map
+        minLength <-
+          matchInt
+            "minLength is not an integer"
+            "minLength"
+            map
+        maxLength <-
+          matchInt
+            "maxLength is not an integer"
+            "maxLength"
+            map
+        strPattern <-
+          matchString
+            "pattern is not a string"
+            "pattern"
+            map
         enum <- case Map.lookup "enum" map of
-          Just (Array y) -> if checkArrayLength y then Right $ Just $ filterStringArray y else Left "enum has elements of different types"
+          Just (Array y) ->
+            if checkArrayLength y
+              then Right $ Just $ filterStringArray y
+              else Left "enum has elements of different types"
           Just _ -> Left "enum is not an array"
           Nothing -> Right Nothing
         return $
@@ -165,13 +255,17 @@ stringHelper (H x) =
                 stringEnum = enum
               }
 
--- | converts a HSON object representing a booleaan property to an HSON Schema bool property
+-- | converts a HSON object representing a booleaan property to an
+-- | HSON Schema bool property
 boolHelper :: HSON -> Either String HSONSchema
 boolHelper (H x) =
   let map = Map.fromList x
    in do
         enum <- case Map.lookup "enum" map of
-          Just (Array y) -> if checkArrayLength y then Right $ Just $ filterBoolArray y else Left "enum has elements of different types"
+          Just (Array y) ->
+            if checkArrayLength y
+              then Right $ Just $ filterBoolArray y
+              else Left "enum has elements of different types"
           Just _ -> Left "enum is not an array"
           Nothing -> Right Nothing
         return $ Bool $ BP {boolEnum = boolArrayHelper =<< enum}
@@ -203,8 +297,16 @@ objHelper :: HSON -> Either String HSONSchema
 objHelper (H x) =
   let map = Map.fromList x
    in do
-        minProperties <- matchInt "minProperties is not an integer" "minProperties" map
-        maxProperties <- matchInt "maxProperties is not an integer" "maxProperties" map
+        minProperties <-
+          matchInt
+            "minProperties is not an integer"
+            "minProperties"
+            map
+        maxProperties <-
+          matchInt
+            "maxProperties is not an integer"
+            "maxProperties"
+            map
         required <- case Map.lookup "required" map of
           Just (Array y) ->
             if length y == length (filterStringArray y)
@@ -227,7 +329,8 @@ objHelper (H x) =
                 properties = properties
               }
 
-getErrorMessages :: [Either String (Key, HSONSchema)] -> Either String [(Key, HSONSchema)]
+getErrorMessages ::
+  [Either String (Key, HSONSchema)] -> Either String [(Key, HSONSchema)]
 getErrorMessages = Data.List.foldr combine (Right [])
   where
     combine x acc = case (x, acc) of

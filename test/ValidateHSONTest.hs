@@ -6,8 +6,28 @@ import Data.Map qualified as Map
 import Data.Maybe qualified as Maybe
 import FromJSON
 import FromJSONSchema (hsonToHSONSchema)
-import HSON (HSON (..), Key, Value (Array, Boolean, Integer, Null, Number, Object, String), hsonArray, hsonDog, hsonEmpty, hsonSchool, hsonSingle)
-import HSONSchema (ArrProperties (..), BoolProperties (..), HSONSchema (..), IntProperties (..), NumProperties (..), ObjProperties (..), StrProperties (..), address, card, coordinate)
+import HSON
+  ( HSON (..),
+    Key,
+    Value (Array, Boolean, Integer, Null, Number, Object, String),
+    hsonArray,
+    hsonDog,
+    hsonEmpty,
+    hsonSchool,
+    hsonSingle,
+  )
+import HSONSchema
+  ( ArrProperties (..),
+    BoolProperties (..),
+    HSONSchema (..),
+    IntProperties (..),
+    NumProperties (..),
+    ObjProperties (..),
+    StrProperties (..),
+    address,
+    card,
+    coordinate,
+  )
 import Parser qualified as P
 import Test.HUnit (Counts, Test (TestList), assert, runTestTT, (~:), (~?=))
 import Test.QuickCheck
@@ -42,7 +62,7 @@ test_uniqueElems =
 --- >>> runTestTT test_uniqueElems
 -- Counts {cases = 5, tried = 5, errors = 0, failures = 0}
 
-------------------------- HSON Schema Property Validating Tests -----------------------------
+------------------------- HSON Schema Property Validating Tests ----------------
 
 testNP :: NumProperties
 testNP =
@@ -61,11 +81,21 @@ test_validateNum =
     ~: TestList
       [ validate validateNum testNP (Number 4.0) ~?= Right True,
         validate validateNum testNP (Number 5.0) ~?= Right True,
-        validate validateNum testNP (Number 6.0) ~?= Left "| provided number is not <= max",
-        validate validateNum testNP (Number 2.5) ~?= Left "| provided number is not a multiple of the multipleOf argument",
-        validate validateNum testNP (Number 3.0) ~?= Left "| provided number is not in provided enum",
-        validate validateNum testNP (Number (-1.0)) ~?= Left "| provided number is not > minimum",
-        validate validateNum testNP Null ~?= Left "| provided value is not a number or int"
+        validate validateNum testNP (Number 6.0)
+          ~?= Left
+            "| provided number is not <= max",
+        validate validateNum testNP (Number 2.5)
+          ~?= Left
+            "| provided number is not a multiple of the multipleOf argument",
+        validate validateNum testNP (Number 3.0)
+          ~?= Left
+            "| provided number is not in provided enum",
+        validate validateNum testNP (Number (-1.0))
+          ~?= Left
+            "| provided number is not > minimum",
+        validate validateNum testNP Null
+          ~?= Left
+            "| provided value is not a number or int"
       ]
 
 --- >>> runTestTT test_validateNum
@@ -88,11 +118,19 @@ test_validateInt =
     ~: TestList
       [ validate validateInt testIP (Integer 4) ~?= Right True,
         validate validateInt testIP (Integer 5) ~?= Right True,
-        validate validateInt testIP (Integer 6) ~?= Left "| provided number is not <= max",
+        validate validateInt testIP (Integer 6)
+          ~?= Left
+            "| provided number is not <= max",
         validate validateInt testIP (Integer 2) ~?= Right True,
-        validate validateInt testIP (Integer 3) ~?= Left "| provided number is not in provided enum",
-        validate validateInt testIP (Integer (-1)) ~?= Left "| provided number is not > minimum",
-        validate validateInt testIP Null ~?= Left "| provided value is not an int"
+        validate validateInt testIP (Integer 3)
+          ~?= Left
+            "| provided number is not in provided enum",
+        validate validateInt testIP (Integer (-1))
+          ~?= Left
+            "| provided number is not > minimum",
+        validate validateInt testIP Null
+          ~?= Left
+            "| provided value is not an int"
       ]
 
 --- >>> runTestTT test_validateInt
@@ -112,11 +150,21 @@ test_validateString =
   "test validate string"
     ~: TestList
       [ validate validateString testSP (String "aaaaaab") ~?= Right True,
-        validate validateString testSP (String "aaaaaaa") ~?= Left "| regex for string is not satisfied",
-        validate validateString testSP (String "hello") ~?= Left "| string is not in provided enum",
-        validate validateString testSP (String "aaab") ~?= Left "| length of string is too small",
-        validate validateString testSP (String "this is too long") ~?= Left "| length of string is too large",
-        validate validateString testSP Null ~?= Left "| provided value is not a string"
+        validate validateString testSP (String "aaaaaaa")
+          ~?= Left
+            "| regex for string is not satisfied",
+        validate validateString testSP (String "hello")
+          ~?= Left
+            "| string is not in provided enum",
+        validate validateString testSP (String "aaab")
+          ~?= Left
+            "| length of string is too small",
+        validate validateString testSP (String "this is too long")
+          ~?= Left
+            "| length of string is too large",
+        validate validateString testSP Null
+          ~?= Left
+            "| provided value is not a string"
       ]
 
 -- >>> runTestTT test_validateString
@@ -130,8 +178,12 @@ test_validateBool =
   "test validate bool"
     ~: TestList
       [ validate validateBool testBP (Boolean True) ~?= Right True,
-        validate validateBool testBP (Boolean False) ~?= Left "| boolean is not the provided enum",
-        validate validateBool testBP Null ~?= Left "| provided value is not a boolean"
+        validate validateBool testBP (Boolean False)
+          ~?= Left
+            "| boolean is not the provided enum",
+        validate validateBool testBP Null
+          ~?= Left
+            "| provided value is not a boolean"
       ]
 
 --- >>> runTestTT test_validateBool
@@ -150,13 +202,25 @@ test_validateArr :: Test
 test_validateArr =
   "test validate array"
     ~: TestList
-      [ validate validateArr testAP (Array [Integer 2, Integer 4]) ~?= Right True,
-        validate validateArr testAP (Array [Integer 2, Integer 4, Integer 5]) ~?= Right True,
-        validate validateArr testAP (Array [Integer 2]) ~?= Left "| too few items in array",
-        validate validateArr testAP (Array [Integer 2, Integer 2]) ~?= Left "| array does not contain unique items",
-        validate validateArr testAP (Array []) ~?= Left "| too few items in array",
-        validate validateArr testAP (Array [Integer 2, Integer 3]) ~?= Left "| at least one item does not meet provided item schema",
-        validate validateArr testAP Null ~?= Left "| provided value is not an array"
+      [ validate validateArr testAP (Array [Integer 2, Integer 4])
+          ~?= Right True,
+        validate validateArr testAP (Array [Integer 2, Integer 4, Integer 5])
+          ~?= Right True,
+        validate validateArr testAP (Array [Integer 2])
+          ~?= Left
+            "| too few items in array",
+        validate validateArr testAP (Array [Integer 2, Integer 2])
+          ~?= Left
+            "| array does not contain unique items",
+        validate validateArr testAP (Array [])
+          ~?= Left
+            "| too few items in array",
+        validate validateArr testAP (Array [Integer 2, Integer 3])
+          ~?= Left
+            "| at least one item does not meet provided item schema",
+        validate validateArr testAP Null
+          ~?= Left
+            "| provided value is not an array"
       ]
 
 --- >>> runTestTT test_validateArr
@@ -183,19 +247,149 @@ test_validateObj :: Test
 test_validateObj =
   "test validate object"
     ~: TestList
-      [ validate validateObj testOP (Object $ H [("bool", Boolean True)]) ~?= Left "| too few properties in given object",
-        validate validateObj testOP (Object $ H [("bool", Boolean True), ("num", Number 4.0)]) ~?= Right True,
-        validate validateObj testOP (Object $ H [("bool", Boolean False), ("num", Number 4.0)]) ~?= Left "bool| boolean is not the provided enum",
-        validate validateObj testOP (Object $ H [("bool", Boolean True), ("Bill", Null), ("Jim", Null)]) ~?= Right True,
-        validate validateObj testOP (Object $ H [("bool", Boolean True), ("Bill", Number 4.0), ("Jim", Null), ("Mike", Null), ("George", Null), ("Chris", Null)]) ~?= Left "| too many properties in given object",
-        validate validateObj testOP (Object $ H [("bool", Boolean True), ("null", Null)]) ~?= Right True,
-        validate validateObj testOP (Object $ H [("int", Integer 2), ("null", Null)]) ~?= Left "bool| doesn't exist",
-        validate validateObj testOP (Object $ H [("int", Integer 2), ("null", Number 4.0), ("bool", Boolean True)]) ~?= Left "null| is not null but should be",
-        validate validateObj testOP (Object $ H [("bool", Boolean True), ("int", Integer 2), ("null", Null), ("num", Number 4.0), ("str", String "aaaaaab")]) ~?= Right True,
-        validate validateObj testOP (Object $ H [("bool", Boolean True), ("arr", Array [Integer 2, Integer 4])]) ~?= Right True,
-        validate validateObj testOP (Object $ H [("bool", Boolean True), ("obj", Object $ H [("bool", Boolean True), ("num", Number 4.0)])]) ~?= Right True,
-        validate validateObj testOP (Object $ H [("bool", Boolean True), ("obj", Object $ H [("bool", Boolean False), ("num", Number 4.0)])]) ~?= Left "obj.bool| boolean is not the provided enum",
-        validate validateObj testOP Null ~?= Left "| provided value is not an object"
+      [ validate
+          validateObj
+          testOP
+          ( Object $
+              H
+                [ ("bool", Boolean True)
+                ]
+          )
+          ~?= Left "| too few properties in given object",
+        validate
+          validateObj
+          testOP
+          ( Object $
+              H
+                [ ("bool", Boolean True),
+                  ("num", Number 4.0)
+                ]
+          )
+          ~?= Right True,
+        validate
+          validateObj
+          testOP
+          ( Object $
+              H
+                [ ("bool", Boolean False),
+                  ("num", Number 4.0)
+                ]
+          )
+          ~?= Left "bool| boolean is not the provided enum",
+        validate
+          validateObj
+          testOP
+          ( Object $
+              H
+                [ ("bool", Boolean True),
+                  ("Bill", Null),
+                  ("Jim", Null)
+                ]
+          )
+          ~?= Right True,
+        validate
+          validateObj
+          testOP
+          ( Object $
+              H
+                [ ("bool", Boolean True),
+                  ("Bill", Number 4.0),
+                  ("Jim", Null),
+                  ("Mike", Null),
+                  ("George", Null),
+                  ("Chris", Null)
+                ]
+          )
+          ~?= Left "| too many properties in given object",
+        validate
+          validateObj
+          testOP
+          ( Object $
+              H
+                [ ("bool", Boolean True),
+                  ("null", Null)
+                ]
+          )
+          ~?= Right True,
+        validate
+          validateObj
+          testOP
+          ( Object $
+              H
+                [ ("int", Integer 2),
+                  ("null", Null)
+                ]
+          )
+          ~?= Left "bool| doesn't exist",
+        validate
+          validateObj
+          testOP
+          ( Object $
+              H
+                [ ("int", Integer 2),
+                  ("null", Number 4.0),
+                  ("bool", Boolean True)
+                ]
+          )
+          ~?= Left "null| is not null but should be",
+        validate
+          validateObj
+          testOP
+          ( Object $
+              H
+                [ ("bool", Boolean True),
+                  ("int", Integer 2),
+                  ("null", Null),
+                  ("num", Number 4.0),
+                  ("str", String "aaaaaab")
+                ]
+          )
+          ~?= Right True,
+        validate
+          validateObj
+          testOP
+          ( Object $
+              H
+                [ ("bool", Boolean True),
+                  ("arr", Array [Integer 2, Integer 4])
+                ]
+          )
+          ~?= Right True,
+        validate
+          validateObj
+          testOP
+          ( Object $
+              H
+                [ ("bool", Boolean True),
+                  ( "obj",
+                    Object $
+                      H
+                        [ ("bool", Boolean True),
+                          ("num", Number 4.0)
+                        ]
+                  )
+                ]
+          )
+          ~?= Right True,
+        validate
+          validateObj
+          testOP
+          ( Object $
+              H
+                [ ("bool", Boolean True),
+                  ( "obj",
+                    Object $
+                      H
+                        [ ("bool", Boolean False),
+                          ("num", Number 4.0)
+                        ]
+                  )
+                ]
+          )
+          ~?= Left "obj.bool| boolean is not the provided enum",
+        validate validateObj testOP Null
+          ~?= Left
+            "| provided value is not an object"
       ]
 
 --- >>> runTestTT test_validateObj
@@ -206,9 +400,18 @@ tValidateHSON :: Test
 tValidateHSON =
   "parse valid json"
     ~: TestList
-      [ "address" ~: p "test/json-schema/schema/address-schema.json" "test/json-schema/object/address-object.json",
-        "coordinate" ~: p "test/json-schema/schema/coordinate-schema.json" "test/json-schema/object/coordinate-object.json",
-        "card" ~: p "test/json-schema/schema/card-schema.json" "test/json-schema/object/card-object.json"
+      [ "address"
+          ~: p
+            "test/json-schema/schema/address-schema.json"
+            "test/json-schema/object/address-object.json",
+        "coordinate"
+          ~: p
+            "test/json-schema/schema/coordinate-schema.json"
+            "test/json-schema/object/coordinate-object.json",
+        "card"
+          ~: p
+            "test/json-schema/schema/card-schema.json"
+            "test/json-schema/object/card-object.json"
       ]
   where
     p schema obj = do
@@ -216,10 +419,9 @@ tValidateHSON =
       o <- parseJSON obj
       case (s, o) of
         (Right x, Right y) -> do
-          case (hsonToHSONSchema x) of
+          case hsonToHSONSchema x of
             Right z -> assert (isRight $ validateHSON y z)
             Left z -> assert False
-          
         (_, _) -> assert False
 
 -- >>> runTestTT tValidateHSON
@@ -241,4 +443,4 @@ test_validateSchemas =
       ]
 
 -- >>> test_validateSchemas
--- Counts {cases = 54, tried = 54, errors = 0, failures = 0}
+-- Counts {cases = 55, tried = 55, errors = 0, failures = 0}
