@@ -55,4 +55,4 @@ Finally, you can start a REPL with `stack ghci`.
 
 
 ## Dependencies
-  - [x] regex-compat: regex validator used for validating patterns in strings
+  - [x] regex-compat: regex validator used in [`ValidateHSON.hs`](src/ValidateHSON.hs)
