@@ -44,6 +44,7 @@ import Parser qualified as P
 
 ------------------------- Defining HSON Schema  --------------------------------
 
+-- | datatype representing an HSONSchema object
 data HSONSchema
   = Str StrProperties -- -> (Value -> Bool)
   | Int IntProperties
@@ -54,6 +55,7 @@ data HSONSchema
   | Nul
   deriving (Show, Eq)
 
+-- | datatype representing the properties of an int
 data IntProperties = IP
   { iMinimum :: Maybe Int,
     iMaximum :: Maybe Int,
@@ -64,6 +66,7 @@ data IntProperties = IP
   }
   deriving (Show, Eq)
 
+-- | datatype representing the properties of a num
 data NumProperties = NP
   { nMinimum :: Maybe Double,
     nMaximum :: Maybe Double,
@@ -74,6 +77,7 @@ data NumProperties = NP
   }
   deriving (Show, Eq)
 
+-- | datatype representing the properties of a string
 data StrProperties = SP
   { minLength :: Maybe Int,
     maxLength :: Maybe Int,
@@ -82,9 +86,11 @@ data StrProperties = SP
   }
   deriving (Show, Eq)
 
+-- | datatype representing the properties of a boolean
 data BoolProperties = BP {boolEnum :: Maybe Bool}
   deriving (Show, Eq)
 
+-- | datatype representing the properties of an array
 data ArrProperties = AP
   { minItems :: Maybe Int,
     maxItems :: Maybe Int,
@@ -93,6 +99,7 @@ data ArrProperties = AP
   }
   deriving (Show, Eq)
 
+-- | datatype representing the properties of an object
 data ObjProperties = OP
   { minProperties :: Maybe Int,
     maxProperties :: Maybe Int,
@@ -103,6 +110,7 @@ data ObjProperties = OP
 
 ---------------------------- HSON Schema ---------------------------------------
 
+-- | HSONSchema representation of a JSON Schema file
 address :: HSONSchema
 address =
   Obj $

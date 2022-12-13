@@ -74,6 +74,7 @@ valueP =
       nullValP
     ]
 
+-- | parses a string between quotes
 stringValP :: Parser Value
 stringValP =
   String
@@ -97,9 +98,6 @@ scientificIntParser =
                 )
             <*> wsP (some P.digit)
         )
-
--- >>> doParse numberValP "1 "
--- Just (Integer 1,"")
 
 -- | parses a double that is positive or negative and can be in scientific notation
 decimalParser :: Parser Value

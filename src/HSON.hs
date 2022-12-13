@@ -43,6 +43,7 @@ newtype HSON = H [(Key, Value)] deriving (Eq, Show)
 
 ------------------------- HSON Generator  ----------------------------------
 
+-- | generates a list of objects of the specified type
 genList :: forall a. (Arbitrary a) => Gen [a]
 genList = sized gen
   where
@@ -53,9 +54,11 @@ genList = sized gen
           (n, Monad.liftM2 (:) arbitrary (gen (n `div` 2)))
         ]
 
+-- | generates arbitrary alphanumeric strings of length 5
 genString :: Gen String
 genString = vectorOf 5 (elements (['a' .. 'z'] ++ ['A' .. 'Z'] ++ ['0' .. '9']))
 
+-- | generates an element of the Value type
 genValue :: Gen Value
 genValue =
   frequency
@@ -68,9 +71,11 @@ genValue =
       (12, return Null)
     ]
 
+-- | generates an arbitrary HSON object
 genHSON :: Gen HSON
 genHSON = suchThatMap (vectorOf 10 $ (,) <$> genString <*> genValue) (Just . H)
 
+-- | arbitrary instance for the Value type
 instance Arbitrary Value where
   arbitrary :: Gen Value
   arbitrary = genValue
@@ -80,6 +85,7 @@ instance Arbitrary Value where
   shrink (Array (x : xs)) = Array <$> [[x], xs]
   shrink x = []
 
+-- | arbitrary instance for the HSON type
 instance Arbitrary HSON where
   arbitrary :: Gen HSON
   arbitrary = genHSON

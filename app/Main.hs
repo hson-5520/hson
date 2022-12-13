@@ -7,12 +7,14 @@ import HSONSchema
 import ToJSON (hsonToString)
 import ValidateHSON (validateHSON)
 
+-- | main function where the execution of the program begins
 main :: IO ()
 main = do
   putStrLn "\nWELCOME TO HSON: HASKELL'S JSON!"
   putStrLn "THIS SHELL WILL ALLOW YOU TO VALIDATE A JSON OBJECT. \n"
   validateJSON
 
+-- | function that validates a JSON object against a JSON schema
 validateJSON :: IO ()
 validateJSON = do
   putStrLn "ENTER THE FILE PATH FOR THE JSON SCHEMA"
@@ -36,18 +38,7 @@ validateJSON = do
             putStrLn $ "\nVALIDATION FAILED: " ++ y ++ "\n"
         (Left err) -> putStrLn $ "\nPARSING JSON OBJECT FAILED: " ++ err ++ "\n"
 
--- o <- parseJSON schema
--- case o of
---   (Right y) -> do
---     putStrLn (hsonToString y)
---     case hsonToHSONSchema y of
---       Right z -> case validateHSON y z of
---         Right x -> putStrLn "\nVALIDATION PASSED!\n"
---         Left y -> do
---           putStrLn $ "\nVALIDATION FAILED: " ++ y ++ "\n"
---       Left x -> putStrLn $ x ++ "Failure\n"
---   (Left err) -> putStrLn $ "\nPARSING JSON OBJECT FAILED: " ++ err ++ "\n"
-
+-- | helper function to parse a JSON file into HSON and then HSONSchema
 validateSchema :: String -> IO (Maybe HSONSchema)
 validateSchema schema = do
   hson <- parseJSON schema

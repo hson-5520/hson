@@ -6,6 +6,7 @@ import Test.QuickCheck
 import ToJSONTest (test_toJSON)
 import ValidateHSONTest (test_validateSchemas)
 
+-- | main function to run all tests
 main :: IO ()
 main = do
   putStrLn "FromJSON Tests"

@@ -57,6 +57,8 @@ import ToJSON
 
 ------------------------- Helpers  --------------------------------
 
+-- | looks up a key in a map and parses the corresponding value
+-- | as an int
 matchInt :: String -> String -> Map Key Value -> Either String (Maybe Int)
 matchInt err s map =
   case Map.lookup s map of
@@ -64,6 +66,8 @@ matchInt err s map =
     Just _ -> Left err
     Nothing -> Right Nothing
 
+-- | looks up a key in a map and parses the corresponding value
+-- | as a number
 matchNumber :: String -> String -> Map Key Value -> Either String (Maybe Double)
 matchNumber err s map =
   case Map.lookup s map of
@@ -72,6 +76,8 @@ matchNumber err s map =
     Just _ -> Left err
     Nothing -> Right Nothing
 
+-- | looks up a key in a map and parses the corresponding value
+-- | as a bool
 matchBool :: String -> String -> Map Key Value -> Either String (Maybe Bool)
 matchBool err s map =
   case Map.lookup s map of
@@ -79,6 +85,8 @@ matchBool err s map =
     Just _ -> Left err
     Nothing -> Right Nothing
 
+-- | looks up a key in a map and parses the corresponding value
+-- | as a string
 matchString :: String -> String -> Map Key Value -> Either String (Maybe String)
 matchString err s map =
   case Map.lookup s map of
@@ -86,6 +94,7 @@ matchString err s map =
     Just _ -> Left err
     Nothing -> Right Nothing
 
+-- | filters a list to return only the integers in it
 filterIntArray :: [Value] -> [Int]
 filterIntArray = Prelude.foldr combHelper []
   where
@@ -93,6 +102,7 @@ filterIntArray = Prelude.foldr combHelper []
       Integer y -> y : acc
       _ -> acc
 
+-- | filters a list to return only the numbers in it
 filterNumberArray :: [Value] -> [Double]
 filterNumberArray = Prelude.foldr combHelper []
   where
@@ -100,6 +110,7 @@ filterNumberArray = Prelude.foldr combHelper []
       Number y -> y : acc
       _ -> acc
 
+-- | filters a list to return only the booleans in it
 filterBoolArray :: [Value] -> [Bool]
 filterBoolArray = Prelude.foldr combHelper []
   where
@@ -107,6 +118,7 @@ filterBoolArray = Prelude.foldr combHelper []
       Boolean y -> y : acc
       _ -> acc
 
+-- | filters a list to return only the strings in it
 filterStringArray :: [Value] -> [String]
 filterStringArray = Prelude.foldr combHelper []
   where
@@ -114,8 +126,7 @@ filterStringArray = Prelude.foldr combHelper []
       String y -> y : acc
       _ -> acc
 
---- >>> filterStringArray [String "latitude", String "longitude"]
-
+-- | checks if all the elements in a list are of the same type
 checkArrayLength :: [Value] -> Bool
 checkArrayLength x =
   length x == length (filterStringArray x)
@@ -123,6 +134,8 @@ checkArrayLength x =
     || length x == length (filterNumberArray x)
     || length x == length (filterBoolArray x)
 
+-- | checks if all the boolean elements in a list are of the same type
+-- | and returns that type if that is the case
 boolArrayHelper :: [Bool] -> Maybe Bool
 boolArrayHelper x
   | Prelude.null x = Nothing
@@ -132,7 +145,8 @@ boolArrayHelper x
 
 ------------------------- HSON to HSON Schema  ---------------------------------
 
--- | converts a HSON object representing a number property to an HSON Schema num property
+-- | converts an HSON object to
+-- | an HSONSchema object representing a number property
 numberHelper :: HSON -> Either String HSONSchema
 numberHelper (H x) =
   let map = Map.fromList x
@@ -172,6 +186,8 @@ numberHelper (H x) =
                 numberEnum = enum
               }
 
+-- | converts an HSON object to
+-- | an HSONSchema object representing an integer property
 intHelper :: HSON -> Either String HSONSchema
 intHelper (H x) =
   let map = Map.fromList x
@@ -219,7 +235,8 @@ intHelper (H x) =
                 intEnum = enum
               }
 
--- | converts a HSON object representing a string property to an HSON Schema str property
+-- | converts an HSON object to
+-- | an HSONSchema object representing a string property
 stringHelper :: HSON -> Either String HSONSchema
 stringHelper (H x) =
   let map = Map.fromList x
@@ -255,8 +272,8 @@ stringHelper (H x) =
                 stringEnum = enum
               }
 
--- | converts a HSON object representing a booleaan property to an
--- | HSON Schema bool property
+-- | converts an HSON object to
+-- | an HSONSchema object representing a boolean property
 boolHelper :: HSON -> Either String HSONSchema
 boolHelper (H x) =
   let map = Map.fromList x
@@ -270,7 +287,8 @@ boolHelper (H x) =
           Nothing -> Right Nothing
         return $ Bool $ BP {boolEnum = boolArrayHelper =<< enum}
 
--- | converts a HSON object representing an array property to an HSON Schema arr property
+-- | converts an HSON object to
+-- | an HSONSchema object representing an array property
 arrHelper :: HSON -> Either String HSONSchema
 arrHelper (H x) =
   let map = Map.fromList x
@@ -293,6 +311,8 @@ arrHelper (H x) =
                 items = items
               }
 
+-- | converts an HSON object to
+-- | an HSONSchema object representing an object property
 objHelper :: HSON -> Either String HSONSchema
 objHelper (H x) =
   let map = Map.fromList x
@@ -329,6 +349,8 @@ objHelper (H x) =
                 properties = properties
               }
 
+-- | returns a concatenation of all error messages (if any), or returns
+-- | a list of all (key, HSONSchema) pairs in the original list
 getErrorMessages ::
   [Either String (Key, HSONSchema)] -> Either String [(Key, HSONSchema)]
 getErrorMessages = Data.List.foldr combine (Right [])
@@ -339,6 +361,8 @@ getErrorMessages = Data.List.foldr combine (Right [])
       (Left curErr, Right lst) -> Left curErr
       (Left curErr, Left err) -> Left $ err ++ "\n" ++ curErr
 
+-- | parses an HSON object into an HSONSchema
+-- | based on the argument of the "type" key
 schemaParser :: HSON -> Either String HSONSchema
 schemaParser (H lst) =
   let map = Map.fromList lst
@@ -355,6 +379,8 @@ schemaParser (H lst) =
           Just "null" -> Right Nul
           _ -> Left "type is not a valid string"
 
+-- | obtains all the key value pairs obtained from an HSON object
+-- | includes errors if any are encountered while parsing
 getProperties :: HSON -> [Either String (Key, HSONSchema)]
 getProperties (H lst) = Data.List.foldr combHelper [] lst
   where
