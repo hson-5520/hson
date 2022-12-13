@@ -219,6 +219,28 @@ validateString = S $ \property value -> case value of
           return True
   _ -> Left "| provided value is not a string"
 
+validateString2 :: Schema StrProperties
+validateString2 = S $ \property value -> case value of
+  String x ->
+    let min = minLength property
+        max = maxLength property
+        pat = pattern property
+        enum = stringEnum property
+     in do
+          maybeValidate "| length of string is too small" min (length x) (>=)
+          maybeValidate "| length of string is too large" max (length x) (<=)
+          maybeValidate "| string is not in provided enum" enum x elem
+          case pat of
+            Nothing -> return True
+            Just p -> case matchRegexAll (mkRegex p) x of
+              Nothing -> Left "| regex for string is not satisfied"
+              Just (_, matched, _, _) ->
+                if matched == x
+                  then return True
+                  else Left "| regex for string is not satisfied"
+          return True
+  _ -> Left "| provided value is not a string"
+
 -- | create a schema to check if a bool meets its required properties
 validateBool :: Schema BoolProperties
 validateBool = S $ \property value -> case value of
