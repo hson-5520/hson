@@ -6,10 +6,10 @@ HSON (pronounced H-sawn) is a library enabling interaction with [JSON](https://w
 # Table of Contents
 1. [Primary Usages](#primary-usages)
 2. [Module Organization](#module-organization)
-2. [Building, Running, and Testing](#building-running-and-testing)
-3. [Brief Overview](#brief-overview)
-3. [Documentation](#brief-overview)
-4. [Dependencies](#dependencies)
+3. [Overview](#brief-overview)
+4. [Documentation](#documentation)
+5. [Building, Running, and Testing](#building-running-and-testing)
+6. [Dependencies](#dependencies)
 
 ## Primary Usages
   - [x] Parse a JSON file into an HSON instance using [`FromJSON`](src/FromJSON.hs). 
@@ -49,7 +49,7 @@ You can run the tests with `stack test`.
 
 Finally, you can start a REPL with `stack ghci`.
 
-## Brief Overview
+## Overview
 
 ## Documentation
 
