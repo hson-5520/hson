@@ -21,15 +21,15 @@ HSON (pronounced H-sawn) is a library enabling interaction with [JSON](https://w
 * [`FromJSON.hs`](src/FromJSON.hs): allows for a .json file to be translated to an HSON instance
 * [`HSONSchema.hs`](src/HSONSchema.hs): declaration of the HSONSchema data type
 * [`FromJSONSchema.hs`](src/FromJSONSchema.hs): allows for JSON Schema in a .json file to be translated to an HSONSchema instance
-* [`ValidateHSON.hs`](src/ValidateHSON.hs): validates a HSON instance with a given HSONSchema
+* [`ValidateHSON.hs`](src/ValidateHSON.hs): validates an HSON instance with a given HSONSchema
 
 #### [`test`](/test/)
-* [`Spec.hs`](test/Spec.hs)
-* [`HSONTest.hs`](test/HSONTest.hs)
-* [`ToJSONTest.hs`](test/ToJSONTest.hs)
-* [`FromJSONTest.hs`](test/FromJSONTest.hs)
-* [`FromJSONSchemaTest.hs`](test/FromJSONSchemaTest.hs)
-* [`ValidateHSONTest.hs`](test/ValidateHSONTest.hs)
+* [`Spec.hs`](test/Spec.hs): an executable that runs all the tests (HUnit and QuickCheck)
+* [`HSONTest.hs`](test/HSONTest.hs): a QuickCheck round-trip property for `ToJSON` and `FromJSON`
+* [`ToJSONTest.hs`](test/ToJSONTest.hs): HUnit tests for `ToJSON.hs` (references [`test/json`](test/json/))
+* [`FromJSONTest.hs`](test/FromJSONTest.hs): HUnit tests for `FromJSON.hs` (references [`test/json`](test/json/))
+* [`FromJSONSchemaTest.hs`](test/FromJSONSchemaTest.hs): HUnit tests for `FromJSONSchema` (references [`test/json-schema/schema`](test/json-schema/schema/))
+* [`ValidateHSONTest.hs`](test/ValidateHSONTest.hs): HUnit tests for `ValidateHSONTest.hs` (references [`test/json-schema`](test/json-schema/))
 
 Haskell packages typically divide their source code into three separate places:
   - The bulk of your code should be developed as a reusable library in 
