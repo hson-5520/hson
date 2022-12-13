@@ -20,11 +20,11 @@ test_matchInt :: Test
 test_matchInt =
   "match int"
     ~: TestList
-      [ matchInt "test" (Map.fromList [("test", Integer 2)]) ~?= Right (Just 2),
-        matchInt "test" Map.empty ~?= Right Nothing,
-        matchInt "test" (Map.fromList [("randomKey", Boolean True)]) ~?= Right Nothing,
-        matchInt "test" (Map.fromList [("randomKey", Boolean True), ("test", Integer 2)]) ~?= Right (Just 2),
-        matchInt "test" (Map.fromList [("randomKey", Boolean True), ("test", String "abcVal")]) ~?= Left ""
+      [ matchInt "" "test" (Map.fromList [("test", Integer 2)]) ~?= Right (Just 2),
+        matchInt "" "test" Map.empty ~?= Right Nothing,
+        matchInt "" "test" (Map.fromList [("randomKey", Boolean True)]) ~?= Right Nothing,
+        matchInt "" "test" (Map.fromList [("randomKey", Boolean True), ("test", Integer 2)]) ~?= Right (Just 2),
+        matchInt "error" "test" (Map.fromList [("randomKey", Boolean True), ("test", String "abcVal")]) ~?= Left "error"
       ]
 
 -- >>> runTestTT test_matchInt
@@ -34,11 +34,11 @@ test_matchNumber :: Test
 test_matchNumber =
   "match number"
     ~: TestList
-      [ matchNumber "test" (Map.fromList [("test", Number 2.0)]) ~?= Right (Just 2.0),
-        matchNumber "test" Map.empty ~?= Right Nothing,
-        matchNumber "test" (Map.fromList [("randomKey", String "True")]) ~?= Right Nothing,
-        matchNumber "test" (Map.fromList [("randomKey", Boolean True), ("test", Number 5.0)]) ~?= Right (Just 5.0),
-        matchNumber "test" (Map.fromList [("randomKey", Boolean True), ("test", Integer 4)]) ~?= Right (Just 4.0)
+      [ matchNumber "" "test" (Map.fromList [("test", Number 2.0)]) ~?= Right (Just 2.0),
+        matchNumber "" "test" Map.empty ~?= Right Nothing,
+        matchNumber "" "test" (Map.fromList [("randomKey", String "True")]) ~?= Right Nothing,
+        matchNumber "" "test" (Map.fromList [("randomKey", Boolean True), ("test", Number 5.0)]) ~?= Right (Just 5.0),
+        matchNumber "" "test" (Map.fromList [("randomKey", Boolean True), ("test", Integer 4)]) ~?= Right (Just 4.0)
       ]
 
 -- >>> runTestTT test_matchNumber
@@ -47,11 +47,11 @@ test_matchBool :: Test
 test_matchBool =
   "match bool"
     ~: TestList
-      [ matchBool "boolKey" (Map.fromList [("boolKey", Boolean True)]) ~?= Right (Just True),
-        matchBool "boolKey" Map.empty ~?= Right Nothing,
-        matchBool "boolKey" (Map.fromList [("randomKey", String "True")]) ~?= Right Nothing,
-        matchBool "boolKey" (Map.fromList [("randomKey", Boolean True), ("boolKey", Boolean False)]) ~?= Right (Just False),
-        matchBool "boolKey" (Map.fromList [("randomKey", Boolean True), ("boolKey", Integer 4)]) ~?= Left ""
+      [ matchBool "" "boolKey" (Map.fromList [("boolKey", Boolean True)]) ~?= Right (Just True),
+        matchBool "" "boolKey" Map.empty ~?= Right Nothing,
+        matchBool "" "boolKey" (Map.fromList [("randomKey", String "True")]) ~?= Right Nothing,
+        matchBool "" "boolKey" (Map.fromList [("randomKey", Boolean True), ("boolKey", Boolean False)]) ~?= Right (Just False),
+        matchBool "error" "boolKey" (Map.fromList [("randomKey", Boolean True), ("boolKey", Integer 4)]) ~?= Left "error"
       ]
 
 -- >>> runTestTT test_matchBool
@@ -61,11 +61,11 @@ test_matchString :: Test
 test_matchString =
   "match string"
     ~: TestList
-      [ matchString "test" (Map.fromList [("test", String "hello world")]) ~?= Right (Just "hello world"),
-        matchString "test" Map.empty ~?= Right Nothing,
-        matchString "test" (Map.fromList [("randomKey", String "True")]) ~?= Right Nothing,
-        matchString "test" (Map.fromList [("randomKey", Boolean True), ("test", String "hello")]) ~?= Right (Just "hello"),
-        matchString "test" (Map.fromList [("randomKey", Boolean True), ("test", Integer 4)]) ~?= Left ""
+      [ matchString "" "test" (Map.fromList [("test", String "hello world")]) ~?= Right (Just "hello world"),
+        matchString "" "test" Map.empty ~?= Right Nothing,
+        matchString "" "test" (Map.fromList [("randomKey", String "True")]) ~?= Right Nothing,
+        matchString "" "test" (Map.fromList [("randomKey", Boolean True), ("test", String "hello")]) ~?= Right (Just "hello"),
+        matchString "error" "test" (Map.fromList [("randomKey", Boolean True), ("test", Integer 4)]) ~?= Left "error"
       ]
 
 -- >>> runTestTT test_matchString
@@ -174,11 +174,11 @@ test_numberHelper =
                   }
             ),
         numberHelper (H [("minimum", Number 5.0), ("maximum", Number 8.5), ("exclusiveMinimum", Boolean True), ("exclusiveMaximum", Number 8.6), ("multipleOf", Number 10.0), ("enum", Array [Number 1.0, Number 2.0])])
-          ~?= Left "",
+          ~?= Left "exclusiveMinimum is not a number",
         numberHelper (H [("minimum", Number 5.0), ("maximum", Number 8.5), ("exclusiveMinimum", Number 4.9), ("exclusiveMaximum", Number 8.6), ("multipleOf", Number 10.0), ("enum", Array [Boolean True, Number 2.0])])
-          ~?= Left "",
+          ~?= Left "enum has elements of different types",
         numberHelper (H [("minimum", Number 5.0), ("maximum", Number 8.5), ("exclusiveMinimum", Number 4.9), ("exclusiveMaximum", Number 8.6), ("multipleOf", Number 10.0), ("enum", Boolean True)])
-          ~?= Left "",
+          ~?= Left "enum is not an array",
         numberHelper (H [("enum", Array [Number 5.0, Number 6.0])])
           ~?= Right
             ( Num $
@@ -208,7 +208,6 @@ test_numberHelper =
 --- >>> runTestTT test_numberHelper
 -- Counts {cases = 6, tried = 6, errors = 0, failures = 0}
 
-
 test_intHelper :: Test
 test_intHelper =
   "integer HSON helper"
@@ -226,11 +225,11 @@ test_intHelper =
                   }
             ),
         intHelper (H [("minimum", Integer 5), ("maximum", Integer 8), ("exclusiveMinimum", Boolean True), ("exclusiveMaximum", Integer 8), ("multipleOf", Integer 10), ("enum", Array [Integer 1, Integer 2])])
-          ~?= Left "",
+          ~?= Left "exclusiveMinimum is not an integer",
         intHelper (H [("minimum", Integer 5), ("maximum", Integer 8), ("exclusiveMinimum", Integer 4), ("exclusiveMaximum", Integer 8), ("multipleOf", Number 10.0), ("enum", Array [Integer 1, Number 2.0])])
-          ~?= Left "",
+          ~?= Left "multipleOf is not an integer",
         intHelper (H [("minimum", Integer 5), ("maximum", Integer 8), ("exclusiveMinimum", Integer 4), ("exclusiveMaximum", Integer 8), ("multipleOf", Integer 10), ("enum", Boolean True)])
-          ~?= Left "",
+          ~?= Left "enum is not an array",
         intHelper (H [("enum", Array [Integer 5, Integer 6])])
           ~?= Right
             ( Int $
@@ -275,11 +274,11 @@ test_stringHelper =
                   }
             ),
         stringHelper (H [("minimum", Integer 5), ("maximum", Integer 8), ("pattern", Boolean True)])
-          ~?= Left "",
+          ~?= Left "pattern is not a string",
         stringHelper (H [("enum", Array [String "hi", Integer 1])])
-          ~?= Left "",
+          ~?= Left "enum has elements of different types",
         stringHelper (H [("enum", Boolean True)])
-          ~?= Left "",
+          ~?= Left "enum is not an array",
         stringHelper (H [("enum", Array [String "Aakash", String "Yathu"])])
           ~?= Right
             ( Str $
@@ -331,9 +330,9 @@ test_boolHelper =
                   }
             ),
         boolHelper (H [("enum", Array [Boolean False, String "hi", Integer 1])])
-          ~?= Left "",
+          ~?= Left "enum has elements of different types",
         boolHelper (H [("enum", Boolean True)])
-          ~?= Left "",
+          ~?= Left "enum is not an array",
         boolHelper (H [])
           ~?= Right
             ( Bool $
@@ -370,15 +369,15 @@ test_arrHelper =
                   }
             ),
         arrHelper (H [("minItems", Integer 5), ("maxItems", Number 8.0), ("isUnique", Boolean True)])
-          ~?= Left "",
+          ~?= Left "maxItems is not an integer",
         arrHelper (H [("items", Array [String "hi", Integer 1])])
-          ~?= Left "",
+          ~?= Left "items is not an object",
         arrHelper (H [("items", Boolean True)])
-          ~?= Left "",
+          ~?= Left "items is not an object",
         arrHelper (H [("items", Object (H [("types", String "integer")]))])
           ~?= Left "",
         arrHelper (H [("items", Object (H [("type", String "yathu")]))])
-          ~?= Left "",
+          ~?= Left "type is not a valid string",
         arrHelper
           (H [])
           ~?= Right
@@ -446,11 +445,11 @@ test_objHelper =
                   }
             ),
         objHelper (H [("minProperties", Integer 5), ("maxProperties", Number 8.0), ("required", Array [String "a"])])
-          ~?= Left "",
+          ~?= Left "maxProperties is not an integer",
         objHelper (H [("required", Array [String "hi", Integer 1])])
-          ~?= Left "",
+          ~?= Left "required contains non-string element(s)",
         objHelper (H [("required", Boolean True)])
-          ~?= Left "",
+          ~?= Left "required is not an array",
         objHelper (H [("items", Object (H [("types", String "integer")]))])
           ~?= Right
             ( Obj $
@@ -461,6 +460,11 @@ test_objHelper =
                     properties = []
                   }
             ),
+        objHelper (H [("properties", Object (H [("bob", Object (H [("type", String "object"), ("properties", Object (H [("type", String "notavalue")]))]))]))])
+          ~?= Left "bob: attributes is not an object",
+        objHelper (H [("properties", Object (H [("bob", Object (H [("type", String "object"), ("properties", Object (H [("jim", Object (H [("type", String "notavalue")]))]))]))]))]) ~?= Left "bob: jim: type is not a valid string",
+        objHelper (H [("properties", Object (H [("bob", Object (H [("type", String "notavalue")]))]))])
+          ~?= Left "bob: type is not a valid string",
         objHelper
           (H [])
           ~?= Right
@@ -475,7 +479,6 @@ test_objHelper =
       ]
 
 --- >>> runTestTT test_objHelper
--- Counts {cases = 6, tried = 6, errors = 0, failures = 0}
 
 -------------------------- Create HSON Schema Tests ------------------------------------
 
@@ -496,7 +499,6 @@ tCreateHSONSchema =
           case hsonToHSONSchema ast' of
             Right z -> assert (hschema == z)
             Left z -> assert False
-          
 
 -- >>> runTestTT tCreateHSONSchema
 
