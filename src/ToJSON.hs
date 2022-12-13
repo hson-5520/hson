@@ -20,13 +20,13 @@ import HSON
     Value (Array, Boolean, Integer, Null, Number, Object, String),
   )
 
-------------------------- Writing Keys ---------------------------------------
+----------------------------- Writing Keys -------------------------------------
 
 -- | Converts a HSON key to a string for writing to the JSON file
 keyToString :: String -> String
 keyToString s = "\"" ++ s ++ "\"" ++ ": "
 
-------------------------- Writing Values ---------------------------------------
+---------------------------- Writing Values ------------------------------------
 
 -- | Converts an HSON value to a string
 valueToString :: Value -> String
@@ -90,3 +90,5 @@ hsonToString = objectToString
 -- | creates a new JSON file from an HSON object
 toJSON :: FilePath -> HSON -> IO ()
 toJSON fp h = writeFile fp (hsonToString h)
+
+--------------------------------------------------------------------------------

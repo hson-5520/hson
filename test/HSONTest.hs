@@ -12,9 +12,7 @@ import Test.HUnit (Test (TestList), assert, runTestTT, (~:), (~?=))
 import Test.QuickCheck
 import ToJSON
 
----------------------------- QuickCheck: toJSON fromJSON  ---------------------------------------
-
---- >>> quickCheck prop_roundtriptest
+------------------------ QuickCheck: toJSON fromJSON  --------------------------
 
 prop_hsonroundtrip :: HSON -> Bool
 prop_hsonroundtrip hson =
@@ -28,3 +26,5 @@ prop_hsonroundtrip hson =
        in case parse hsonP y of
             Left _ -> Nothing
             Right x -> Just x
+
+--------------------------------------------------------------------------------

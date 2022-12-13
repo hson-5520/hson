@@ -50,16 +50,17 @@ scientificNotationParser =
       P.string "E"
     ]
 
--------------------------- Key Parsing -----------------------------------------
+------------------------------- Key Parsing ------------------------------------
 
 -- | parses a JSON key and the trailing colon
 keyP :: Parser Key
 keyP =
-  P.char '\"' *> many (P.satisfy (/= '\"'))
+  P.char '\"'
+    *> many (P.satisfy (/= '\"'))
     <* wsP (P.char '\"')
     <* wsP (P.char ':')
 
---------------------------------- Value Parsing --------------------------------
+------------------------------ Value Parsing -----------------------------------
 
 -- | parses any value associated with a key in a JSON object
 valueP :: Parser Value
@@ -78,7 +79,8 @@ valueP =
 stringValP :: Parser Value
 stringValP =
   String
-    <$> ( P.char '\"' *> many (P.satisfy (/= '\"'))
+    <$> ( P.char '\"'
+            *> many (P.satisfy (/= '\"'))
             <* wsP (P.char '\"')
         )
 
@@ -105,13 +107,16 @@ decimalParser =
   Number . read
     <$> ( (++)
             <$> ( (++)
-                    <$> ( (++) <$> ((++) <$> signParser <*> some P.digit)
+                    <$> ( (++)
+                            <$> ((++) <$> signParser <*> some P.digit)
                             <*> P.string "."
                         )
                     <*> some P.digit
                 )
-            <*> ( (++) <$> scientificNotationParser
-                    <*> wsP (some P.digit) <|> wsP (P.string "")
+            <*> ( (++)
+                    <$> scientificNotationParser
+                    <*> wsP (some P.digit)
+                    <|> wsP (P.string "")
                 )
         )
 
@@ -152,3 +157,5 @@ hsonP = H <$> braces (P.sepBy itemP (wsP (P.char ',')))
 -- | takes a JSON file and returns an HSON object
 parseJSON :: String -> IO (Either P.ParseError HSON)
 parseJSON = P.parseFromFile (const <$> hsonP <*> P.eof)
+
+--------------------------------------------------------------------------------

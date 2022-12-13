@@ -20,7 +20,7 @@ import Test.QuickCheck
     vectorOf,
   )
 
-------------------------- Defining HSON  ----------------------------------
+---------------------------- HSON Definition -----------------------------------
 
 data Value
   = Integer Int
@@ -36,9 +36,9 @@ type Key = String
 
 newtype HSON = H [(Key, Value)] deriving (Eq, Show)
 
-------------------------- HSON Generator  ----------------------------------
+----------------------- HSON Arbitrary Instance --------------------------------
 
--- | generates a list of objects of the specified type
+-- | generates an assympotically bounded list of objects of the specified type
 genList :: forall a. (Arbitrary a) => Gen [a]
 genList = sized gen
   where
@@ -50,14 +50,15 @@ genList = sized gen
         ]
 
 -- | generates arbitrary alphanumeric strings of length 5
-genString :: Gen String
-genString = vectorOf 5 (elements (['a' .. 'z'] ++ ['A' .. 'Z'] ++ ['0' .. '9']))
+genAlphaNumString :: Gen String
+genAlphaNumString =
+  vectorOf 5 (elements (['a' .. 'z'] ++ ['A' .. 'Z'] ++ ['0' .. '9']))
 
 -- | generates an element of the Value type
 genValue :: Gen Value
 genValue =
   frequency
-    [ (12, fmap String genString),
+    [ (12, fmap String genAlphaNumString),
       (12, fmap Integer (arbitrary :: Gen Int)),
       (12, fmap Number (arbitrary :: Gen Double)),
       (12, fmap Boolean (arbitrary :: Gen Bool)),
@@ -68,7 +69,10 @@ genValue =
 
 -- | generates an arbitrary HSON object
 genHSON :: Gen HSON
-genHSON = suchThatMap (vectorOf 10 $ (,) <$> genString <*> genValue) (Just . H)
+genHSON =
+  suchThatMap
+    (vectorOf 10 $ (,) <$> genAlphaNumString <*> genValue)
+    (Just . H)
 
 -- | arbitrary instance for the Value type
 instance Arbitrary Value where

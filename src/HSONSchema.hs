@@ -79,3 +79,5 @@ data ObjProperties = OP
     properties :: [(Key, HSONSchema)]
   }
   deriving (Show, Eq)
+
+--------------------------------------------------------------------------------

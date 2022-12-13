@@ -26,10 +26,9 @@ import Parser qualified as P
 import Test.HUnit
 import ToJSON
 
-------------------------- Helpers  --------------------------------
+-------------------------------- Helpers ---------------------------------------
 
--- | looks up a key in a map and parses the corresponding value
--- | as an int
+-- | looks up a key in a map and parses the corresponding value as an int
 matchInt :: String -> String -> Map Key Value -> Either String (Maybe Int)
 matchInt err s map =
   case Map.lookup s map of
@@ -37,8 +36,7 @@ matchInt err s map =
     Just _ -> Left err
     Nothing -> Right Nothing
 
--- | looks up a key in a map and parses the corresponding value
--- | as a number
+-- | looks up a key in a map and parses the corresponding value as a number
 matchNumber :: String -> String -> Map Key Value -> Either String (Maybe Double)
 matchNumber err s map =
   case Map.lookup s map of
@@ -47,8 +45,7 @@ matchNumber err s map =
     Just _ -> Left err
     Nothing -> Right Nothing
 
--- | looks up a key in a map and parses the corresponding value
--- | as a bool
+-- | looks up a key in a map and parses the corresponding value as a bool
 matchBool :: String -> String -> Map Key Value -> Either String (Maybe Bool)
 matchBool err s map =
   case Map.lookup s map of
@@ -56,8 +53,7 @@ matchBool err s map =
     Just _ -> Left err
     Nothing -> Right Nothing
 
--- | looks up a key in a map and parses the corresponding value
--- | as a string
+-- | looks up a key in a map and parses the corresponding value as a string
 matchString :: String -> String -> Map Key Value -> Either String (Maybe String)
 matchString err s map =
   case Map.lookup s map of
@@ -98,15 +94,15 @@ filterStringArray = Prelude.foldr combHelper []
       _ -> acc
 
 -- | checks if all the elements in a list are of the same type
-checkArrayLength :: [Value] -> Bool
-checkArrayLength x =
+isArrayConsistent :: [Value] -> Bool
+isArrayConsistent x =
   length x == length (filterStringArray x)
     || length x == length (filterIntArray x)
     || length x == length (filterNumberArray x)
     || length x == length (filterBoolArray x)
 
--- | checks if all the boolean elements in a list are of the same type
--- | and returns that type if that is the case
+-- | checks if all the boolean elements in a list are of the same value
+-- | and returns that value if that is the case
 boolArrayHelper :: [Bool] -> Maybe Bool
 boolArrayHelper x
   | Prelude.null x = Nothing
@@ -115,6 +111,24 @@ boolArrayHelper x
   | otherwise = Nothing
 
 ------------------------- HSON to HSON Schema  ---------------------------------
+
+-- | parses an HSON object into an HSONSchema
+-- | based on the argument of the "type" key
+schemaParser :: HSON -> Either String HSONSchema
+schemaParser (H lst) =
+  let map = Map.fromList lst
+   in do
+        str <- matchString "type is not a string" "type" map
+        case str of
+          Nothing -> Left ""
+          Just "number" -> numberHelper (H lst)
+          Just "integer" -> intHelper (H lst)
+          Just "boolean" -> boolHelper (H lst)
+          Just "array" -> arrHelper (H lst)
+          Just "object" -> objHelper (H lst)
+          Just "string" -> stringHelper (H lst)
+          Just "null" -> Right Nul
+          _ -> Left "type is not a valid string"
 
 -- | converts an HSON object to
 -- | an HSONSchema object representing a number property
@@ -141,7 +155,7 @@ numberHelper (H x) =
             map
         enum <- case Map.lookup "enum" map of
           Just (Array y) ->
-            if checkArrayLength y
+            if isArrayConsistent y
               then Right $ Just $ filterNumberArray y
               else Left "enum has elements of different types"
           Just _ -> Left "enum is not an array"
@@ -190,7 +204,7 @@ intHelper (H x) =
             map
         enum <- case Map.lookup "enum" map of
           Just (Array y) ->
-            if checkArrayLength y
+            if isArrayConsistent y
               then Right $ Just $ filterIntArray y
               else Left "enum has elements of different types"
           Just _ -> Left "enum is not an array"
@@ -229,7 +243,7 @@ stringHelper (H x) =
             map
         enum <- case Map.lookup "enum" map of
           Just (Array y) ->
-            if checkArrayLength y
+            if isArrayConsistent y
               then Right $ Just $ filterStringArray y
               else Left "enum has elements of different types"
           Just _ -> Left "enum is not an array"
@@ -251,7 +265,7 @@ boolHelper (H x) =
    in do
         enum <- case Map.lookup "enum" map of
           Just (Array y) ->
-            if checkArrayLength y
+            if isArrayConsistent y
               then Right $ Just $ filterBoolArray y
               else Left "enum has elements of different types"
           Just _ -> Left "enum is not an array"
@@ -332,24 +346,6 @@ getErrorMessages = Data.List.foldr combine (Right [])
       (Left curErr, Right lst) -> Left curErr
       (Left curErr, Left err) -> Left $ err ++ "\n" ++ curErr
 
--- | parses an HSON object into an HSONSchema
--- | based on the argument of the "type" key
-schemaParser :: HSON -> Either String HSONSchema
-schemaParser (H lst) =
-  let map = Map.fromList lst
-   in do
-        str <- matchString "type is not a string" "type" map
-        case str of
-          Nothing -> Left ""
-          Just "number" -> numberHelper (H lst)
-          Just "integer" -> intHelper (H lst)
-          Just "boolean" -> boolHelper (H lst)
-          Just "array" -> arrHelper (H lst)
-          Just "object" -> objHelper (H lst)
-          Just "string" -> stringHelper (H lst)
-          Just "null" -> Right Nul
-          _ -> Left "type is not a valid string"
-
 -- | obtains all the key value pairs obtained from an HSON object
 -- | includes errors if any are encountered while parsing
 getProperties :: HSON -> [Either String (Key, HSONSchema)]
@@ -362,6 +358,10 @@ getProperties (H lst) = Data.List.foldr combHelper [] lst
           Left x -> Left (key ++ ": " ++ x) : acc
       _ -> Left "attributes is not an object" : acc
 
+----------------------------- FromJSONSchema -----------------------------------
+
 -- | converts an entire HSON object to it's corresponding HSONSchema object
 hsonToHSONSchema :: HSON -> Either String HSONSchema
 hsonToHSONSchema = objHelper
+
+--------------------------------------------------------------------------------

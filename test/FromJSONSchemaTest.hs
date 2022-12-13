@@ -26,7 +26,7 @@ import Test.HUnit (Counts, Test (TestList), assert, runTestTT, (~:), (~?=))
 import Test.QuickCheck
 import ToJSON
 
-------------------------- ToHSONSchema Helpers' Tests  --------------------------------
+------------------------ FromJSONSchema Helpers' Tests  ------------------------
 
 test_matchInt :: Test
 test_matchInt =
@@ -60,7 +60,6 @@ test_matchInt =
       ]
 
 -- >>> runTestTT test_matchInt
--- Counts {cases = 5, tried = 5, errors = 0, failures = 0}
 
 test_matchNumber :: Test
 test_matchNumber =
@@ -127,7 +126,6 @@ test_matchBool =
       ]
 
 -- >>> runTestTT test_matchBool
--- Counts {cases = 5, tried = 5, errors = 0, failures = 0}
 
 test_matchString :: Test
 test_matchString =
@@ -161,7 +159,6 @@ test_matchString =
       ]
 
 -- >>> runTestTT test_matchString
--- Counts {cases = 5, tried = 5, errors = 0, failures = 0}
 
 test_valueArray :: [Value]
 test_valueArray =
@@ -185,7 +182,6 @@ test_filterIntArray =
       ]
 
 -- >>> runTestTT test_filterIntArray
--- Counts {cases = 3, tried = 3, errors = 0, failures = 0}
 
 test_filterNumberArray :: Test
 test_filterNumberArray =
@@ -198,7 +194,6 @@ test_filterNumberArray =
       ]
 
 --- >>> runTestTT test_filterNumberArray
--- Counts {cases = 3, tried = 3, errors = 0, failures = 0}
 
 test_filterBoolArray :: Test
 test_filterBoolArray =
@@ -210,7 +205,6 @@ test_filterBoolArray =
       ]
 
 --- >>> runTestTT test_filterBoolArray
--- Counts {cases = 3, tried = 3, errors = 0, failures = 0}
 
 test_filterStringArray :: Test
 test_filterStringArray =
@@ -225,24 +219,22 @@ test_filterStringArray =
       ]
 
 --- >>> runTestTT test_filterStringArray
--- Counts {cases = 3, tried = 3, errors = 0, failures = 0}
 
-test_checkArrayLength :: Test
-test_checkArrayLength =
+test_isArrayConsistent :: Test
+test_isArrayConsistent =
   "filter number array"
     ~: TestList
-      [ checkArrayLength test_valueArray ~?= False,
-        checkArrayLength [String "Aakash", String "Yathu", String "552"]
+      [ isArrayConsistent test_valueArray ~?= False,
+        isArrayConsistent [String "Aakash", String "Yathu", String "552"]
           ~?= True,
-        checkArrayLength [Integer 4]
+        isArrayConsistent [Integer 4]
           ~?= True,
-        checkArrayLength
+        isArrayConsistent
           []
           ~?= True
       ]
 
--- >>> runTestTT test_checkArrayLength
--- Counts {cases = 4, tried = 4, errors = 0, failures = 0}
+-- >>> runTestTT isArrayConsistent
 
 test_boolArrayHelper :: Test
 test_boolArrayHelper =
@@ -255,9 +247,8 @@ test_boolArrayHelper =
       ]
 
 --- >>> runTestTT test_boolArrayHelper
--- Counts {cases = 4, tried = 4, errors = 0, failures = 0}
 
-------------------------- HSON to HSON Schema Tests -----------------------------
+------------------------- HSON to HSON Schema Tests ----------------------------
 
 test_numberHelper :: Test
 test_numberHelper =
@@ -344,7 +335,6 @@ test_numberHelper =
       ]
 
 --- >>> runTestTT test_numberHelper
--- Counts {cases = 6, tried = 6, errors = 0, failures = 0}
 
 test_intHelper :: Test
 test_intHelper =
@@ -431,7 +421,6 @@ test_intHelper =
       ]
 
 --- >>> runTestTT test_intHelper
--- Counts {cases = 6, tried = 6, errors = 0, failures = 0}
 
 test_stringHelper :: Test
 test_stringHelper =
@@ -489,7 +478,6 @@ test_stringHelper =
       ]
 
 --- >>> runTestTT test_stringHelper
--- Counts {cases = 6, tried = 6, errors = 0, failures = 0}
 
 test_boolHelper :: Test
 test_boolHelper =
@@ -765,7 +753,7 @@ test_objHelper =
 
 --- >>> runTestTT test_objHelper
 
----------------------------- HSON Schema ---------------------------------------
+----------------------------- HSONSchema ---------------------------------------
 
 -- | HSONSchema representation of a JSON Schema file
 address :: HSONSchema
@@ -971,7 +959,7 @@ coordinate =
           ]
       }
 
--------------------------- Create HSON Schema Tests ------------------------------------
+------------------------ FromJSONSchema Schema Tests ---------------------------
 
 tCreateHSONSchema :: Test
 tCreateHSONSchema =
@@ -994,6 +982,8 @@ tCreateHSONSchema =
 
 -- >>> runTestTT tCreateHSONSchema
 
+------------------------------- All Tests --------------------------------------
+
 test_toHSONSchema :: IO Counts
 test_toHSONSchema =
   runTestTT $
@@ -1006,7 +996,7 @@ test_toHSONSchema =
         test_filterNumberArray,
         test_filterBoolArray,
         test_filterStringArray,
-        test_checkArrayLength,
+        test_isArrayConsistent,
         test_boolArrayHelper,
         test_numberHelper,
         test_intHelper,
@@ -1018,3 +1008,5 @@ test_toHSONSchema =
       ]
 
 -- >>> test_toHSONSchema
+
+--------------------------------------------------------------------------------

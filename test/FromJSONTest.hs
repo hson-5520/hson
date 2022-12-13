@@ -41,7 +41,7 @@ test_constP =
 
 -- >>> runTestTT test_constP
 
--------------------------- Key Parsing Tests -----------------------------------------
+-------------------------- Key Parsing Tests -----------------------------------
 
 test_keyP :: Test
 test_keyP =
@@ -52,7 +52,7 @@ test_keyP =
       ]
 
 -- >>> runTestTT test_keyP
--------------------------- Value Parsing Tests -----------------------------------------
+-------------------------- Value Parsing Tests ---------------------------------
 
 test_stringValP :: Test
 test_stringValP =
@@ -78,7 +78,6 @@ test_intValP =
       ]
 
 -- >>> runTestTT test_intValP
--- Counts {cases = 3, tried = 3, errors = 0, failures = 0}
 
 test_numberValP :: Test
 test_numberValP =
@@ -98,7 +97,6 @@ test_numberValP =
       ]
 
 -- >>> runTestTT test_numberValP
--- Counts {cases = 11, tried = 11, errors = 0, failures = 0}
 
 test_booleanValP :: Test
 test_booleanValP =
@@ -112,7 +110,6 @@ test_booleanValP =
       ]
 
 -- >>> runTestTT test_booleanValP
--- Counts {cases = 5, tried = 5, errors = 0, failures = 0}
 
 test_arrayValP :: Test
 test_arrayValP =
@@ -139,7 +136,6 @@ test_arrayValP =
       ]
 
 -- >>> runTestTT test_arrayValP
--- Counts {cases = 3, tried = 3, errors = 0, failures = 0}
 
 test_objectValP :: Test
 test_objectValP =
@@ -160,7 +156,6 @@ test_objectValP =
       ]
 
 -- >>> runTestTT test_objectValP
--- Counts {cases = 4, tried = 4, errors = 0, failures = 0}
 
 test_nullValP :: Test
 test_nullValP =
@@ -172,7 +167,6 @@ test_nullValP =
       ]
 
 -- >>> runTestTT test_nullValP
--- Counts {cases = 3, tried = 3, errors = 0, failures = 0}
 
 ---------------------------- Sample HSON ---------------------------------------
 hsonEmpty :: HSON
@@ -245,7 +239,6 @@ tParseValidJson =
         (Right ast') -> assert (ast == ast')
 
 -- >>> runTestTT tParseValidJson
--- Counts {cases = 5, tried = 5, errors = 0, failures = 0}
 
 tParseInvalidJson :: Test
 tParseInvalidJson =
@@ -262,6 +255,8 @@ tParseInvalidJson =
       case result of
         (Left _) -> assert True
         _ -> assert False
+
+------------------------------- All Tests --------------------------------------
 
 test_fromJSON :: IO Counts
 test_fromJSON =
@@ -283,4 +278,5 @@ test_fromJSON =
       ]
 
 -- >>> test_fromJSON
--- Counts {cases = 51, tried = 51, errors = 0, failures = 0}
+
+--------------------------------------------------------------------------------

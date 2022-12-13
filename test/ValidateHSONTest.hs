@@ -26,7 +26,7 @@ import Test.QuickCheck
 import ToJSON
 import ValidateHSON
 
-------------------------- Helpers -----------------------------
+------------------------------- Helpers' Tests ---------------------------------
 
 test_maybeValidate :: Test
 test_maybeValidate =
@@ -52,9 +52,8 @@ test_uniqueElems =
       ]
 
 --- >>> runTestTT test_uniqueElems
--- Counts {cases = 5, tried = 5, errors = 0, failures = 0}
 
-------------------------- HSON Schema Property Validating Tests ----------------
+----------------------- HSON Schema Property Validating Tests ------------------
 
 testNP :: NumProperties
 testNP =
@@ -91,7 +90,6 @@ test_validateNum =
       ]
 
 --- >>> runTestTT test_validateNum
--- Counts {cases = 7, tried = 7, errors = 0, failures = 0}
 
 testIP :: IntProperties
 testIP =
@@ -126,7 +124,6 @@ test_validateInt =
       ]
 
 --- >>> runTestTT test_validateInt
--- Counts {cases = 7, tried = 7, errors = 0, failures = 0}
 
 testSP :: StrProperties
 testSP =
@@ -160,7 +157,6 @@ test_validateString =
       ]
 
 -- >>> runTestTT test_validateString
--- Counts {cases = 6, tried = 6, errors = 0, failures = 0}
 
 testBP :: BoolProperties
 testBP = BP {boolEnum = Just True}
@@ -179,7 +175,6 @@ test_validateBool =
       ]
 
 --- >>> runTestTT test_validateBool
--- Counts {cases = 3, tried = 3, errors = 0, failures = 0}
 
 testAP :: ArrProperties
 testAP =
@@ -216,7 +211,6 @@ test_validateArr =
       ]
 
 --- >>> runTestTT test_validateArr
--- Counts {cases = 7, tried = 7, errors = 0, failures = 0}
 
 testOP :: ObjProperties
 testOP =
@@ -386,7 +380,7 @@ test_validateObj =
 
 --- >>> runTestTT test_validateObj
 
--------------------------- HSON Validation Test ------------------------------------
+-------------------------- HSON Validation Test --------------------------------
 
 tValidateHSON :: Test
 tValidateHSON =
@@ -417,7 +411,8 @@ tValidateHSON =
         (_, _) -> assert False
 
 -- >>> runTestTT tValidateHSON
--- Counts {cases = 3, tried = 3, errors = 0, failures = 0}
+
+------------------------------- All Tests --------------------------------------
 
 test_validateSchemas :: IO Counts
 test_validateSchemas =
@@ -435,4 +430,5 @@ test_validateSchemas =
       ]
 
 -- >>> test_validateSchemas
--- Counts {cases = 55, tried = 55, errors = 0, failures = 0}
+
+--------------------------------------------------------------------------------

@@ -285,3 +285,5 @@ validateHSON :: HSON -> HSONSchema -> Either String Bool
 validateHSON hson schema = case schema of
   Obj x -> validate validateObj x (Object hson)
   _ -> Left "provided object is not a valid HSON"
+
+--------------------------------------------------------------------------------

@@ -6,6 +6,8 @@ import Test.QuickCheck
 import ToJSONTest (test_toJSON)
 import ValidateHSONTest (test_validateSchemas)
 
+--------------------------- Test Directory -------------------------------------
+
 -- | main function to run all tests
 main :: IO ()
 main = do
@@ -20,3 +22,5 @@ main = do
   putStrLn "ValidateHSON Tests"
   test_validateSchemas
   putStrLn "End of tests"
+
+--------------------------------------------------------------------------------

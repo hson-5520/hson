@@ -13,7 +13,7 @@ import Test.HUnit (Counts, Test (TestList), assert, runTestTT, (~:), (~?=))
 import Test.QuickCheck
 import ToJSON
 
-------------------------- Writing Keys Tests -----------------------------
+-------------------------- Writing Keys Tests ----------------------------------
 
 test_keyToString :: Test
 test_keyToString =
@@ -46,7 +46,6 @@ test_integerToString =
       ]
 
 --- >>> runTestTT test_integerToString
--- Counts {cases = 2, tried = 2, errors = 0, failures = 0}
 
 test_numberToString :: Test
 test_numberToString =
@@ -67,7 +66,6 @@ test_booleanToString =
       ]
 
 --- >>> runTestTT test_booleanToString
--- Counts {cases = 2, tried = 2, errors = 0, failures = 0}
 
 test_arrayToString :: Test
 test_arrayToString =
@@ -89,7 +87,6 @@ test_objectToString =
       ]
 
 --- >>> runTestTT test_objectToString
--- Counts {cases = 2, tried = 2, errors = 0, failures = 0}
 
 test_nullToString :: Test
 test_nullToString =
@@ -99,7 +96,6 @@ test_nullToString =
       ]
 
 --- >>> runTestTT test_nullToString
--- Counts {cases = 1, tried = 1, errors = 0, failures = 0}
 
 ---------------------------- Sample HSON ---------------------------------------
 hsonEmpty :: HSON
@@ -152,7 +148,7 @@ hsonSchool =
       )
     ]
 
--------------------------- Create JSON Tests ------------------------------------
+-------------------------- Create JSON Tests -----------------------------------
 
 compareFiles :: FilePath -> FilePath -> IO Bool
 compareFiles f1 f2 = do
@@ -163,7 +159,6 @@ compareFiles f1 f2 = do
     _ -> return False
 
 -- >>> runTestTT tParseValidJson
--- Counts {cases = 5, tried = 5, errors = 0, failures = 0}
 
 tParseValidJson :: Test
 tParseValidJson =
@@ -201,6 +196,8 @@ tParseValidJson =
       x <- compareFiles fn fp
       assert x
 
+------------------------------- All Tests --------------------------------------
+
 test_toJSON :: IO Counts
 test_toJSON =
   runTestTT $
@@ -217,3 +214,5 @@ test_toJSON =
       ]
 
 -- >>> test_toJSON
+
+--------------------------------------------------------------------------------
