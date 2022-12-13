@@ -69,6 +69,15 @@ To understand this library, we suggest you visit the files in the following orde
    * `Object`: an `HSON` instance (H ["Hello", String "World])
    * `Null`
 
+### `HSONSchema ~ [(Key, Value)]`: 
+* `Int IntProperties`
+   * `iMinimum :: Maybe Int`: if not Nothing, value must be >= `iMinimum`
+   * `iMaximum :: Maybe Int`: if not Nothing, value must be <>= `iMaximum`
+   * `iExclusiveMinimum :: Maybe Int`: if not Nothing, value must be > `iExclusiveMinimum`
+   * `iExclusiveMaximum :: Maybe Int`: if not Nothing, value must be <=`iExclusiveMaximum`
+   * `iMultipleOf :: Maybe Int`: if not Nothing, value must a multiple of `iMultipleOf`
+   * `intEnum :: Maybe [Int]`: if not Nothing, value must be in `intEnum`
+
 ## Building, Running, and Testing
 
 This project compiles with `stack build`. 

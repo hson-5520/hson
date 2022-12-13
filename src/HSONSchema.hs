@@ -18,9 +18,9 @@ import Parser qualified as P
 
 -- | datatype representing an HSONSchema object
 data HSONSchema
-  = Str StrProperties -- -> (Value -> Bool)
-  | Int IntProperties
+  = Int IntProperties
   | Num NumProperties
+  | Str StrProperties
   | Bool BoolProperties
   | Arr ArrProperties
   | Obj ObjProperties
