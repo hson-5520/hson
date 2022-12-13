@@ -30,24 +30,15 @@ import ToJSON
 
 -- | takes a Maybe value and returns True if it's nothing or if it is satisfies
 -- | the given constraint
--- maybeValidate ::
---   String ->
---   Maybe a ->
---   b ->
---   (b -> a -> Bool) ->
---   Either String Bool
--- maybeValidate errMessage property num f =
---   if isNothing property || f num (Maybe.fromJust property)
---     then Right True
---     else Left errMessage
-maybeValidate :: String -> Maybe t1 -> t2 -> (t2 -> t1 -> Bool) -> Either String Bool
+maybeValidate ::
+  String ->
+  Maybe t1 ->
+  t2 ->
+  (t2 -> t1 -> Bool) ->
+  Either String Bool
 maybeValidate errMessage property num f = case property of
   Nothing -> Right True
   Just p -> if f num p then Right True else Left errMessage
-
--- if isNothing property || f num (Maybe.fromJust property)
---   then Right True
---   else Left errMessage
 
 -- | returns a new list containing all the unique elements of the given list
 uniqueElems :: Eq b => [b] -> [b]
@@ -72,36 +63,26 @@ newtype Schema a = S {validate :: a -> Value -> Either String Bool}
 validateAttributes :: [(Key, Value)] -> Map Key HSONSchema -> Either String Bool
 validateAttributes dat schema = Data.List.foldr combine (Right True) dat
   where
-    combine (key, val) acc = case acc of
-      Left x -> Left x
-      Right y -> do
+    combine (key, val) acc =
+      do
         case Map.lookup key schema of
           Just y -> case y of
-            Num n -> case validate validateNum n val of
-              Left err -> Left $ key ++ err
-              Right bool -> return bool
-            Int i -> case validate validateInt i val of
-              Left err -> Left $ key ++ err
-              Right bool -> return bool
-            Str x ->
-              case validate validateString x val of
-                Left err -> Left $ key ++ err
-                Right bool -> return bool
-            Bool b -> case validate validateBool b val of
-              Left err -> Left $ key ++ err
-              Right bool -> return bool
-            Nul ->
-              if val == Null
-                then return True
-                else Left $ key ++ "| is not null but should be"
-            Arr a -> case validate validateArr a val of
-              Left err -> Left $ key ++ err
-              Right bool -> return bool
-            Obj o -> case validate validateObj o val of
-              Left err -> Left $ key ++ "." ++ err
-              Right bool -> return bool
-          Nothing -> return True
-        return True
+            Num n -> validateAttribute key acc (validate validateNum n val)
+            Int i -> validateAttribute key acc (validate validateInt i val)
+            Str s -> validateAttribute key acc (validate validateString s val)
+            Bool b -> validateAttribute key acc (validate validateBool b val)
+            Nul -> validateAttribute key acc (if val == Null then Right True else Left "| is not null but should be")
+            Arr a -> validateAttribute key acc (validate validateArr a val)
+            Obj o -> validateAttribute (key ++ ".") acc (validate validateObj o val)
+          Nothing -> acc
+        acc
+    validateAttribute key acc res = case acc of
+      Left cumulativeErrors -> case res of
+        Left currErr -> Left $ cumulativeErrors ++ "\n" ++ key ++ currErr
+        Right bool -> Left cumulativeErrors
+      Right b -> case res of
+        Left currErr -> Left $ key ++ currErr
+        Right bool -> return bool
 
 -- | create a schema to check if a number meets its required properties
 validateNum :: Schema NumProperties
@@ -171,30 +152,6 @@ validateInt = S $ \property value -> case value of
 -- | create a schema to check if a string meets its required properties
 validateString :: Schema StrProperties
 validateString = S $ \property value -> case value of
-  String x ->
-    let min = minLength property
-        max = maxLength property
-        pat = pattern property
-        enum = stringEnum property
-     in do
-          maybeValidate "| length of string is too small" min (length x) (>=)
-          maybeValidate "| length of string is too large" max (length x) (<=)
-          maybeValidate "| string is not in provided enum" enum x elem
-          if isNothing pat
-            then return True
-            else
-              ( case matchRegexAll (mkRegex (Maybe.fromJust pat)) x of
-                  Nothing -> Left "| regex for string is not satisfied"
-                  Just (_, matched, _, _) ->
-                    if matched == x
-                      then return True
-                      else Left "|regex for string is not satisfied"
-              )
-          return True
-  _ -> Left "| provided value is not a string"
-
-validateString2 :: Schema StrProperties
-validateString2 = S $ \property value -> case value of
   String x ->
     let min = minLength property
         max = maxLength property

@@ -358,10 +358,25 @@ getProperties (H lst) = Data.List.foldr combHelper [] lst
           Left x -> Left (key ++ ": " ++ x) : acc
       _ -> Left "attributes is not an object" : acc
 
------------------------------ FromJSONSchema -----------------------------------
+--------------------------- HSON to HSONSchema ---------------------------------
 
 -- | converts an entire HSON object to it's corresponding HSONSchema object
 hsonToHSONSchema :: HSON -> Either String HSONSchema
 hsonToHSONSchema = objHelper
+
+------------------------ JSON Schema to HSONSchema -----------------------------
+
+fromJSONSchema :: String -> IO (Maybe HSONSchema)
+fromJSONSchema schema = do
+  hson <- parseJSON schema
+  case hson of
+    Left err -> do
+      putStrLn $ "\nPARSING JSON FILE FAILED: " ++ err ++ "\n"
+      return Nothing
+    Right hs -> case hsonToHSONSchema hs of
+      Left s -> do
+        putStrLn $ "\nPARSING JSON SCHEMA FAILED: " ++ s ++ "\n"
+        return Nothing
+      Right hsonSchema -> return $ Just hsonSchema
 
 --------------------------------------------------------------------------------

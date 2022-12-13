@@ -1,0 +1,78 @@
+{
+    "description": "A Schema for CIS 5520 Staff at Penn",
+    "type": "object",
+    "required": [
+        "firstName",
+        "experiences",
+        "hasTaken5520"
+    ],
+    "properties": {
+        "firstName": {
+            "description": "First Name of Staff Member",
+            "type": "string",
+            "pattern": "[A-Z][a-z]*"
+        },
+        "hasTaken5520": {
+            "type": "boolean"
+        },
+        "email": {
+            "type": "string",
+            "pattern": "[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+.[A-Za-z]+"
+        },
+        "experiences": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+                "type": "object",
+                "required": [
+                    "class",
+                    "numberOfYears"
+                ],
+                "properties": {
+                    "class": {
+                        "type": "string",
+                        "enum": [
+                            "CIS1200",
+                            "CIS1940",
+                            "CIS5520"
+                        ]
+                    },
+                    "numberOfYears": {
+                        "type": "integer",
+                        "exclusiveMinimum": 0
+                    }
+                }
+            }
+        },
+        "officeHours": {
+            "type": "object",
+            "required": [
+                "building",
+                "roomNumber"
+            ],
+            "maxProperties": 4,
+            "properties": {
+                "building": {
+                    "type": "string",
+                    "minLength": 5,
+                    "maxLength": 25
+                },
+                "roomNumber": {
+                    "type": "integer"
+                },
+                "startTime": {
+                    "type": "number",
+                    "multipleOf": 0.25,
+                    "minimum": 0,
+                    "exclusiveMaximum": 24
+                },
+                "endTime": {
+                    "type": "number",
+                    "multipleOf": 0.25,
+                    "minimum": 0,
+                    "exclusiveMaximum": 24
+                }
+            }
+        }
+    }
+}

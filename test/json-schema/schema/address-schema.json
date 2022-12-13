@@ -24,13 +24,5 @@
         "locality",
         "zip-code",
         "country-name"
-    ],
-    "dependentRequired": {
-        "post-office-box": [
-            "street-address"
-        ],
-        "extended-address": [
-            "street-address"
-        ]
-    }
+    ]
 }

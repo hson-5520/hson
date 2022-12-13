@@ -972,13 +972,10 @@ tCreateHSONSchema =
       ]
   where
     p fn hschema = do
-      z <- parseJSON fn
-      case z of
-        (Left _) -> assert False
-        (Right ast') -> do
-          case hsonToHSONSchema ast' of
-            Right z -> assert (hschema == z)
-            Left z -> assert False
+      hsonSchema <- fromJSONSchema fn
+      case hsonSchema of
+        Nothing -> assert False
+        Just hs -> assert (hschema == hs)
 
 -- >>> runTestTT tCreateHSONSchema
 

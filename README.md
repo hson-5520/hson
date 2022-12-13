@@ -30,7 +30,7 @@ To understand this library, we suggest you visit the files in the following orde
 
 `HSONSchema.hs` contains the HSONSchema data type declaration. [Documentation](#documentation)
 
-`FromJSONSchema.hs` parses JSON Schema, given as a .json file, into an HSONSchema instance. The main function is `jsonSchemaToHSONSchema` that returns either a HSONSchema if it was able to be parsed successfully or a detailed error message explaining why the JSON Schema couldn't be converted.
+`FromJSONSchema.hs` parses JSON Schema, given as a .json file, into an HSONSchema instance. The main function is `fromJSONSchema` that returns  a HSONSchema if it was able to be parsed successfully or Nothing if there was an error along with error messages printed via the IO Monad.
 
 `ValidateHSON.hs` takes an HSON instance and an HSONSchema instance and attempts to validate the HSON with the HSONSchema. The main function is `validateHSON` that returns either True if the HSON obeyed the HSONSchema or a detailed error message explaining the first key that was invalid. 
 

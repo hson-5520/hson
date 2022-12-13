@@ -1,0 +1,28 @@
+test/json-schema/schema/cis-5520-staff-schema.json
+test/json-schema/object/emma0.json
+test/json-schema/object/emma1.json
+test/json-schema/object/emma2.json
+test/json-schema/object/emma3.json
+test/json-schema/object/emma4.json
+test/json-schema/object/emma5.json
+test/json-schema/object/emma6.json
+test/json-schema/object/emma7.json
+
+
+test/json-schema/schema/address-schema.json
+test/json-schema/object/address-object.json
+
+test/json-schema/schema/card-schema.json
+test/json-schema/object/card-object.json
+
+test/json-schema/schema/address-schema.json
+test/json-schema/object/coordinate-object.json
+
+test/json-schema/schema/coordinate-schema.json
+test/json-schema/object/coordinate-object.json
+
+Can't Parse JSON:
+test/json/invalid/boolean.txt
+
+Can't Parse JSON -> JSON Schema:
+test/json/invalid/coordinate-schema-bad.json
