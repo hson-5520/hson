@@ -58,6 +58,16 @@ To understand this library, we suggest you visit the files in the following orde
 
 ## Documentation
 
+`HSON`: 
+* Key: a String ("bob")
+* Value
+   * Integer: an Int (1, -10, 1e5)
+   * Number: a double (1.4523, -2.0, 1.242e2)
+   * String: a string ("hello")
+   * Boolean: a boolean (True, False)
+   * Array: a list of values ([1, "hi", True, null])
+   * Object: an HSON instance (H ["Hello", String "World])
+   * Null
 
 ## Building, Running, and Testing
 
@@ -75,4 +85,4 @@ Finally, you can start a REPL with `stack ghci`.
 ## Future Work
   - [ ] `toJSONSchema.hs`: allow for an HSONSchema instance to be translated to JSON Schema
   - [ ] HSONSchema Arbitrary Instance: randomly generate HSONSchema instances and implement a QuickCheck roundtrip property using toJSONSchema and fromJSONSchema
-  - [ ] 'ValidateHSON.hs': redefine HSONSchema to incorporate GADTs to simplify validation
+  - [ ] `ValidateHSON.hs`: redefine HSONSchema to incorporate GADTs to simplify validation
