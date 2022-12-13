@@ -10,6 +10,7 @@ HSON (pronounced H-sawn) is a library enabling interaction with [JSON](https://w
 4. [Documentation](#documentation)
 5. [Building, Running, and Testing](#building-running-and-testing)
 6. [Dependencies](#dependencies)
+7. [Future Work](#future-work)
 
 ## Uses
   - [x] Parse a JSON file into an HSON instance using [`FromJSON`](src/FromJSON.hs). 
@@ -70,3 +71,8 @@ Finally, you can start a REPL with `stack ghci`.
 
 ## Dependencies
   - [x] regex-compat: regex validator used in [`ValidateHSON.hs`](src/ValidateHSON.hs)
+
+## Future Work
+  - [ ] `toJSONSchema.hs`: allow for an HSONSchema instance to be translated to JSON Schema
+  - [ ] HSONSchema Arbitrary Instance: randomly generate HSONSchema instances and implement a QuickCheck roundtrip property using toJSONSchema and fromJSONSchema
+  - [ ] 'ValidateHSON.hs': redefine HSONSchema to incorporate GADTs to simplify validation
