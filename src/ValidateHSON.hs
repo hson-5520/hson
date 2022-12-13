@@ -56,16 +56,24 @@ import ToJSON
 
 -- | takes a Maybe value and returns True if it's nothing or if it is satisfies
 -- | the given constraint
-maybeValidate ::
-  String ->
-  Maybe a ->
-  b ->
-  (b -> a -> Bool) ->
-  Either String Bool
-maybeValidate errMessage property num f =
-  if isNothing property || f num (Maybe.fromJust property)
-    then Right True
-    else Left errMessage
+-- maybeValidate ::
+--   String ->
+--   Maybe a ->
+--   b ->
+--   (b -> a -> Bool) ->
+--   Either String Bool
+-- maybeValidate errMessage property num f =
+--   if isNothing property || f num (Maybe.fromJust property)
+--     then Right True
+--     else Left errMessage
+maybeValidate :: String -> Maybe t1 -> t2 -> (t2 -> t1 -> Bool) -> Either String Bool
+maybeValidate errMessage property num f = case property of
+  Nothing -> Right True
+  Just p -> if f num p then Right True else Left errMessage
+
+-- if isNothing property || f num (Maybe.fromJust property)
+--   then Right True
+--   else Left errMessage
 
 -- | returns a new list containing all the unique elements of the given list
 uniqueElems :: Eq b => [b] -> [b]
