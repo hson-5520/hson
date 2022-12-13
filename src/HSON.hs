@@ -23,9 +23,9 @@ import Test.QuickCheck
 ------------------------- Defining HSON  ----------------------------------
 
 data Value
-  = String String
-  | Integer Int
+  = Integer Int
   | Number Double
+  | String String
   | Boolean Bool
   | Array [Value]
   | Object HSON

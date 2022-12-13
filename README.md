@@ -51,6 +51,20 @@ Finally, you can start a REPL with `stack ghci`.
 
 ## Overview
 
+To understand this library, we suggest you visit the files in the following order:
+
+`HSON.hs` contains the HSON data type declaration. HSON is a list of (key, value) tuples. The keys are strings (without quotes) and the values are either integers, numbers, strings, booleans, arrays (of values), null, or objects (type HSON).
+
+`ToJSON.hs` allows for an HSON instance to be translated to a .json file. The main function is `toJSON` generates a .json file reflecting the given HSON instance at the designated filepath. 
+
+`FromJSON.hs` parses a .json file into an HSON instance. The main function is `parseJSON` that returns either an error or HSON instance from the given .json file's filepath. The error provided is extremely primative - either there was some parse error or the parse succeeded.
+
+`HSONSchema.hs` contains the HSONSchema data type declaration. HSONSchema describes the properties that a given value in an HSON instance should obey. Each type of HSON value has its own properties.
+
+`FromJSONSchema.hs` parses JSON Schema, given as a .json file, into an HSONSchema instance. The main function is `jsonSchemaToHSONSchema` that returns either a HSONSchema if it was able to be parsed successfully or a detailed error message explaining why the JSON Schema couldn't be converted.
+
+`ValidateHSON.hs` takes an HSON instance and an HSONSchema instance and attempts to validate the HSON with the HSONSchema. The main function is `validateHSON` that returns either True if the HSON obeyed the HSONSchema or a detailed error message explaining the first key that was invalid. 
+
 ## Documentation
 
 
