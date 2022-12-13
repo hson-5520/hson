@@ -69,15 +69,44 @@ To understand this library, we suggest you visit the files in the following orde
    * `Object`: an `HSON` instance (H ["Hello", String "World])
    * `Null`
 
-### `HSONSchema ~ [(Key, Value)]`: 
+### `HSONSchema`: 
 * `Int IntProperties`
-   * `iMinimum :: Maybe Int`: if not Nothing, value must be >= `iMinimum`
-   * `iMaximum :: Maybe Int`: if not Nothing, value must be <>= `iMaximum`
-   * `iExclusiveMinimum :: Maybe Int`: if not Nothing, value must be > `iExclusiveMinimum`
-   * `iExclusiveMaximum :: Maybe Int`: if not Nothing, value must be <=`iExclusiveMaximum`
-   * `iMultipleOf :: Maybe Int`: if not Nothing, value must a multiple of `iMultipleOf`
-   * `intEnum :: Maybe [Int]`: if not Nothing, value must be in `intEnum`
+   * `iMinimum :: Maybe Int`: if not Nothing, integer must be >= `iMinimum`
+   * `iMaximum :: Maybe Int`: if not Nothing, integer must be <= `iMaximum`
+   * `iExclusiveMinimum :: Maybe Int`: if not Nothing, integer must be > `iExclusiveMinimum`
+   * `iExclusiveMaximum :: Maybe Int`: if not Nothing, integer must be <`iExclusiveMaximum`
+   * `iMultipleOf :: Maybe Int`: if not Nothing, integer must a multiple of `iMultipleOf`
+   * `intEnum :: Maybe [Int]`: if not Nothing, integer must be in `intEnum`
 
+* `Num NumProperties`
+   * `nMinimum :: Maybe Double`: if not Nothing, number must be >= `nMinimum`
+   * `nMaximum :: Maybe Double`: if not Nothing, number must be <= `nMaximum`
+   * `nExclusiveMinimum :: Maybe Double`: if not Nothing, number must be > `nExclusiveMinimum`
+   * `nExclusiveMaximum :: Maybe Double`: if not Nothing, number must be <`nExclusiveMaximum`
+   * `nMultipleOf :: Maybe Double`: if not Nothing, number must a multiple of `nMultipleOf`
+   * `numEnum :: Maybe [Double]`: if not Nothing, number must be in `numEnum`
+
+* `Str StrProperties`
+   * `minLength :: Maybe Int`: if not Nothing, string's length must be >= `minLength`
+   * `maxLength :: Maybe Int`: if not Nothing, string's length must be <= `maxLength`
+   * `pattern :: Maybe String`: if not Nothing, string must satisfy the `pattern` regex
+   * `stringEnum :: Maybe [String]`: if not Nothing, string must be in `stringEnum`
+
+* `Bool BoolProperties`
+   * `boolEnum :: Maybe Bool`: if not Nothing, boolean must equal `boolEnum`
+
+* `Arr ArrProperties`
+   * `minItems :: Maybe Int`: if not Nothing, array's length must be >= `minItems`
+   * `maxItems :: Maybe Int`: if not Nothing, array's length must be <= `maxItems`
+   * `isUnique :: Bool`: if True, array's elements must all be unique
+   * `items :: Maybe HSONSchema`: if not Nothing, all items in the array must satisfy the `items` schema.
+
+* `Obj ObjProperties`
+   * `minProperties :: Maybe Int`: if not Nothing, the number of keys in the object must be >= `minProperties`
+   * `maxProperties :: Maybe Int`: if not Nothing, the number of keys in the object must be <= `maxProperties`
+   * `required :: [String]`: the object must contain every key in `required`
+   * `properties :: [(Key, HSONSchema)]`: for every key in the object that is present in `properties`, the associated value for that key must obey the assocatiated HSONSchema. 
+   
 ## Building, Running, and Testing
 
 This project compiles with `stack build`. 
