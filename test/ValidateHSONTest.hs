@@ -216,7 +216,10 @@ tValidateHSON =
       o <- parseJSON obj
       case (s, o) of
         (Right x, Right y) -> do
-          assert (isRight $ validateHSON y (Maybe.fromJust $ hsonToHSONSchema x))
+          case (hsonToHSONSchema x) of
+            Right z -> assert (isRight $ validateHSON y z)
+            Left z -> assert False
+          
         (_, _) -> assert False
 
 -- >>> runTestTT tValidateHSON
