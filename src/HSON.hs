@@ -2,11 +2,6 @@ module HSON
   ( HSON (H),
     Key,
     Value (Boolean, Number, String, Array, Object, Null, Integer),
-    hsonEmpty,
-    hsonSchool,
-    hsonDog,
-    hsonArray,
-    hsonSingle,
   )
 where
 
@@ -94,55 +89,4 @@ instance Arbitrary HSON where
   shrink (H (x : xs)) = [H [x], H xs]
   shrink (H []) = []
 
----------------------------- Sample HSON ---------------------------------------
-hsonEmpty :: HSON
-hsonEmpty = H []
-
-hsonSingle :: HSON
-hsonSingle = H [("name", String "bob")]
-
-hsonArray :: HSON
-hsonArray =
-  H
-    [ ( "bob",
-        Array
-          [ Integer 1,
-            String "hi",
-            Object $ H [("name", String "Jose")],
-            Null
-          ]
-      )
-    ]
-
-hsonDog :: HSON
-hsonDog =
-  H
-    [ ( "dog",
-        Object $
-          H
-            [ ("name", String "bill"),
-              ("age", Number 4.2),
-              ("siblings", Boolean False)
-            ]
-      )
-    ]
-
-hsonSchool :: HSON
-hsonSchool =
-  H
-    [ ("name", String "School"),
-      ("foundedYear", Integer 1975),
-      ("isPublic", Boolean True),
-      ("cost", Null),
-      ("students", Array [String "a", String "b", String "c"]),
-      ( "address",
-        Object $
-          H
-            [ ("city", String "Philadelphia"),
-              ("state", String "Pennsylvania"),
-              ("buildingNumber", Integer 123)
-            ]
-      )
-    ]
-
----------------------------------------------------------------------------------
+--------------------------------------------------------------------------------

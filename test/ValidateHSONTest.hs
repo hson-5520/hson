@@ -10,11 +10,6 @@ import HSON
   ( HSON (..),
     Key,
     Value (Array, Boolean, Integer, Null, Number, Object, String),
-    hsonArray,
-    hsonDog,
-    hsonEmpty,
-    hsonSchool,
-    hsonSingle,
   )
 import HSONSchema
   ( ArrProperties (..),
@@ -24,9 +19,6 @@ import HSONSchema
     NumProperties (..),
     ObjProperties (..),
     StrProperties (..),
-    address,
-    card,
-    coordinate,
   )
 import Parser qualified as P
 import Test.HUnit (Counts, Test (TestList), assert, runTestTT, (~:), (~?=))

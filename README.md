@@ -1,15 +1,13 @@
 # HSON: Haskell's JSON
 ##### By: Aakash Jajoo (aakashj1@seas) & Yathushan Nadanapathan (yathu@seas)
 
-HSON (pronounced H-sawn) is a library enabling interaction with [JSON](https://www.json.org/json-en.html) in Haskell. HSON is a data type that was created to mimic JSON objects. In order to validate JSON objects,
-[JSON Schema](https://json-schema.org/) is commonly used in industry. HSONSchema is an internal represntation of JSON Schema in HSON. 
+HSON (pronounced H-sawn) is a library enabling interaction with [JSON](https://www.json.org/json-en.html) in Haskell. HSON is a data type that was created to mimic JSON objects. HSONSchema is a data type to provide constraints on HSON attributes. In order to validate JSON objects, [JSON Schema](https://json-schema.org/) is commonly used in industry. FromJSONSchema allows the conversion of JSON Schema to HSONSchema.
 
 ## Primary Usages
- - [x] Parse a JSON file into an HSON instance using [`FromJSON`](src/FromJSON.hs). 
+  - [x] Parse a JSON file into an HSON instance using [`FromJSON`](src/FromJSON.hs). 
   - [x] Translate an HSON instance to JSON using [`ToJSON`](src/ToJSON.hs).
   - [x] Parse a JSON Schema into an HSONSchema using [`FromJSONSchema`](src/FromJSONSchema.hs)
   - [x] Validate an HSON instances with an HSONSchema instance using [`ValidateHSON`](src/ValidateHSON.hs)
-
 
 ## Module Organization
 
@@ -17,14 +15,13 @@ HSON (pronounced H-sawn) is a library enabling interaction with [JSON](https://w
 * [`Main.hs`](app/Main.hs): an executable that allows the user to validate a JSON object with JSON schema
 
 #### [`src`](/src/)
-* [`Lib.hs`](src/Lib.hs)
-* [`HSON.hs`](src/HSON.hs)
-* [`ToJSON.hs`](src/ToJSON.hs)
-* [`Parser.hs`](src/Parser.hs)
-* [`FromJSON.hs`](src/FromJSON.hs)
-* [`HSONSchema.hs`](src/HSONSchema.hs)
-* [`FromJSONSchema.hs`](src/FromJSONSchema.hs)
-* [`ValidateHSON.hs`](src/ValidateHSON.hs)
+* [`HSON.hs`](src/HSON.hs): declaration of the HSON data type along with its arbitrary instance
+* [`ToJSON.hs`](src/ToJSON.hs): allows for an HSON instance to be translated to a .json file
+* [`Parser.hs`](src/Parser.hs): a small, applicative-based parsing library developed in U.Penn's CIS-5520
+* [`FromJSON.hs`](src/FromJSON.hs): allows for a .json file to be translated to an HSON instance
+* [`HSONSchema.hs`](src/HSONSchema.hs): declaration of the HSONSchema data type
+* [`FromJSONSchema.hs`](src/FromJSONSchema.hs): allows for JSON Schema in a .json file to be translated to an HSONSchema instance
+* [`ValidateHSON.hs`](src/ValidateHSON.hs): validates a HSON instance with a given HSONSchema
 
 #### [`test`](/test/)
 * [`Spec.hs`](test/Spec.hs)

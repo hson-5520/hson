@@ -6,11 +6,6 @@ import HSON
   ( HSON,
     Key,
     Value (Array, Boolean, Null, Number, Object, String),
-    hsonArray,
-    hsonDog,
-    hsonEmpty,
-    hsonSchool,
-    hsonSingle,
   )
 import Parser
 import Test.HUnit (Test (TestList), assert, runTestTT, (~:), (~?=))

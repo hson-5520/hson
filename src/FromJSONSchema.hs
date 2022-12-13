@@ -1,7 +1,6 @@
 module FromJSONSchema where
 
 import Control.Exception
-import Data.Bits (Bits (xor))
 import Data.Either
 import Data.List qualified
 import Data.Map
@@ -9,48 +8,20 @@ import Data.Map qualified as Map
 import Data.Maybe
 import Data.Maybe qualified as Maybe
 import FromJSON
-import GHC.Generics qualified as Maybe
 import HSON
   ( HSON (H),
     Key,
     Value (Array, Boolean, Integer, Null, Number, Object, String),
   )
 import HSONSchema
-  ( ArrProperties (AP),
-    BoolProperties (BP),
-    HSONSchema (Arr, Bool, Int, Nul, Num, Obj, Str),
-    IntProperties (IP),
-    NumProperties (NP),
-    ObjProperties (OP),
-    StrProperties (SP),
-    boolEnum,
-    iExclusiveMaximum,
-    iExclusiveMinimum,
-    iMaximum,
-    iMinimum,
-    iMultipleOf,
-    intEnum,
-    isUnique,
-    items,
-    maxItems,
-    maxLength,
-    maxProperties,
-    minItems,
-    minLength,
-    minProperties,
-    nExclusiveMaximum,
-    nExclusiveMinimum,
-    nMaximum,
-    nMinimum,
-    nMultipleOf,
-    numberEnum,
-    pattern,
-    properties,
-    required,
-    stringEnum,
+  ( ArrProperties (..),
+    BoolProperties (..),
+    HSONSchema (..),
+    IntProperties (..),
+    NumProperties (..),
+    ObjProperties (..),
+    StrProperties (..),
   )
-import Network.Socket (accept)
-import Parser (parse)
 import Parser qualified as P
 import Test.HUnit
 import ToJSON

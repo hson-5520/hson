@@ -2,28 +2,10 @@ module FromJSONTest where
 
 import Control.Applicative
 import FromJSON
-  ( arrayValP,
-    booleanValP,
-    constP,
-    intValP,
-    keyP,
-    nullValP,
-    numberValP,
-    objectValP,
-    parseJSON,
-    stringP,
-    stringValP,
-    wsP,
-  )
 import HSON
   ( HSON (H),
     Key,
     Value (Array, Boolean, Integer, Null, Number, Object, String),
-    hsonArray,
-    hsonDog,
-    hsonEmpty,
-    hsonSchool,
-    hsonSingle,
   )
 import Parser qualified as P
 import Test.HUnit (Counts, Test (TestList), assert, runTestTT, (~:), (~?=))
@@ -191,6 +173,57 @@ test_nullValP =
 
 -- >>> runTestTT test_nullValP
 -- Counts {cases = 3, tried = 3, errors = 0, failures = 0}
+
+---------------------------- Sample HSON ---------------------------------------
+hsonEmpty :: HSON
+hsonEmpty = H []
+
+hsonSingle :: HSON
+hsonSingle = H [("name", String "bob")]
+
+hsonArray :: HSON
+hsonArray =
+  H
+    [ ( "bob",
+        Array
+          [ Integer 1,
+            String "hi",
+            Object $ H [("name", String "Jose")],
+            Null
+          ]
+      )
+    ]
+
+hsonDog :: HSON
+hsonDog =
+  H
+    [ ( "dog",
+        Object $
+          H
+            [ ("name", String "bill"),
+              ("age", Number 4.2),
+              ("siblings", Boolean False)
+            ]
+      )
+    ]
+
+hsonSchool :: HSON
+hsonSchool =
+  H
+    [ ("name", String "School"),
+      ("foundedYear", Integer 1975),
+      ("isPublic", Boolean True),
+      ("cost", Null),
+      ("students", Array [String "a", String "b", String "c"]),
+      ( "address",
+        Object $
+          H
+            [ ("city", String "Philadelphia"),
+              ("state", String "Pennsylvania"),
+              ("buildingNumber", Integer 123)
+            ]
+      )
+    ]
 
 -------------------------- Parse JSON Tests ------------------------------------
 
