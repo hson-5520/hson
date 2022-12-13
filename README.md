@@ -23,6 +23,7 @@ HSON (pronounced H-sawn) is a library enabling interaction with [JSON](https://w
 To understand this library, we suggest you visit the files in the following order:
 
 `HSON.hs` contains the HSON data type declaration. [Documentation](#documentation)
+
 `ToJSON.hs` allows for an HSON instance to be translated to a .json file. The main function is `toJSON` generates a .json file reflecting the given HSON instance at the designated filepath. 
 
 `FromJSON.hs` parses a .json file into an HSON instance. The main function is `parseJSON` that returns either an error or HSON instance from the given .json file's filepath. The error provided is extremely primative - either there was some parse error or the parse succeeded.
@@ -57,7 +58,7 @@ To understand this library, we suggest you visit the files in the following orde
 
 ## Documentation
 
-### `HSON`: 
+### `HSON ~ [(Key, Value)]`: 
 * `Key`: a String ("bob")
 * `Value`
    * `Integer`: an Int (1, -10, 1e5)
