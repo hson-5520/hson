@@ -65,7 +65,7 @@ To understand this library, we suggest you visit the files in the following orde
    * `Number`: a double (1.4523, -2.0, 1.242e2)
    * `String`: a string ("hello")
    * `Boolean`: a boolean (True, False)
-   * `Array`: a list of values ([1, "hi", True, null])
+   * `Array`: a list of values ([Integer 1, String "hi", Boolean True, Null])
    * `Object`: an `HSON` instance (H ["Hello", String "World])
    * `Null`
 
