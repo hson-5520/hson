@@ -371,11 +371,11 @@ fromJSONSchema schema = do
   hson <- parseJSON schema
   case hson of
     Left err -> do
-      putStrLn $ "\nPARSING JSON FILE FAILED: " ++ err ++ "\n"
+      putStrLn $ "\nPARSING JSON FILE FAILED:\n" ++ err ++ "\n"
       return Nothing
     Right hs -> case hsonToHSONSchema hs of
       Left s -> do
-        putStrLn $ "\nPARSING JSON SCHEMA FAILED: " ++ s ++ "\n"
+        putStrLn $ "\nPARSING JSON SCHEMA FAILED:\n" ++ s ++ "\n"
         return Nothing
       Right hsonSchema -> return $ Just hsonSchema
 

@@ -22,7 +22,6 @@
     },
     "required": [
         "locality",
-        "zip-code",
-        "country-name"
+        "zip-code"
     ]
 }

@@ -762,7 +762,7 @@ address =
     OP
       { minProperties = Nothing,
         maxProperties = Nothing,
-        required = ["locality", "zip-code", "country-name"],
+        required = ["locality", "zip-code"],
         properties =
           [ ( "post-office-box",
               Str $

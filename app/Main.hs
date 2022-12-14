@@ -29,8 +29,11 @@ validateJSON hs = do
   putStrLn "--------------------------------------------------------------------"
   putStrLn "\nENTER THE FILE PATH FOR THE JSON OBJECT"
   objectFilePath <- getLine
-  validationResult <- p hs objectFilePath
-  validateJSON hs
+  if objectFilePath == "r"
+    then main
+    else do
+      validationResult <- p hs objectFilePath
+      validateJSON hs
   where
     p schema obj = do
       o <- parseJSON obj
