@@ -38,5 +38,5 @@ validateJSON hs = do
         (Right hson) -> case validateHSON hson schema of
           Right x -> putStrLn "\nVALIDATION PASSED!\n"
           Left y -> do
-            putStrLn $ "\nVALIDATION FAILED: " ++ y ++ "\n"
+            putStrLn $ "\nVALIDATION FAILED:\n" ++ y ++ "\n"
         (Left err) -> putStrLn $ "\nPARSING JSON OBJECT FAILED: " ++ err ++ "\n"

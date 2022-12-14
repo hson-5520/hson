@@ -3,8 +3,7 @@
     "type": "object",
     "required": [
         "firstName",
-        "experiences",
-        "hasTaken5520"
+        "experiences"
     ],
     "properties": {
         "firstName": {
@@ -13,7 +12,10 @@
             "pattern": "[A-Z][a-z]*"
         },
         "hasTaken5520": {
-            "type": "boolean"
+            "type": "boolean",
+            "enum": [
+                true
+            ]
         },
         "email": {
             "type": "string",

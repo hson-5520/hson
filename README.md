@@ -122,5 +122,5 @@ Finally, you can start a REPL with `stack ghci`.
 
 ## Future Work
   - [ ] `toJSONSchema.hs`: allow for an HSONSchema instance to be translated to JSON Schema
-  - [ ] HSONSchema Arbitrary Instance: randomly generate HSONSchema instances and implement a QuickCheck roundtrip property using toJSONSchema and fromJSONSchema
+  - [ ] HSONSchema Arbitrary Instance: randomly generate HSONSchema instances and implement a QuickCheck roundtrip property using `toJSONSchema` and `fromJSONSchema`
   - [ ] `ValidateHSON.hs`: redefine HSONSchema to incorporate GADTs to simplify validation

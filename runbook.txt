@@ -7,6 +7,7 @@ test/json-schema/object/emma4.json
 test/json-schema/object/emma5.json
 test/json-schema/object/emma6.json
 test/json-schema/object/emma7.json
+test/json-schema/object/emma8.json
 
 
 test/json-schema/schema/address-schema.json

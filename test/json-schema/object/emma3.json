@@ -4,12 +4,11 @@
     "email": "emsu@upenn.edu",
     "experiences": [
         {
-            "class": "CIS1200",
+            "class": "CIS120",
             "numberOfYears": 3
         },
         {
-            "class": "CIS5520",
-            "numberOfYears": 0
+            "class": "CIS5520"
         }
     ],
     "officeHours": {
